@@ -1,0 +1,6 @@
+__pycache__
+*.wpu
+*.wpr
+*.pyc*
+/Notes
+/Notes_empty

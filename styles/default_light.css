@@ -1,0 +1,190 @@
+
+
+/* Sidebar */
+
+#sidebar {
+font-size: 14px;
+}
+    
+#sidebar a, a.active {
+color: #808080;
+text-decoration: none;
+}
+
+#sidebar p {
+margin: 6px 0px 6px 0px;
+}
+
+#history_date {
+color: #b3b3b3;
+font-size: 11px;
+}
+
+
+/* Notelist */
+
+#highlight {
+/* Highlight result of search in Notelist and Text editor */
+background-color: #fff8a5;
+}
+
+#filesize {
+    color: #aaa;
+    font-size: 10px;
+    padding: 0px 0px 4px 0px;    
+    }
+    
+#notelist a, a.active {
+    color: #1a1a1a;
+    text-decoration: none;    
+    }
+
+
+ #notelist, #current_note {
+	margin: 10px 0px 3px 0px;
+ }
+ 
+/*
+#notelist li {
+	margin: 0px 0px 0px 0px;
+}
+
+#notelist li {
+	margin: 0px 0px 0px 0px;
+}
+*/
+
+/* Sidebar Current Note */
+
+#current_note a, a.active {
+    color: #008066;
+    text-decoration: none;
+    /* font-weight: bold; */
+    }
+
+
+/* Text Editor */
+
+html, body {
+font-family: Sans;
+font-size: 15px;
+/* background: #eee; */
+color: #1a1a1a;
+}
+
+h1, h2, h3, h4, h5, h6 {
+color: #008066;
+}
+
+s {
+color: #aaa;
+}
+
+a, a.active {
+color: #004455;
+text-decoration: none;
+}
+
+ul {
+margin: 0px 0px;
+padding: 0px 0px;
+}
+
+li {
+margin: 6px 0px 6px -20px;
+}
+
+#hide {
+	color: #aaa;
+	font-size: 10px;
+}
+
+#head1 {
+	color: #008066;
+	font-size: 29px;
+	font-weight: bold;
+}
+
+#head2 {
+	color: #008066;
+	font-size: 26px;
+	font-weight: bold;
+}
+
+#head3 {
+	color: #008066;
+	font-size: 23px;
+	font-weight: bold;
+}
+
+#head4 {
+	color: #008066;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+#head5 {
+	color: #008066;
+	font-size: 17px;
+	font-weight: bold;
+}
+
+#head6 {
+	color: #008066;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+
+#created {
+color: #aaa;
+font-size: 13px;
+}
+
+
+#code {
+	font-family: Mono;
+	font-size: 16px;
+	/*color: #501616;*/
+	color: #9c2b2b;
+}
+
+#mark {
+	/* color: #000; */
+	color: #1a1a1a;
+	background: #ffccaa;
+	border: 1px solid #666;
+}
+
+/*
+#founded_text_in_note {
+	margin: 0px 0px 5px 15px;
+	font-size: 11px;
+	color: #b3b3b3;	
+} */
+
+/*
+#founded_text_in_note p {
+	margin: 0px 0px 5px 10px;
+}
+*/
+
+#founded_text_in_note a, a.active {
+	font-size: 13px;
+	color: #333;
+    text-decoration: none;    
+    }
+
+
+
+/* [Tag tag]
+foreground=#ce5c00
+
+[Tag pre]
+foreground=#5a2a10
+family=monospace
+wrap-mode=none
+indent=20
+
+
+*/

@@ -1,0 +1,130 @@
+
+/* Sidebar */
+
+#sidebar {
+font-size: 14px;
+}
+    
+#sidebar a, a.active {
+color: #003f94;
+text-decoration: none;
+}
+
+#sidebar p {
+margin: 5px 0px 5px 0px;
+}
+
+#sidebar h5 {
+color: #aaa;
+font-size: 13px;
+}
+
+/* Notelist */
+
+#filesize {
+    color: #aaa;
+    font-size: 10px;    
+    }
+    
+#notelist a, a.active {
+    color: #003f94;
+    text-decoration: none;    
+    }
+
+
+/* Sidebar Current Note */
+
+#current_note a, a.active {
+    color: #00aa44;
+    text-decoration: none;
+    font-weight: bold;
+    }
+
+
+/* Text Editor */
+
+html, body {
+font-family: Sans;
+font-size: 15px;
+/* background: #eee; */
+}
+
+h1, h2, h3, h4, h5, h6 {
+color: #00aa44;
+}
+
+s {
+color: #aaa;
+}
+
+a, a.active {
+color: #003f94;
+text-decoration: none;
+}
+
+ul {
+margin: 0px 0px;
+padding: 0px 0px;
+}
+
+li {
+margin: 6px 0px 6px -20px;
+}
+
+#hide {
+	color: #aaa;
+	font-size: 10px;
+}
+
+#head1 {
+	color: #00aa44;
+	font-size: 29px;
+	font-weight: bold;
+}
+/* <span style=" font-family:'Sans'; font-size:29px; font-weight:600; color:#00aa44;"> */
+
+#head2 {
+	color: #00aa44;
+	font-size: 26px;
+	font-weight: bold;
+}
+
+#head3 {
+	color: #00aa44;
+	font-size: 23px;
+	font-weight: bold;
+}
+
+#head4 {
+	color: #00aa44;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+#head5 {
+	color: #00aa44;
+	font-size: 17px;
+	font-weight: bold;
+}
+
+#head6 {
+	color: #00aa44;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+
+#created {
+color: #aaa;
+font-size: 13px;
+}
+
+
+/* [Tag tag]
+foreground=#ce5c00
+
+[Tag code]
+foreground=#5a2a10
+family=monospace
+
+*/
