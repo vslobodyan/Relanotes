@@ -4,3 +4,7 @@ __pycache__
 *.pyc*
 /Notes
 /Notes_empty
+*.db
+/.idea
+*.sln
+*.pyproj
