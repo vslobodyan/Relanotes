@@ -5,6 +5,7 @@ __pycache__
 /Notes
 /Notes_empty
 *.db
-/.idea
+.idea
 *.sln
 *.pyproj
+.vs
