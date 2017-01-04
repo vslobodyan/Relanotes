@@ -52,6 +52,10 @@ Happy coding!
 
 sudo apt-get install python3-pyqt5
 
+If you want also to update via git - need install git:
+sudo apt-get install git
+
+
 ## OpenSuse
 
 
