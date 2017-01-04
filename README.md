@@ -38,9 +38,9 @@ Happy coding!
 
 
 
-##### Info about RelaNotes
+# Info about RelaNotes
 
-#### How to install RelaNotes
+## How to install RelaNotes
 
 ### Windows
 
@@ -48,17 +48,18 @@ Happy coding!
 
 ### Linux
 
-## Ubuntu
+#### Ubuntu
 
-sudo apt-get install python3-pyqt5
+Install requirements:
+```sudo apt-get install python3-pyqt5```
 
 If you want also to update via git - need install git:
-sudo apt-get install git
+```sudo apt-get install git```
 
 
-## OpenSuse
+#### OpenSuse
 
 
 
-## Fedora
+#### Fedora
 
