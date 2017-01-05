@@ -43,7 +43,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="notelist">
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -79,6 +79,9 @@
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <property name="spacing">
+              <number>5</number>
+             </property>
              <item>
               <widget class="QLabel" name="label_7">
                <property name="maximumSize">
@@ -216,19 +219,19 @@
          <widget class="QWidget" name="widget_note" native="true">
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <property name="spacing">
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="leftMargin">
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="topMargin">
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="rightMargin">
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="bottomMargin">
-            <number>4</number>
+            <number>0</number>
            </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_Note">
@@ -258,7 +261,7 @@
               <widget class="QFrame" name="frame_NoteMinimap">
                <property name="minimumSize">
                 <size>
-                 <width>16</width>
+                 <width>32</width>
                  <height>0</height>
                 </size>
                </property>
@@ -271,6 +274,41 @@
                <property name="frameShadow">
                 <enum>QFrame::Raised</enum>
                </property>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QWidget" name="widget_toolbar" native="true">
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QWidget" name="widget_minimap" native="true">
+                  <property name="minimumSize">
+                   <size>
+                    <width>5</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <zorder>widget_toolbar</zorder>
+                 </widget>
+                </item>
+               </layout>
               </widget>
              </item>
             </layout>
@@ -284,6 +322,21 @@
               <enum>QFrame::Raised</enum>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <property name="spacing">
+               <number>5</number>
+              </property>
+              <property name="leftMargin">
+               <number>5</number>
+              </property>
+              <property name="topMargin">
+               <number>5</number>
+              </property>
+              <property name="rightMargin">
+               <number>5</number>
+              </property>
+              <property name="bottomMargin">
+               <number>5</number>
+              </property>
               <item>
                <widget class="QLabel" name="label_8">
                 <property name="maximumSize">

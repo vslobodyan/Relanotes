@@ -445,7 +445,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         # Добавляем тулбар на панель справа от редактора заметки
         hBoxLayout = QtWidgets.QHBoxLayout()
-        note_editor_toolbar = QtWidgets.QToolBar(self.frame_NoteMinimap)
+        # note_editor_toolbar = QtWidgets.QToolBar(self.frame_NoteMinimap)
+        note_editor_toolbar = QtWidgets.QToolBar(self.widget_toolbar)
+        
         note_editor_toolbar.setOrientation(QtCore.Qt.Vertical)
 
         for action in self.note_editor_toolbar_actions:
@@ -455,9 +457,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 note_editor_toolbar.addAction(action)
 
         # self.frame_NoteMinimap.setMinimumWidth(0)
+        hBoxLayout.setContentsMargins(0, 0, 0, 0)
+        hBoxLayout.setSpacing(0)
         hBoxLayout.addWidget(note_editor_toolbar)
-        self.frame_NoteMinimap.setLayout(hBoxLayout)
-                    
+        # self.frame_NoteMinimap.setLayout(hBoxLayout)
+        self.widget_toolbar.setLayout(hBoxLayout)
         
         self.actionCalculator.triggered.connect(self.show_calculator)
         self.actionPreferences.triggered.connect(self.show_preferences)
@@ -2232,7 +2236,7 @@ class Notelist():
                     # else:
                     #    filename = root + file
                     filename = os.path.join(root, file)
-                    print('DEBUG: ROOT="%s" FILE="=%s"' % (root, file) )
+                    #print('DEBUG: ROOT="%s" FILE="=%s"' % (root, file) )
                     #print('DEBUG: os.path.join(root, file)=%s' % filename)
                     size = os.stat(filename).st_size
                     
