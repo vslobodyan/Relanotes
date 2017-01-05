@@ -2353,8 +2353,12 @@ class Notelist():
                                 # <ul id=founded_text_in_note>
                             line_i += 1  
 
-        main_window.statusbar.showMessage(str(notes_count)+' notes, '+hbytes(notes_size)+' from overall ' +
-                                          str(notes_count_all)+' notes, '+hbytes(notes_size_all))
+        #main_window.statusbar.showMessage(str(notes_count)+' notes, '+hbytes(notes_size)+' from overall ' +
+        #                                  str(notes_count_all)+' notes, '+hbytes(notes_size_all) + ' at ' + path_to_notes)
+
+        main_window.statusbar.showMessage('Found ' + str(notes_count_all)+' notes ('+hbytes(notes_size_all) + ') at ' + path_to_notes +
+                                            ', showed ' + str(notes_count)+' notes ('+hbytes(notes_size)+') in list.' )
+
                 
         html_string = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_string, )
         main_window.notelist_source.setHtml(html_string)
