@@ -105,4 +105,4 @@ class Ui_DialogNoteMultiaction(object):
         self.pushButton_6.setText(_translate("DialogNoteMultiaction", "Export"))
         self.pushButton_5.setText(_translate("DialogNoteMultiaction", "Move note"))
 
-import resources.resources_rc
+from resources import resources_rc

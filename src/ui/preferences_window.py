@@ -70,4 +70,4 @@ class Ui_DialogPreferences(object):
         self.pushButton_2.setText(_translate("DialogPreferences", "Apply"))
         self.pushButton.setText(_translate("DialogPreferences", "Ok"))
 
-import resources.resources_rc
+from resources import resources_rc

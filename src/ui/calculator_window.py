@@ -127,4 +127,4 @@ class Ui_Dialog(object):
         self.buttonAdd_to_note.setText(_translate("Dialog", "Add to note"))
         self.label_7.setText(_translate("Dialog", "Ctrl+Enter"))
 
-import resources.resources_rc
+from resources import resources_rc
