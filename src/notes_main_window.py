@@ -1912,8 +1912,10 @@ Creation-Date: 2012-09-02T11:16:31+04:00
         # <img src="/home/vyacheslav//Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png" />
         # -->
         # {{~/Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png}}
-        note_source = re.sub('<img src="'+path_to_home+'(.*?)" />', '{{~\\1}}', note_source)
+        # Закомментировал, не работает сейчас, выдает ошибку про незакрытый \U. Наверное, это в пути к картинке.
+        # note_source = re.sub('<img src="'+path_to_home+'(.*?)" />', '{{~\\1}}', note_source)
         note_source = re.sub('<img src="(.*?)" />', '{{\\1}}', note_source)
+
         
         # Ненумерованный список
         # <ul style="..."><li style="..."><span style="..">Пункт 1</span></li></ul> 
