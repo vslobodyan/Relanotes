@@ -40,6 +40,14 @@ Happy coding!
 
 # Info about RelaNotes
 
+## Notes File Format
+
+Plaint Text.
+UTF-8 coding.
+UNIX style end-of-line.
+
+
+
 ## How to install RelaNotes
 
 ### Windows
