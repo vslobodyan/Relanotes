@@ -1975,6 +1975,10 @@ Creation-Date: 2012-09-02T11:16:31+04:00
     def show_note_multiaction_win(self, note_filename=''):
         # if note_filename == '':
         #    note_filename = 
+        
+        # Получаем корректный путь к файлу из линка со всякими %2U
+        note_filename = get_correct_filename_from_url(note_filename)
+
         notemultiaction_win.labelNoteFileName.setText(note_filename)
         notemultiaction_win.lineEdit.setText('')
         notemultiaction_win.lineEdit.setFocus()
@@ -2404,13 +2408,7 @@ class Notelist():
             main_window.open_file_in_editor(link_filename)
         if link_type == 'multiaction':
             note.show_note_multiaction_win(link_filename)
-      
-    # FIXME: . Переименовать действие по отображению / скрыванию истории, сменить иконку, привязать к функции скрывания-
-    # отображения соответствующего виджета, отмечать действия при загрузке, чтобы соотвествовало отображаемому виджету
-    # FIXME: . По Esc скрывать список содержания заметки
-    # TODO: . Выводить полный текущий путь внутри содержания текущей заметки (перестраивать при изменении текста замтки,
-    # затем проверять позицию курсора и сравнивать с таблицей содержания)
-
+    
     '''
     def switch_show_note_content(self)
     :
