@@ -792,7 +792,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #lines = f.read()
         #f.close()
 
-        fileObj = codecs.open( filename, "r", "utf_8_sig" )
+        fileObj = codecs.open( filename, "r", "utf-8" )
         lines = fileObj.read()        
         fileObj.close()
 
@@ -1944,9 +1944,20 @@ Creation-Date: 2012-09-02T11:16:31+04:00
         note_source = begin_of_zim_note+note_source
         
         # Записываем результат преобразования исходника заметки в файл
-        f = open(filename, "w")
-        f.writelines(note_source)
-        f.close()
+
+        # f = open(filename, "w", "utf-8")
+        # f.writelines(note_source)
+        # f.close()
+
+        print("We will save notes to %s" % filename)
+
+        # Новое сохранение с использование кодировки UTF8
+        fileObj = codecs.open( filename, "w", "utf-8" )
+        for one_line in note_source:
+            fileObj.write(one_line)
+        fileObj.close()
+
+
         main_window.statusbar.showMessage('Note saved as '+filename)
         
         # TODO: Запуск перебора всех заметок и сохранения их в альтернативный каталог
@@ -2279,7 +2290,7 @@ class Notelist():
                         #lines = f.read()
                         #f.close()
                         # Новый код, который работает под Windows с UTF-файлами
-                        fileObj = codecs.open( filename, "r", "utf_8_sig" )
+                        fileObj = codecs.open( filename, "r", "utf-8" )
                         lines = fileObj.read()
                         fileObj.close()
                         if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
