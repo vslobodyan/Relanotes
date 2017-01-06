@@ -309,9 +309,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # settings.setValue('int_value', 42)
         try:
-            self.layoutSettings = QtCore.QSettings(os.path.join(path_to_me, "./layout.ini"), QtCore.QSettings.IniFormat)
-            self.restoreGeometry(self.layoutSettings.value("mainWindow/geometry"))
-            self.restoreState(self.layoutSettings.value("mainWindow/windowState"))
+            #self.layoutSettings = QtCore.QSettings(os.path.join(path_to_me, "./layout.ini"), QtCore.QSettings.IniFormat)
+            #self.restoreGeometry(self.layoutSettings.value("mainWindow/geometry"))
+            #self.restoreState(self.layoutSettings.value("mainWindow/windowState"))
+
+            self.restoreGeometry(settings.value("mainWindow/geometry"))
+            self.restoreState(settings.value("mainWindow/windowState"))
         except:
             pass
 
@@ -568,9 +571,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.plainTextEdit_Note_Ntml_Source.setVisible(True)
 
     def closeEvent(self, e):
-        self.layoutSettings.setValue("mainWindow/geometry", self.saveGeometry())
-        self.layoutSettings.setValue("mainWindow/windowState", self.saveState())
-        self.layoutSettings.sync()        
+        #self.layoutSettings.setValue("mainWindow/geometry", self.saveGeometry())
+        #self.layoutSettings.setValue("mainWindow/windowState", self.saveState())
+        #self.layoutSettings.sync()
+
+        settings.setValue("mainWindow/geometry", self.saveGeometry())
+        settings.setValue("mainWindow/windowState", self.saveState())
+        settings.sync()
+
         # self.settings.setValue('size', self.size())
         # self.settings.setValue('pos', self.pos())
         e.accept()        
