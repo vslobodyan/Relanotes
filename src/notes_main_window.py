@@ -45,7 +45,7 @@ QtCore.QCoreApplication.setApplicationName(settingsNameGlobal)
 
 def give_correct_path_under_win_and_other(path_to_check):
     correct_path = path_to_check
-    print ('DEBUG: os.path.sep: %s ' % os.path.sep )
+    # print ('DEBUG: os.path.sep: %s ' % os.path.sep )
     print ('DEBUG: path_to_check: %s' % path_to_check )
 
     # Рекомендуемый в некоторых местах путь решения:
@@ -707,7 +707,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 file_parent = ''
             else:
                 #file_parent = file_rec.split('/')[-2] + ': '
-                print('DEBUG: file_rec.split= %s' % file_rec.split(os.path.sep) )
+                # print('DEBUG: file_rec.split= %s' % file_rec.split(os.path.sep) )
                 file_parent = file_rec.split(os.path.sep)[-2] + ': '
             
             #file_cute_name = file_rec.rpartition('/')[2]
