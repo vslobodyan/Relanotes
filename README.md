@@ -51,15 +51,17 @@ UNIX style end-of-line.
 ### Windows 10
 
 In folder
-C:\Users\Your_Username\AppData\Roaming\DigiTect\Relanotes.ini
+C:\Users\USER_NAME\AppData\Roaming\DigiTect\Relanotes
 
 ### Linux
 
 ??
+~/.local/share/DigiTect/Relanotes
 
 ### MacOS X
 
 ??
+~/Library/Application Support/DigiTect/Relanotes
 
 ## How to install RelaNotes
 
