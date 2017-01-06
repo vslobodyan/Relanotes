@@ -46,7 +46,20 @@ Plaint Text.
 UTF-8 coding.
 UNIX style end-of-line.
 
+## Path to config files
 
+### Windows 10
+
+In folder
+C:\Users\Your_Username\AppData\Roaming\DigiTect\Relanotes.ini
+
+### Linux
+
+??
+
+### MacOS X
+
+??
 
 ## How to install RelaNotes
 

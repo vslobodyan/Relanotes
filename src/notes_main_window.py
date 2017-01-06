@@ -11,7 +11,6 @@ import time
 import sqlite3
 from datetime import datetime  # , date  #, time
 import codecs
-import urllib.request
 
 #from src.ui import calculator_window, preferences_window, note_multiaction
 from src.ui import preferences_window, note_multiaction
@@ -23,48 +22,40 @@ from src import calculator
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+from src.routines import *
+
 # from PyQt5.QtCore import *
 # from PyQt5.QtGui import *
 
-# Тут храним настройки программы
-#settings = QSettings('DigiTect', 'Relanotes')
+
 
 settingsNameOrganization = 'DigiTect'
 settingsNameGlobal = 'Relanotes'
-
-settings = QtCore.QSettings(
-    QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
-    settingsNameOrganization, settingsNameGlobal)
-#if not isWindowsPlatform():
-#    hp = QDir.homePath()
-#    dn = QDir(hp)
-#    dn.mkdir(".eric6")
 QtCore.QCoreApplication.setOrganizationName(settingsNameOrganization)
 QtCore.QCoreApplication.setApplicationName(settingsNameGlobal)
 
+# Получаем путь к каталогу с настройками программы по данным QStandardPaths
+app_config_path = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppDataLocation);
+# Подробнее о выборе пути: http://doc.qt.io/qt-5/qstandardpaths.html
+#config_homePath = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppConfigLocation);
+#config_homePath = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppLocalDataLocation);
 
-def give_correct_path_under_win_and_other(path_to_check):
-    correct_path = path_to_check
-    # print ('DEBUG: os.path.sep: %s ' % os.path.sep )
-    print ('DEBUG: path_to_check: %s' % path_to_check )
+app_config_path = give_correct_path_under_win_and_other(app_config_path)
 
-    # Рекомендуемый в некоторых местах путь решения:
-    # path = QDir::fromNativeSeparators( path );
-    # или
-    # QDir::toNativeSeparators()
-    # http://doc.qt.io/qt-5/qdir.html#toNativeSeparators
+print("Каталог с настройками программы: %s" % app_config_path)
+# Если не существует - создаем.
+if not os.path.exists(app_config_path):
+    os.makedirs(app_config_path)
 
-    if path_to_check and os.path.sep == '\\':
-        # Работаем в случае если это сепаратор Windows и путь к заметкам не пустой
-        if os.path.sep not in path_to_check:
-            # Обнаружен признак отсутствия правильного разделителя в пути к заметкам
-            # Разбиваем путь по обратному слешу и собираем обратно правильным образом
-            correct_path = os.path.sep.join( path_to_check.split('/') )
-            print ('DEBUG: путь был исправлен с %s на %s' % (path_to_check, correct_path) )
-    return correct_path
+ini_settings_filename = 'settings.ini'
+full_ini_filename = os.path.join(app_config_path, ini_settings_filename)
+# print("Полный путь к ini-файлу настроек: %s" % full_ini_filename)
 
-def get_correct_filename_from_url(filename):
-    return urllib.request.unquote(filename)
+settings = QtCore.QSettings(full_ini_filename, QtCore.QSettings.IniFormat)
+# settings.setFallbacksEnabled(False)    # File only, no fallback to registry or or.
+
+# settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
+#     settingsNameOrganization, settingsNameGlobal)
     
 
 path_to_notes = settings.value('path_to_notes')
