@@ -422,6 +422,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.dockHistory.close()
         self.dockNoteContentTable.close()
         
+        # Скрываем поле поиска по тексту внутри заметок и текст рядом с ним
+        self.label_6.hide()
+        self.lineEdit_Filter_Note_Text.hide()
+
         # if self.dockHistory.isVisible():
             # self.actionShowHistoryWindow.setChecked(True)
         # else:
@@ -494,9 +498,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 settings.setValue('path_to_notes', path_to_notes)
                 settings.sync()
                 print("Выбран новый путь к заметкам:", path_to_notes)
-
-    # FIXME: . Клики по списку истории должны обновлять дату открытия заметки
-    # TODO: . Сделать разбиение по прошедшим дням/неделям в списке истории
 
     def minimize(self):
         # print('main_window.showMinimized()')
@@ -642,7 +643,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         try:
             state_db_connection.execute('''CREATE TABLE file_recs
-             (filename text, cute_name text, parent_id integer, subnotes_count integer,
+             (filename text PRIMARY KEY, cute_name text, parent_id integer, subnotes_count integer,
              last_change integer, last_open integer, count_opens integer, current_position integer)''')
         except:
             pass
@@ -2126,42 +2127,14 @@ class Notelist():
             
             return None
         
-        def initial_db(self):
-            self.statusbar.showMessage('First read and indexing of your files..')
+        #def initial_db(self):
     
-            # Список истории
-            # rec = [ 'note' / 'list', 'filename' / 'filter' ]
-            # history_recs = [ rec1, rec2, .. ]
+        #    # Дерево подразделов в файлах заметок
     
-            try:
-                state_db_connection.execute('''CREATE TABLE history_recs
-                     (type text, value text, datetime integer)''')
-            except:
-                pass
-                
-            # Список файлов
-            # rec = [ filename, cute_name, parent_id, subnotes_count, last_change, last_open, count_opens,
-            # current_position ]
-            # file_recs = [ rec1, rec2, rec3, .. ]
-    
-            try:
-                state_db_connection.execute('''CREATE TABLE file_recs
-                 (filename text, cute_name text, parent_id integer, subnotes_count integer,
-                 last_change integer, last_open integer, count_opens integer, current_position integer)''')
-            except:
-                pass
-    
-            # Дерево подразделов в файлах заметок
-    
-            # Списки меток в файлах заметок
+        #    # Списки меток в файлах заметок
             
-            # Списки задач в файлах заметок
+        #    # Списки задач в файлах заметок
     
-            # Insert a row of data
-            # state_db_connection.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
-    
-            # Save (commit) the changes
-            state_db.commit()
 
         def __init__(self):   # class DB
             pass
