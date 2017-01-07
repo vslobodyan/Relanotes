@@ -47,8 +47,7 @@ print("Каталог с настройками программы: %s" % app_co
 if not os.path.exists(app_config_path):
     os.makedirs(app_config_path)
 
-ini_settings_filename = 'settings.ini'
-full_ini_filename = os.path.join(app_config_path, ini_settings_filename)
+full_ini_filename = os.path.join(app_config_path, 'settings.ini')
 # print("Полный путь к ini-файлу настроек: %s" % full_ini_filename)
 
 settings = QtCore.QSettings(full_ini_filename, QtCore.QSettings.IniFormat)
@@ -95,13 +94,16 @@ notelist_selected_url = ''  # Ссылка выбранного
 # history_recs = []
 history_position = 0
 
-state_db = sqlite3.connect('state.db')  # @UndefinedVariable
+full_state_db_filename = os.path.join(app_config_path, 'state.db')
+state_db = sqlite3.connect(full_state_db_filename)
 state_db_connection = state_db.cursor()
 
 # TODO: переключить работу на новую базу заметок, дополнить её новыми полями
 
-notelist_db = sqlite3.connect('notelist.db')  # @UndefinedVariable
+full_notelist_db_filename = os.path.join(app_config_path, 'notelist.db')
+notelist_db = sqlite3.connect(full_notelist_db_filename)
 notelist_db_connection = notelist_db.cursor()
+
 
 """
 Список заметок и статус работы с ними
