@@ -98,11 +98,9 @@ full_state_db_filename = os.path.join(app_config_path, 'state.db')
 state_db = sqlite3.connect(full_state_db_filename)
 state_db_connection = state_db.cursor()
 
-# TODO: переключить работу на новую базу заметок, дополнить её новыми полями
-
-full_notelist_db_filename = os.path.join(app_config_path, 'notelist.db')
-notelist_db = sqlite3.connect(full_notelist_db_filename)
-notelist_db_connection = notelist_db.cursor()
+# full_notelist_db_filename = os.path.join(app_config_path, 'notelist.db')
+# notelist_db = sqlite3.connect(full_notelist_db_filename)
+# notelist_db_connection = notelist_db.cursor()
 
 
 """
