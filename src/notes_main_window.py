@@ -2201,7 +2201,20 @@ class Notelist():
 
         # print('Обновляем список файлов. Найдено:')
         
+        # Получаем текущий фильтр для списка заметок
+
+        # Делим фильтр заметок на фильтр имени и фильтр текста внутри
+        notelist_filter = main_window.lineNotelist_Filter.text()
+        if ' ' not in notelist_filter:
+            notelist_filter_text = ''
+            notelist_filter_name = notelist_filter
+        else:
+            notelist_filter_name, notelist_filter_text = notelist_filter.split(' ')
+            
+        print('Filters: notelist_filter_name=%s, notelist_filter_text=%s' % (notelist_filter_name, notelist_filter_text) )
+
         filter_note_name = main_window.lineNotelist_Filter.text()
+        
         notelist.file_recs = []
         
         global notelist_selected_url
@@ -2415,7 +2428,7 @@ class Notelist():
         
         # QtCore.QObject.connect(main_window.lineEdit_Filter_Note_Text, QtCore.SIGNAL("textChanged( const QString& )"),
                                # main_window.filter_note_text_changed)
-        main_window.lineEdit_Filter_Note_Text.textChanged.connect(main_window.filter_note_text_changed)
+        #main_window.lineEdit_Filter_Note_Text.textChanged.connect(main_window.filter_note_text_changed)
         
         # QtCore.QObject.connect(main_window.lineEdit_Filter_Note_Text, QtCore.SIGNAL("returnPressed ()"),
         # main_window.checkBox_Filter_Note_Content_Text_switch_state)
