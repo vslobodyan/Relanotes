@@ -571,10 +571,32 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.plainTextEdit_Note_Ntml_Source.setVisible(True)
 
+
+    def save_note_cursor_position(self):
+        print('Проверка необходимости сохранить позицию открытой заметки')
+        # Проверяем - есть ли открытая заметка в окне редактора
+
+        filename = main_window.current_open_note_link
+        if filename:
+            current_position = main_window.textBrowser_Note.textCursor().position()
+            print('Файл открытой заметки %s и позиция курсора %s' % (filename, current_position) )
+            # Если есть - сохраняем для неё последнюю позицию курсора
+
+            # Обновляем запись в базе
+            state_db_connection.execute("UPDATE file_recs SET current_position=?  WHERE filename=?",
+                                        (current_position, filename) )
+            state_db.commit()                        
+        else:
+            print('Открытой заметки нет.')
+
+
     def closeEvent(self, e):
         #self.layoutSettings.setValue("mainWindow/geometry", self.saveGeometry())
         #self.layoutSettings.setValue("mainWindow/windowState", self.saveState())
         #self.layoutSettings.sync()
+
+        # Сохраняем позицию заметки, если она была открыта
+        self.save_note_cursor_position()
 
         settings.setValue("mainWindow/geometry", self.saveGeometry())
         settings.setValue("mainWindow/windowState", self.saveState())
@@ -748,6 +770,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         filename = get_correct_filename_from_url(filename)
         print('DEBUG: open_file_in_editor(" after unquote =%s")' % filename)
         
+        # Сохраняем позицию предыдущей заметки, если она была открыта
+        self.save_note_cursor_position()
+
         # print('link_note_pos: '+str(link_note_pos))
         # TODO: .. Профилировать скорость загрузки файла и отображения его текста
         
@@ -799,17 +824,18 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     print('FILE_RECS: для файла %s запись есть. Обновляем.' % filename)
                     # Запись уже есть. Прописываем ей новое время открытия и увеличиваем счетчик открытий
                     # Получаем количество открытий данного файла
-                    state_db_connection.execute("SELECT count_opens FROM file_recs WHERE filename=?", (filename,) )
-                    rec_count_opens = state_db_connection.fetchone()
-                    print('Количество открытий заметки: %s' % rec_count_opens[0])
+                    state_db_connection.execute("SELECT count_opens, current_position FROM file_recs WHERE filename=?", (filename,) )
+                    rec_count_opens, rec_current_position = state_db_connection.fetchone()
+                    print('Количество открытий заметки: %s, последняя позиция курсора: %s' % ( rec_count_opens, rec_current_position ) )
                     # Обновляем запись в базе
                     state_db_connection.execute("UPDATE file_recs SET last_open=?, count_opens=?  WHERE filename=?",
-                                                (datetime.now(), rec_count_opens[0]+1, filename) )
+                                                (datetime.now(), rec_count_opens+1, filename) )
                     state_db.commit()                        
                 else:
                     # Записи нет. Создаем новую.
                     # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
 
+                    rec_current_position = None
                     print('FILE_RECS: для файла %s записи нет. Создаем новую.' % filename)
                     # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
                     state_db_connection.execute("INSERT INTO file_recs (filename, last_open, count_opens) VALUES (?,?,?)",
@@ -897,6 +923,16 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.renew_history_list(filename)
         self.statusbar.showMessage('Заметка загружена')
         self.current_open_note_link = filename
+
+        # Восстанавливаем позицию предыдущую позицию курсора, если она была сохранена
+        if rec_current_position:
+            print('Перемещаем курсор в заметке на позицию %s' % rec_current_position)
+            # Получаем копию текущего курсора
+            cursor = main_window.textBrowser_Note.textCursor()
+            # Устанавливаем копии нужное положение
+            cursor.setPosition(rec_current_position)
+            # Делаем копию основным курсором текстового редактора с новой позицией
+            main_window.textBrowser_Note.setTextCursor(cursor)
 
         # rec = [ 'note' / 'list', 'filename' / 'filter', datetime ]
         # if history_position==0:
