@@ -848,7 +848,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         i = 0
         self.textBrowser_Note.moveCursor(QtGui.QTextCursor.Start)
         while i < int(founded_i):
-            text_to_find = self.lineEdit_Filter_Note_Text.text()
+            #text_to_find = self.lineEdit_Filter_Note_Text.text()
+            text_to_find = notelist.filter_text
             self.textBrowser_Note.find(text_to_find)
             # print ('Выполняем поиск')
             # cursor.movePosition(QtGui.QTextCursor.Down)
@@ -2217,7 +2218,7 @@ class Notelist():
             
         print('Filters: notelist.filter_name=%s, notelist.filter_text=%s' % (self.filter_name, self.filter_text) )
 
-        filter_note_name = main_window.lineNotelist_Filter.text()
+        #filter_note_name = main_window.lineNotelist_Filter.text()
         
         notelist.file_recs = []
         
@@ -2272,11 +2273,12 @@ class Notelist():
                     lines = ''
                     
                     # Проверяем на неудовлетворение фильтру
-                    if filter_note_name != '' and filter_note_name.lower() not in cute_filename.lower():
+                    if self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower():
                         continue
 
                     # Проверяем на неудовлетворение фильтру по тексту содержимого заметки
-                    if main_window.lineEdit_Filter_Note_Text.text() != '':
+                    #if main_window.lineEdit_Filter_Note_Text.text() != '':
+                    if self.filter_text != '':
                         # Надо загрузить заметку и провести поиск в ней на предмет содержимого
                         # Старый код, который не открывает UTF в Windows
                         #f = open(filename, "r")
@@ -2286,7 +2288,8 @@ class Notelist():
                         fileObj = codecs.open( filename, "r", "utf-8" )
                         lines = fileObj.read()
                         fileObj.close()
-                        if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
+                        #if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
+                        if self.filter_text.lower() not in lines.lower():
                             continue
 
                     notes_count += 1
@@ -2317,9 +2320,9 @@ class Notelist():
                     else:
                         line_style = ' id="notelist"'
 
-                    if filter_note_name != '':
+                    if self.filter_name != '':
                         # Делаем подсветку текста из фильтра в списке заметки
-                        cute_filename = re.sub('('+filter_note_name+')', '<span id="highlight">'+'\\1</span>',
+                        cute_filename = re.sub('('+self.filter_name+')', '<span id="highlight">'+'\\1</span>',
                                                cute_filename, flags=re.I)
 
                     # html_string += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
@@ -2339,8 +2342,10 @@ class Notelist():
                     i += 1
 
                     # Если надо, добавляем ссылки на позиции вхождения текста в заметке
-                    if main_window.lineEdit_Filter_Note_Text.text() != '':
-                        filter_note_text = main_window.lineEdit_Filter_Note_Text.text()
+                    #if main_window.lineEdit_Filter_Note_Text.text() != '':
+                    #    filter_note_text = main_window.lineEdit_Filter_Note_Text.text()
+                    if self.filter_text != '':
+                        filter_note_text = self.filter_text
                         founded_i = 0
                         # print('Ищем текст "'+filter_note_text+'" в строчках внутри заметки')
                         line_i = 1
