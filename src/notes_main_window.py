@@ -2048,7 +2048,8 @@ class Notelist():
     sidebar_source    (исходник сайдбара)
     notelist_source    (исходник списка заметок)
     """
-    filter_text = ''  # Фильтр по имени на список заметок
+    filter_name = '' # Фильтрация списка заметок по имени заметки
+    filter_text = ''  # Фильтрация списка заметок по тексту, содержащемуся внутри заметок
     history_back_offset = 0  # Обратное смещение по списку истории
     
     note_contents_source = QtGui.QTextDocument()
@@ -2206,12 +2207,15 @@ class Notelist():
         # Делим фильтр заметок на фильтр имени и фильтр текста внутри
         notelist_filter = main_window.lineNotelist_Filter.text()
         if ' ' not in notelist_filter:
-            notelist_filter_text = ''
-            notelist_filter_name = notelist_filter
+            self.filter_text = ''
+            self.filter_name = notelist_filter
         else:
-            notelist_filter_name, notelist_filter_text = notelist_filter.split(' ')
+            # Первое слово до пробела - имя. Остальные - текст.
+            filter_words = notelist_filter.split(' ')
+            self.filter_name = filter_words[0]
+            self.filter_text = ' '.join(filter_words[1:])
             
-        print('Filters: notelist_filter_name=%s, notelist_filter_text=%s' % (notelist_filter_name, notelist_filter_text) )
+        print('Filters: notelist.filter_name=%s, notelist.filter_text=%s' % (self.filter_name, self.filter_text) )
 
         filter_note_name = main_window.lineNotelist_Filter.text()
         
