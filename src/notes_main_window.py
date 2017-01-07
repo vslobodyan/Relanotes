@@ -2177,10 +2177,10 @@ class Notelist():
             main_window.lineNotelist_Filter.setFocus()
             main_window.lineNotelist_Filter.selectAll()
             
-            # Если обнаружен текст в поле поиска по содержимому - перставляем фокус в него
-            if main_window.lineEdit_Filter_Note_Text.text() != '':
-                main_window.lineEdit_Filter_Note_Text.setFocus()
-                main_window.lineEdit_Filter_Note_Text.selectAll()
+            ## Если обнаружен текст в поле поиска по содержимому - переставляем фокус в него
+            #if main_window.lineEdit_Filter_Note_Text.text() != '':
+            #    main_window.lineEdit_Filter_Note_Text.setFocus()
+            #    main_window.lineEdit_Filter_Note_Text.selectAll()
 
     def update(self):
         # Обновляем список заметок 
