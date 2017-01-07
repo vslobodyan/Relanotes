@@ -1862,6 +1862,15 @@ class Note():
                 
     def save_note(self):
         # profiler.start('Начинаем сохранение заметки')
+
+        filename = main_window.current_open_note_link
+
+        print('Сохраняем файл %s' % filename)
+        
+        # Обновляем запись в базе
+        state_db_connection.execute("UPDATE file_recs SET last_change=?  WHERE filename=?",
+                                    (datetime.now(), filename) )
+        state_db.commit()                        
         
         # Сохраняем текущую заметку
         tmp_str = main_window.current_open_note_link[:-len('.txt')]
