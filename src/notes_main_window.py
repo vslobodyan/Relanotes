@@ -2314,7 +2314,18 @@ class Notelist():
         
         global notelist_selected_url
         
-        html_string = '<div id=notelist>'
+
+
+        html_string = '<p id=history_date>История обращений к заметкам</p>'
+
+        for row in state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC"):
+            rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
+            html_string += '<p>%s - %s</p>' % (rec_filename, rec_last_open)
+
+
+        html_string += '<p id=history_date>Список всех заметок</p>'
+
+        html_string += '<div id=notelist>'
         
         active_link = main_window.current_open_note_link
         
