@@ -770,6 +770,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 # new_recs += [ ( 'note', filename, datetime.now() ), ]
                 new_recs_sel += [('note', filename, ), ]
                 
+                ######### history_recs
                 # Перед добавлением новой записи проверяем - нет-ли записи с такими-же значениями уже в списке
                 for rec in new_recs_sel:
                     # print ( 'rec: '+str(rec) + ' len:' + str(len(rec)) )
@@ -787,6 +788,34 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                         state_db_connection.execute("INSERT INTO history_recs VALUES (?,?,?)",
                                                     (rec[0], rec[1], datetime.now()))
                         state_db.commit()
+
+
+                print('FILE_RECS for %s starting here' % filename)
+                ######### file_recs
+                # Перед добавлением новой записи проверяем - нет-ли записи с такими-же значениями уже в списке
+                state_db_connection.execute("SELECT * FROM file_recs WHERE filename=?", (filename,) )
+                existed_rec = state_db_connection.fetchall()
+                if len(existed_rec) > 0:
+                    print('FILE_RECS: для файла %s запись есть. Обновляем.' % filename)
+                    # Запись уже есть. Прописываем ей новое время открытия и увеличиваем счетчик открытий
+                    # Получаем количество открытий данного файла
+                    state_db_connection.execute("SELECT count_opens FROM file_recs WHERE filename=?", (filename,) )
+                    rec_count_opens = state_db_connection.fetchone()
+                    print('Количество открытий заметки: %s' % rec_count_opens[0])
+                    # Обновляем запись в базе
+                    state_db_connection.execute("UPDATE file_recs SET last_open=?, count_opens=?  WHERE filename=?",
+                                                (datetime.now(), rec_count_opens[0]+1, filename) )
+                    state_db.commit()                        
+                else:
+                    # Записи нет. Создаем новую.
+                    # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
+
+                    print('FILE_RECS: для файла %s записи нет. Создаем новую.' % filename)
+                    # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
+                    state_db_connection.execute("INSERT INTO file_recs (filename, last_open, count_opens) VALUES (?,?,?)",
+                                                    (filename, datetime.now(), 1) )
+                    state_db.commit()
+
 
         #f = open(filename, "r")
         #lines = f.read()
