@@ -62,9 +62,25 @@ class Ui_MainWindow(object):
         self.lineNotelist_Filter.setAutoFillBackground(True)
         self.lineNotelist_Filter.setObjectName("lineNotelist_Filter")
         self.horizontalLayout_6.addWidget(self.lineNotelist_Filter)
-        self.label = QtWidgets.QLabel(self.frameNotelist_Filter)
+        self.widget = QtWidgets.QWidget(self.frameNotelist_Filter)
+        self.widget.setMinimumSize(QtCore.QSize(40, 0))
+        self.widget.setObjectName("widget")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.widget)
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_4.setSpacing(3)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.label = QtWidgets.QLabel(self.widget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy)
         self.label.setObjectName("label")
-        self.horizontalLayout_6.addWidget(self.label)
+        self.verticalLayout_4.addWidget(self.label)
+        self.label_DisplayFilters = QtWidgets.QLabel(self.widget)
+        self.label_DisplayFilters.setObjectName("label_DisplayFilters")
+        self.verticalLayout_4.addWidget(self.label_DisplayFilters)
+        self.horizontalLayout_6.addWidget(self.widget)
         self.label_6 = QtWidgets.QLabel(self.frameNotelist_Filter)
         self.label_6.setObjectName("label_6")
         self.horizontalLayout_6.addWidget(self.label_6)
@@ -650,12 +666,13 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Relanotes"))
-        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:11pt; color:#008066;\">Live search in your notes:</span></p></body></html>"))
+        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:13pt; color:#008066;\">Live search in your notes:</span></p></body></html>"))
         self.label.setText(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">NAME  TEXT</span> (use \'Space\' in begin of text to search only in included text)</p></body></html>"))
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">First word - Name, second - Text. Use \'Space\' in begin to search included text.</p></body></html>"))
+        self.label_DisplayFilters.setText(_translate("MainWindow", "<html><head/><body><p>Example: <span style=\" font-weight:600;\">proj ninja</span></p></body></html>"))
         self.label_6.setText(_translate("MainWindow", "       Include text"))
         self.label_3.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:11pt; color:#008066;\">Search in your note:</span></p></body></html>"))
         self.label_5.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:13pt; color:#008066;\">Table of contents note</span></p></body></html>"))

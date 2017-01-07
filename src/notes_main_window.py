@@ -2215,8 +2215,24 @@ class Notelist():
             filter_words = notelist_filter.split(' ')
             self.filter_name = filter_words[0]
             self.filter_text = ' '.join(filter_words[1:])
-            
-        print('Filters: notelist.filter_name=%s, notelist.filter_text=%s' % (self.filter_name, self.filter_text) )
+        
+        if self.filter_text or self.filter_name:
+            # Отображаем в интерфейсе полученные указания по фильтрам
+            if self.filter_name:
+                description_filter_name = ('Name contains <b>%s</b>' % self.filter_name)
+            else:
+                description_filter_name = 'Any name'
+            if self.filter_text:
+                description_filter_text = ('text contains <b>%s</b>' % self.filter_text)
+            else:
+                description_filter_text = 'any text contains'
+
+            main_window.label_DisplayFilters.setText(description_filter_name + ' and '+ description_filter_text)
+        else:
+            #main_window.label_DisplayFilters.setText('Example: "proj ninja"')
+            main_window.label_DisplayFilters.setText('<html><head></head><body>Example: <b>proj ninja</b></body></html>')
+                
+        # print('Filters: notelist.filter_name=%s, notelist.filter_text=%s' % (self.filter_name, self.filter_text) )
 
         #filter_note_name = main_window.lineNotelist_Filter.text()
         
