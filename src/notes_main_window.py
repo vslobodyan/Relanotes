@@ -2127,12 +2127,17 @@ class Notelist():
     filter_name = '' # Фильтрация списка заметок по имени заметки
     filter_text = ''  # Фильтрация списка заметок по тексту, содержащемуся внутри заметок
     
-    items = [] # Элементы списка заметок
-    item = [] # Перечень полей отдельного элемента
-    item['filename'] = ''
-    item['history'] = False # Отображать в истории?
-
-    need_rescan = True  # Признак необходимости рескана файлов
+    items = []  # Элементы списка заметок
+    items_cursor_position = 0  # Положение курсора в списке элементов
+ 
+    item = []  # Перечень полей отдельного элемента
+    item['filename'] = ''  # Путь к файлу заметки
+    item['cutename'] = ''  # Красивое имя/путь заметки для отображения в списке
+    item['history'] = False  # Элемент истории
+    item['last_open'] = None  # Когда открывали последний раз. Больше относится к истории.
+    item['size'] = None  # Размер файла заметки
+ 
+    need_rescan = True  # Признак необходимости рескана списка заметок/файлов
 
     history_back_offset = 0  # Обратное смещение по списку истории
     
@@ -2142,6 +2147,7 @@ class Notelist():
 
     timer_update = QtCore.QTimer()
     update_timeout = 350  # было 350
+
 
     class DB():
         """ Основной класс работы со списками заметок, историей их использования,кешем заметок
@@ -2306,12 +2312,11 @@ class Notelist():
 
 
 
+
+
     def rescan_files_in_notes_path(self):
         # Обновляем список заметок в зависимости от фильтров
         self.get_and_display_filters()
-
-        # Archieve - скрыть
-        # Другие со звездами как фавориты
         
         # Как собирать список файлов:
         # http://stackoverflow.com/questions/1274506/how-can-i-create-a-list-of-files-in-the-current-directory-and-its-
@@ -2335,6 +2340,10 @@ class Notelist():
 
         for row in state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC"):
             rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
+            # Проверка файла из истории на существование 
+            
+            # Если файл не существует - удаляем его из истории. Или спрашиваем пользователя об этом?
+
             html_string += '<p>%s - %s</p>' % (rec_filename, rec_last_open)
 
 
