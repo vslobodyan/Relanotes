@@ -104,13 +104,14 @@ state_db_connection = state_db.cursor()
 
 
 """
-Список заметок и статус работы с ними
+Список заметок и статус работы с ними - реализовано в классе Notelist, переменная file_recs
 rec = [ id, filename, cute_name, parent_id, subnotes_count, size, favorite, hidden, 
         last_change, last_open, count_opens, opened ]
 
 file_recs = [ rec1, rec2, rec3, .. ]
-"""
 file_recs = []
+"""
+
 
 
 class Profiler():
@@ -2262,21 +2263,7 @@ class Notelist():
         # Обновляем список заметок 
         self.rescan_files_in_notes_path()
 
-    def rescan_files_in_notes_path(self):
-        # Archieve - скрыть
-        # Другие со звездами как фавориты
-        
-        # Как собирать список файлов:
-        # http://stackoverflow.com/questions/1274506/how-can-i-create-a-list-of-files-in-the-current-directory-and-its-
-        # subdirectories
-        # http://stackoverflow.com/questions/2225564/get-a-filtered-list-of-files-in-a-directory
-
-        # rec = [ filename, cute_name, parent_id, subnotes_count, last_change, last_open, count_opens ]
-        # file_recs = [ rec1, rec2, rec3, .. ]
-        # При полном рескане очищаем полностью список файлов
-
-        # print('Обновляем список файлов. Найдено:')
-        
+    def get_and_display_filters(self):
         # Получаем текущий фильтр для списка заметок
 
         # Делим фильтр заметок на фильтр имени и фильтр текста внутри
@@ -2308,9 +2295,29 @@ class Notelist():
                 
         # print('Filters: notelist.filter_name=%s, notelist.filter_text=%s' % (self.filter_name, self.filter_text) )
 
+
+
+
+    def rescan_files_in_notes_path(self):
+        # Обновляем список заметок в зависимости от фильтров
+        self.get_and_display_filters()
+
+        # Archieve - скрыть
+        # Другие со звездами как фавориты
+        
+        # Как собирать список файлов:
+        # http://stackoverflow.com/questions/1274506/how-can-i-create-a-list-of-files-in-the-current-directory-and-its-
+        # subdirectories
+        # http://stackoverflow.com/questions/2225564/get-a-filtered-list-of-files-in-a-directory
+
+        # rec = [ filename, cute_name, parent_id, subnotes_count, last_change, last_open, count_opens ]
+        # file_recs = [ rec1, rec2, rec3, .. ]
+        # При полном рескане очищаем полностью список файлов
+
         #filter_note_name = main_window.lineNotelist_Filter.text()
         
-        notelist.file_recs = []
+        #notelist.file_recs = []
+        self.file_recs = []
         
         global notelist_selected_url
         
@@ -2335,6 +2342,8 @@ class Notelist():
         notes_size = 0
         notes_size_all = 0
         i = 0
+        # print('Обновляем список файлов. Найдено:')
+
         for root, dirs, files in os.walk(path_to_notes):
             for file in files:
                 if file.endswith('.txt'):
@@ -2398,7 +2407,8 @@ class Notelist():
 
                     # Вынимаем текстовый контент заметки и добавляем в массив
 
-                    notelist.file_recs.append([filename, cute_filename, lines])
+                    #notelist.file_recs.append([filename, cute_filename, lines])
+                    self.file_recs.append([filename, cute_filename, lines])
 
                     # Устанавливаем картинку - заметка с курсором, или без него
                     if notelist_selected_position == i:
