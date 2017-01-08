@@ -2126,6 +2126,14 @@ class Notelist():
     """
     filter_name = '' # Фильтрация списка заметок по имени заметки
     filter_text = ''  # Фильтрация списка заметок по тексту, содержащемуся внутри заметок
+    
+    items = [] # Элементы списка заметок
+    item = [] # Перечень полей отдельного элемента
+    item['filename'] = ''
+    item['history'] = False # Отображать в истории?
+
+    need_rescan = True  # Признак необходимости рескана файлов
+
     history_back_offset = 0  # Обратное смещение по списку истории
     
     note_contents_source = QtGui.QTextDocument()
