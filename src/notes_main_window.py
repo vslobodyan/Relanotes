@@ -2293,11 +2293,11 @@ class Notelist():
         if self.filter_text or self.filter_name:
             # Отображаем в интерфейсе полученные указания по фильтрам
             if self.filter_name:
-                description_filter_name = ('Name contains <b>%s</b>' % self.filter_name)
+                description_filter_name = ('Name contains <b>"%s"</b>' % self.filter_name)
             else:
                 description_filter_name = 'Any name'
             if self.filter_text:
-                description_filter_text = ('text contains <b>%s</b>' % self.filter_text)
+                description_filter_text = ('text contains <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;') )
             else:
                 description_filter_text = 'any text contains'
 
