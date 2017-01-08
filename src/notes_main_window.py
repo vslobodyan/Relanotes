@@ -2381,11 +2381,6 @@ class Notelist():
                     #if main_window.lineEdit_Filter_Note_Text.text() != '':
                     if self.filter_text != '':
                         # Надо загрузить заметку и провести поиск в ней на предмет содержимого
-                        # Старый код, который не открывает UTF в Windows
-                        #f = open(filename, "r")
-                        #lines = f.read()
-                        #f.close()
-                        # Новый код, который работает под Windows с UTF-файлами
                         fileObj = codecs.open( filename, "r", "utf-8" )
                         lines = fileObj.read()
                         fileObj.close()
@@ -2465,19 +2460,12 @@ class Notelist():
                                 # <ul id=founded_text_in_note>
                             line_i += 1  
 
-        #main_window.statusbar.showMessage(str(notes_count)+' notes, '+hbytes(notes_size)+' from overall ' +
-        #                                  str(notes_count_all)+' notes, '+hbytes(notes_size_all) + ' at ' + path_to_notes)
-
         main_window.statusbar.showMessage('Found ' + str(notes_count_all)+' notes ('+hbytes(notes_size_all) + ') at ' + path_to_notes +
                                             ', showed ' + str(notes_count)+' notes ('+hbytes(notes_size)+') in list.' )
 
                 
         html_string = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_string, )
         main_window.notelist_source.setHtml(html_string)
-        # self.textBrowser_Note.setReadOnly(True)
-        # self.textBrowser_Note.setDocument(self.notelist_source)
-        # self.textBrowser_Note.setVisible(False)
-        # main_window.frame_Note.setVisible(False)
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
         notelist.set_visible()
 
