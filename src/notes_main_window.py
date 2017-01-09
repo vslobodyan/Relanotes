@@ -2311,7 +2311,23 @@ class Notelist():
 
 
 
-
+    def make_cute_name(self, filename):
+        # Создаем симпатичное длинное имя заметки из имени файла
+        # 1. Убираем из пути каталог до заметок
+        cute_filename = filename.replace(path_to_notes + os.path.sep, '')
+        # 2. Убираем расширение файла
+        # 2.1 Разрезаем на отдельные слова - папки и имя файла
+        list_of_words = cute_filename.split(os.path.sep)
+        # 2.2 В последнем слове отрезаем все после точки, если она есть
+        if '.' in list_of_words[-1]:
+            list_of_words[-1] = list_of_words[-1].rpartition('.')[0]
+        #cute_filename = cute_filename.rpartition('.txt')[0]
+        # 3. Соединяем обратно, вместо разделителя пути используя двоеточие с пробелом после
+        cute_filename = ': '.join(list_of_words)
+        #cute_filename = cute_filename.replace(os.path.sep, ': ')         
+        # 4. Меняем нижнее подчеркивание на пробелы
+        cute_filename = cute_filename.replace('_', ' ')            
+        return cute_filename
 
 
     def rescan_files_in_notes_path(self):
@@ -2395,17 +2411,19 @@ class Notelist():
                     access_time = os.stat(filename).st_atime  # time of most recent access.
                     modification_time = os.stat(filename).st_mtime  # time of most recent content modification
 
-                    #cute_filename = root.replace(path_to_notes, '') + '/' + file
-                    cute_filename = root.replace(path_to_notes, '') + os.path.sep + file
+                    cute_filename = self.make_cute_name(filename)
+
+                    ##cute_filename = root.replace(path_to_notes, '') + '/' + file
+                    #cute_filename = root.replace(path_to_notes, '') + os.path.sep + file
                     
-                    #if cute_filename[0] == '/':
-                    if cute_filename[0] == os.path.sep:
-                        cute_filename = cute_filename[1:]
-                    # file_cute_name = file_rec.rpartition('/')[2]
-                    cute_filename = cute_filename.rpartition('.txt')[0]
-                    cute_filename = cute_filename.replace('_', ' ')
-                    #cute_filename = cute_filename.replace('/', ': ')
-                    cute_filename = cute_filename.replace(os.path.sep, ': ')
+                    ##if cute_filename[0] == '/':
+                    #if cute_filename[0] == os.path.sep:
+                    #    cute_filename = cute_filename[1:]
+                    ## file_cute_name = file_rec.rpartition('/')[2]
+                    #cute_filename = cute_filename.rpartition('.txt')[0]
+                    #cute_filename = cute_filename.replace('_', ' ')
+                    ##cute_filename = cute_filename.replace('/', ': ')
+                    #cute_filename = cute_filename.replace(os.path.sep, ': ')
                     
 
                     # print('filename: '+filename, 'size: '+str(size), 'access_time: %s' % time.ctime(access_time),
