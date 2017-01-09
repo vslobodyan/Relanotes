@@ -2127,7 +2127,8 @@ class Notelist():
     
     items = []  # Элементы списка заметок
     items_cursor_position = 0  # Положение курсора в списке элементов
- 
+    items_size = 0 # Общий объём данных в заметках из списка
+        
     item = {}  # Перечень полей отдельного элемента
     item['filename'] = ''  # Путь к файлу заметки
     item['cutename'] = ''  # Красивое имя/путь заметки для отображения в списке
@@ -2358,6 +2359,7 @@ class Notelist():
         
         # Обнуляем внутренний список элементов
         self.items = []
+        self.items_size = 0
 
         global notelist_selected_url
         
@@ -2383,6 +2385,7 @@ class Notelist():
             rec_item['history'] = True
             rec_item['last_open'] = rec_last_open
             rec_item['size'] = os.stat(rec_filename).st_size
+            self.items_size += rec_item['size']  # Добавляем в общий размер
             # Добавляем элемент во внутренний список элементов
             self.items.append(rec_item)
 
@@ -2467,6 +2470,7 @@ class Notelist():
                     rec_item['filename'] = filename
                     rec_item['cutename'] = self.make_cute_name(filename)
                     rec_item['size'] = size
+                    self.items_size += rec_item['size']  # Добавляем в общий размер
                     # Добавляем элемент во внутренний список элементов
                     self.items.append(rec_item)
 
