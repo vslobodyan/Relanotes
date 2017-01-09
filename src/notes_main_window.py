@@ -2332,17 +2332,35 @@ class Notelist():
         #notelist.file_recs = []
         self.file_recs = []
         
+        # Обнуляем внутренний список элементов
+        self.items = []
+
         global notelist_selected_url
         
 
 
         html_string = '<p id=history_date>История обращений к заметкам</p>'
 
-        for row in state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC"):
+        file_recs_rows = state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
+
+        for row in file_recs_rows:
             rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
             # Проверка файла из истории на существование 
-            
-            # Если файл не существует - удаляем его из истории. Или спрашиваем пользователя об этом?
+            if not os.path.isfile(rec_filename):
+                # Файл не существует или это каталог, а не файл.
+                # Удаляем из истории
+                state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
+                continue  # Переходим на следующий виток цикла
+
+            # Продолжаем с элементом истории, у которого есть файл
+            rec_item = self.item.copy()  # Делаем копию образца словаря
+            rec_item['filename'] = rec_filename
+            item['cutename'] = ''
+            item['history'] = True
+            item['last_open'] = rec_last_open
+            item['size'] = os.stat(rec_filename).st_size
+            # Добавляем элемент во внутренний список элементов
+            self.items.append(rec_item)
 
             html_string += '<p>%s - %s</p>' % (rec_filename, rec_last_open)
 
