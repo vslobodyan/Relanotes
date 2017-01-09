@@ -819,9 +819,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 print('FILE_RECS for %s starting here' % filename)
                 ######### file_recs
                 # Перед добавлением новой записи проверяем - нет-ли записи с такими-же значениями уже в списке
-                state_db_connection.execute("SELECT * FROM file_recs WHERE filename=?", (filename,) )
-                existed_rec = state_db_connection.fetchall()
-                if len(existed_rec) > 0:
+                if notelist.file_in_history(filename):
                     print('FILE_RECS: для файла %s запись есть. Обновляем.' % filename)
                     # Запись уже есть. Прописываем ей новое время открытия и увеличиваем счетчик открытий
                     # Получаем количество открытий данного файла
@@ -2330,6 +2328,16 @@ class Notelist():
         return cute_filename
 
 
+    def file_in_history(self, filename):
+        # Проверяем - есть ли файл в списке истории
+        state_db_connection.execute("SELECT * FROM file_recs WHERE filename=?", (filename,) )
+        existed_rec = state_db_connection.fetchall()
+        if len(existed_rec) > 0:
+            return True
+        else:
+            return False
+
+
     def rescan_files_in_notes_path(self):
         # Обновляем список заметок в зависимости от фильтров
         self.get_and_display_filters()
@@ -2371,10 +2379,10 @@ class Notelist():
             # Продолжаем с элементом истории, у которого есть файл
             rec_item = self.item.copy()  # Делаем копию образца словаря
             rec_item['filename'] = rec_filename
-            item['cutename'] = ''
-            item['history'] = True
-            item['last_open'] = rec_last_open
-            item['size'] = os.stat(rec_filename).st_size
+            rec_item['cutename'] = self.make_cute_name(rec_filename)
+            rec_item['history'] = True
+            rec_item['last_open'] = rec_last_open
+            rec_item['size'] = os.stat(rec_filename).st_size
             # Добавляем элемент во внутренний список элементов
             self.items.append(rec_item)
 
@@ -2410,24 +2418,15 @@ class Notelist():
                     
                     access_time = os.stat(filename).st_atime  # time of most recent access.
                     modification_time = os.stat(filename).st_mtime  # time of most recent content modification
-
-                    cute_filename = self.make_cute_name(filename)
-
-                    ##cute_filename = root.replace(path_to_notes, '') + '/' + file
-                    #cute_filename = root.replace(path_to_notes, '') + os.path.sep + file
-                    
-                    ##if cute_filename[0] == '/':
-                    #if cute_filename[0] == os.path.sep:
-                    #    cute_filename = cute_filename[1:]
-                    ## file_cute_name = file_rec.rpartition('/')[2]
-                    #cute_filename = cute_filename.rpartition('.txt')[0]
-                    #cute_filename = cute_filename.replace('_', ' ')
-                    ##cute_filename = cute_filename.replace('/', ': ')
-                    #cute_filename = cute_filename.replace(os.path.sep, ': ')
-                    
-
                     # print('filename: '+filename, 'size: '+str(size), 'access_time: %s' % time.ctime(access_time),
                     #  'modification_time: %s' % time.ctime(modification_time) )
+
+                    # Продолжаем с найденным файловым элементом
+                    # Проверяем - нет ли этого элемента уже добавленного из истории
+                    if self.file_in_history(filename):
+                        continue # Переходим на следующий виток цикла
+
+                    cute_filename = self.make_cute_name(filename)
 
                     # Анализ актуальности кеша, обновление базы списка заметок
 
@@ -2462,6 +2461,16 @@ class Notelist():
 
                     #notelist.file_recs.append([filename, cute_filename, lines])
                     self.file_recs.append([filename, cute_filename, lines])
+
+                    # Добавляем в список элементов
+                    rec_item = self.item.copy()  # Делаем копию образца словаря
+                    rec_item['filename'] = filename
+                    rec_item['cutename'] = self.make_cute_name(filename)
+                    rec_item['size'] = size
+                    # Добавляем элемент во внутренний список элементов
+                    self.items.append(rec_item)
+
+
 
                     # Устанавливаем картинку - заметка с курсором, или без него
                     if notelist_selected_position == i:
