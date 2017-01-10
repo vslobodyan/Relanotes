@@ -580,10 +580,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         print('Запускаем функцию тестирования конвертации форматирования при открытии и сохранении заметок')
 
         # Диалог выбора пути для сканирования
-        path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
-        if not path_to_notes:
-            print('Каталог не выбран.')
-            return 0
+        #path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
+        #if not path_to_notes:
+        #    print('Каталог не выбран.')
+        #    return 0
+        path_to_notes = "D:\Test\\Notes-test\Linux\Debian"
         print('Пользователь выбрал для теста каталог %s' % path_to_notes)
 
         for root, dirs, files in os.walk(path_to_notes):
@@ -659,7 +660,7 @@ Creation-Date: 2012-09-02T11:16:31+04:00
 
 '''
 
-                    note_source = self.clear_note_html_cover(note_source)
+                    note_source = note.clear_note_html_cover(note_source)
         
                     # Удаляем виртуальные начала строк
                     note_source = re.sub('<p .*?>', '', note_source)
@@ -668,31 +669,31 @@ Creation-Date: 2012-09-02T11:16:31+04:00
                     # profiler.checkpoint('Проводим склейку соседних span')
 
                     # Склеиваем одинаковые соседние span
-                    note_source = self.union_concat_ident_span(note_source)
+                    note_source = note.union_concat_ident_span(note_source)
 
                     # Применяем вики-форматирование
         
                     # profiler.checkpoint('Заменяем html-теги заголовков на вики-форматирование')
                 
                     # Заголовок    
-                    note_source = re.sub(self.format.editor_h1_span+'(.*?)</span>', '====== \\1 ======', note_source)
-                    note_source = re.sub(self.format.editor_h2_span+'(.*?)</span>', '===== \\1 =====', note_source)
-                    note_source = re.sub(self.format.editor_h3_span+'(.*?)</span>', '==== \\1 ====', note_source)         
-                    note_source = re.sub(self.format.editor_h4_span+'(.*?)</span>', '=== \\1 ===', note_source)
-                    note_source = re.sub(self.format.editor_h5_span+'(.*?)</span>', '== \\1 ==', note_source)
-                    note_source = re.sub(self.format.editor_h6_span+'(.*?)</span>', '= \\1 =', note_source)         
+                    note_source = re.sub(note.format.editor_h1_span+'(.*?)</span>', '====== \\1 ======', note_source)
+                    note_source = re.sub(note.format.editor_h2_span+'(.*?)</span>', '===== \\1 =====', note_source)
+                    note_source = re.sub(note.format.editor_h3_span+'(.*?)</span>', '==== \\1 ====', note_source)         
+                    note_source = re.sub(note.format.editor_h4_span+'(.*?)</span>', '=== \\1 ===', note_source)
+                    note_source = re.sub(note.format.editor_h5_span+'(.*?)</span>', '== \\1 ==', note_source)
+                    note_source = re.sub(note.format.editor_h6_span+'(.*?)</span>', '= \\1 =', note_source)         
 
                     # Подчеркнутый (выделенный)
-                    note_source = re.sub(self.format.editor_mark_span+'(.*?)</span>', '__\\1__', note_source)         
+                    note_source = re.sub(note.format.editor_mark_span+'(.*?)</span>', '__\\1__', note_source)         
         
                     # Код
-                    note_source = re.sub(self.format.editor_code_span+'(.*?)</span>', '\'\'\\1\'\'', note_source)         
+                    note_source = re.sub(note.format.editor_code_span+'(.*?)</span>', '\'\'\\1\'\'', note_source)         
 
                     # profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
 
                     # Ссылка
                     # <a href="...">
-                    note_source = self.make_all_links_to_wiki_format(note_source)
+                    note_source = note.make_all_links_to_wiki_format(note_source)
 
                     # profiler.checkpoint('Заменяем html-теги основной разметки на вики-форматирование')
         
