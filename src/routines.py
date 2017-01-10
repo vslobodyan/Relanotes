@@ -4,6 +4,7 @@
 
 import os
 import urllib.request
+import difflib
 
 
 def give_correct_path_under_win_and_other(path_to_check):
@@ -32,3 +33,23 @@ def give_correct_path_under_win_and_other(path_to_check):
 
 def get_correct_filename_from_url(filename):
     return urllib.request.unquote(filename)
+
+
+def get_diff_text(old, new, filename1, filename2):
+    """Return text of unified diff between old and new."""
+    newline = '\n'
+    diff = difflib.unified_diff(
+        old, new,
+        filename1,
+        filename2,
+        lineterm=newline)
+
+    text = ''
+    for line in diff:
+        text += line
+
+        # Work around missing newline (http://bugs.python.org/issue2142).
+        if text and not line.endswith(newline):
+            text += newline + r'\ No newline at end of file' + newline
+
+    return text
