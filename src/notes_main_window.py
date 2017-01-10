@@ -600,12 +600,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     print(original_text)
                     fileObj.close()
 
-                    fileObj = codecs.open( filename, "r", "utf-8" )
-                    print(filename)
-                    print('### READLINES:')
-                    original_text_lines = fileObj.readlines()
-                    print(original_text_lines)
-                    fileObj.close()
+                    original_text_lines = original_text.splitlines()
+
+                    #fileObj = codecs.open( filename, "r", "utf-8" )
+                    #print(filename)
+                    #print('### READLINES:')
+                    #original_text_lines = fileObj.readlines()
+                    #print(original_text_lines)
+                    #fileObj.close()
 
 
 
@@ -762,7 +764,7 @@ Creation-Date: 2012-09-02T11:16:31+04:00
         
 
                     saved_text = note_source
-                    saved_text_lines = saved_text.splitlines(True)
+                    saved_text_lines = saved_text.splitlines()
 
                     print('### saved_text_lines:')
                     print(saved_text_lines)
