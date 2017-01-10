@@ -654,6 +654,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="separator"/>
     <addaction name="actionShow_note_HTML_source"/>
     <addaction name="actionSave_also_note_HTML_source"/>
+    <addaction name="actionSelect_dir_and_run_test_open_save_notes"/>
    </widget>
    <widget class="QMenu" name="menuNotelist">
     <property name="title">
@@ -1493,6 +1494,11 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Show hide &amp;Note content table window</string>
+   </property>
+  </action>
+  <action name="actionSelect_dir_and_run_test_open_save_notes">
+   <property name="text">
+    <string>Select dir and run test &quot;open-save notes&quot;</string>
    </property>
   </action>
  </widget>

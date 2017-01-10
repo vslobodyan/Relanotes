@@ -476,6 +476,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # QtCore.QObject.connect(self.lineTextToFind, QtCore.SIGNAL("returnPressed()"), self.find_next_in_cur_note)
         self.lineTextToFind.returnPressed.connect(self.find_next_in_cur_note)
         
+        self.actionSelect_dir_and_run_test_open_save_notes.triggered.connect(self.select_dir_and_run_test_open_save_notes)
+
         self.actionShow_note_HTML_source.triggered.connect(self.show_html_source)
         self.plainTextEdit_Note_Ntml_Source.setVisible(False)
 
@@ -571,6 +573,30 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.plainTextEdit_Note_Ntml_Source.setVisible(False)
         else:
             self.plainTextEdit_Note_Ntml_Source.setVisible(True)
+
+    def select_dir_and_run_test_open_save_notes(self):
+        # Тестовая функция, позволяющая проверить корректность конвертации форматирования при открытии и сохранении заметок
+        print('Запускаем функцию тестирования конвертации форматирования при открытии и сохранении заметок')
+
+        # Диалог выбора пути для сканирования
+        path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
+        if not path_to_notes:
+            print('Каталог не выбран.')
+            return 0
+        print('Пользователь выбрал для теста каталог %s' % path_to_notes)
+
+        for root, dirs, files in os.walk(path_to_notes):
+            for file in files:
+                if file.endswith('.txt'):
+                    filename = os.path.join(root, file)
+                    # Читаем файл в память
+
+                    # Загружаем файл в окно редактора
+
+                    # Конвертируем файл для сохранения на диск
+
+
+
 
 
     def save_note_cursor_position(self):

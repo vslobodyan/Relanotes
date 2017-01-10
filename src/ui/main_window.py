@@ -563,6 +563,8 @@ class Ui_MainWindow(object):
         self.actionShow_List_of_contents.setCheckable(True)
         self.actionShow_List_of_contents.setEnabled(True)
         self.actionShow_List_of_contents.setObjectName("actionShow_List_of_contents")
+        self.actionSelect_dir_and_run_test_open_save_notes = QtWidgets.QAction(MainWindow)
+        self.actionSelect_dir_and_run_test_open_save_notes.setObjectName("actionSelect_dir_and_run_test_open_save_notes")
         self.menuFile.addAction(self.actionAdd_new_note)
         self.menuFile.addAction(self.actionRemove_this_note)
         self.menuFile.addAction(self.actionNote_multiaction)
@@ -631,6 +633,7 @@ class Ui_MainWindow(object):
         self.menuDevelop.addSeparator()
         self.menuDevelop.addAction(self.actionShow_note_HTML_source)
         self.menuDevelop.addAction(self.actionSave_also_note_HTML_source)
+        self.menuDevelop.addAction(self.actionSelect_dir_and_run_test_open_save_notes)
         self.menuNotelist.addAction(self.actionSort_by_name)
         self.menuNotelist.addAction(self.actionSort_by_size)
         self.menuNotelist.addAction(self.actionSort_by_reopen_count)
@@ -791,5 +794,6 @@ class Ui_MainWindow(object):
         self.actionMove_this_note.setText(_translate("MainWindow", "Move this note"))
         self.actionMove_this_note.setToolTip(_translate("MainWindow", "Move this note"))
         self.actionShow_List_of_contents.setText(_translate("MainWindow", "Show hide &Note content table window"))
+        self.actionSelect_dir_and_run_test_open_save_notes.setText(_translate("MainWindow", "Select dir and run test \"open-save notes\""))
 
 from resources import resources_rc
