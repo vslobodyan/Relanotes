@@ -3,6 +3,7 @@
 ''' Модуль рутин  для основной программы '''
 
 import os
+#import sys
 import urllib.request
 import difflib
 
@@ -35,21 +36,78 @@ def get_correct_filename_from_url(filename):
     return urllib.request.unquote(filename)
 
 
+#def get_diff_text(old, new, filename1, filename2):
+#    """Return text of unified diff between old and new."""
+#    newline = '\n'
+#    diff = difflib.unified_diff(
+#        old, new,
+#        filename1,
+#        filename2,
+#        lineterm=newline)
+
+#    text = ''
+#    for line in diff:
+#        text += line
+
+#        # Work around missing newline (http://bugs.python.org/issue2142).
+#        if text and not line.endswith(newline):
+#            text += newline + r'\ No newline at end of file' + newline
+
+#    return text
+
+#def get_diff_text(old, new):
+#        differ = difflib.Differ()
+#        text = ''
+#        for line in differ.compare(old, new):
+#            if line.startswith(" "):
+#                print(line[2:], end="")
+#                text += line[2:]
+#        return text
+
+#def get_diff_text(old, new, filename1, filename2):
+#    #text = ''
+#    #diff = difflib.ndiff(old,new)
+#    #for i,line in enumerate(diff):
+#    #    if line.startswith(' '):
+#    #        continue
+#    #    #sys.stdout.write('My count: {}, text: {}'.format(i,line))
+#    #    text += 'My count: {}, text: {}'.format(i,line)
+
+#    #for line in diff:
+#    #    if line.startswith('-'):
+#    #        text += line
+#    #    elif line.startswith('+'):
+#    #        text += '\t\t'+line
+
+#    text = difflib.unified_diff(old, new, filename1, filename2)
+#    sys.stdout.writelines(text)
+
+#    return text
+
+
 def get_diff_text(old, new, filename1, filename2):
-    """Return text of unified diff between old and new."""
-    newline = '\n'
-    diff = difflib.unified_diff(
-        old, new,
-        filename1,
-        filename2,
-        lineterm=newline)
+    #d = difflib.Differ()
+    #diff = d.compare(old, new)
 
-    text = ''
-    for line in diff:
-        text += line
+    #diff = difflib.ndiff(old, new)
+    #print( '\n'.join(diff) )
 
-        # Work around missing newline (http://bugs.python.org/issue2142).
-        if text and not line.endswith(newline):
-            text += newline + r'\ No newline at end of file' + newline
 
-    return text
+    #diff = difflib.unified_diff(old, new, lineterm='')
+    #print('\n'.join(list(diff)) )
+
+    #print (os.linesep.join(difflib.unified_diff(old,new)) )
+
+    #print ( '\n'.join(list(diff)) )
+
+    #for line in diff:
+    #        if line.startswith(" "):
+    #            print(line[2:], end="")
+
+
+    diff_generator = difflib.unified_diff(old, new, n = 0)
+    diff = [line for line in diff_generator]
+    #processedDiff = self._processOutputText(diff, wcThreshold)
+    processedDiff = '\n'.join(diff)
+
+    return processedDiff

@@ -593,17 +593,31 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     filename = os.path.join(root, file)
                     # Читаем файл в память
                     fileObj = codecs.open( filename, "r", "utf-8" )
-                    original_text_lines = fileObj.read()
+                    #original_text_lines = fileObj.readlines()
+                    print(filename)
+                    print('### READ:')
+                    original_text = fileObj.read()
+                    print(original_text)
                     fileObj.close()
+
+                    fileObj = codecs.open( filename, "r", "utf-8" )
+                    print(filename)
+                    print('### READLINES:')
+                    original_text_lines = fileObj.readlines()
+                    print(original_text_lines)
+                    fileObj.close()
+
+
+
 
                     # Загружаем файл в окно редактора
 
                     # Оригинальный код был из функции open_file_in_editor
 
-                    tmp_text_lines = original_text_lines
+                    tmp_text = original_text
 
                     ## В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
-                    tmp_text_lines += '====== T ======\n' \
+                    tmp_text += '====== T ======\n' \
                              '===== T =====\n' \
                              '==== T ====\n' \
                              '=== T ===\n' \
@@ -611,7 +625,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                              '= T =\n'
 
                     ## Translate plain text to html and set as doc source
-                    self.doc_source.setHtml(self.convert_txt_to_html(tmp_text_lines))
+                    self.doc_source.setHtml(self.convert_txt_to_html(tmp_text))
                     self.textBrowser_Note.setDocument(self.doc_source)
 
                     ## Получаем реальные стили заголовков. И удаляем их из документа
@@ -747,15 +761,21 @@ Creation-Date: 2012-09-02T11:16:31+04:00
                     note_source = begin_of_zim_note+note_source
         
 
-                    saved_text_lines = note_source
+                    saved_text = note_source
+                    saved_text_lines = saved_text.splitlines(True)
 
-                    diff_result = get_diff_text(original_text_lines, saved_text_lines, filename, filename+'|save')
+                    print('### saved_text_lines:')
+                    print(saved_text_lines)
+
+                    diff_result = get_diff_text(original_text_lines, saved_text_lines, filename, filename+'-saved')
                     if diff_result:
                         print()
                         print('Результат сравнения:')
                         print(diff_result)
-                    else:
-                        print('.', end="", flush=True)
+                        #for line in diff_result:
+                        #    print(line)
+                    #else:
+                    #    print('.', end="", flush=True)
 
         print()
         print('Тестирование завершено.')
