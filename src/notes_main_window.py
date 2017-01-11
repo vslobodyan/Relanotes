@@ -2108,6 +2108,17 @@ class Note():
 
         note_source = note_source[pos_cut1+1:pos_cut2]
         return note_source
+    
+
+    def convert_text_to_rich(self):
+
+        pass
+
+
+    def convert_rich_to_text(self):
+
+        pass
+
                 
     def save_note(self):
         # profiler.start('Начинаем сохранение заметки')
