@@ -1351,6 +1351,11 @@ class Note():
     
     paste_as_text_once = False
 
+    filename = ''
+    format_type= 'zim'
+    zim_intext_header = ''
+
+
     class Format():
         
         # h_span_preformatting = '<span style=" font-family:\'%s\'; font-size:%spx; font-weight:%s; color:%s;">'
