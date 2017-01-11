@@ -665,110 +665,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.textBrowser_Note.setHtml(tmp_html_source)
 
 
-                    # Конвертируем файл для сохранения на диск
-                    # Оригинальный код был из функции save_note
-
-
+                    # Конвертируем файл как-бы для сохранения на диск
                     note_source = main_window.textBrowser_Note.toHtml()
-        
-                    begin_of_zim_note = '''Content-Type: text/x-zim-wiki
-Wiki-Format: zim 0.4
-Creation-Date: 2012-09-02T11:16:31+04:00
+                    saved_text = note.convert_rich_to_zim_text(note_source)
 
-'''
-
-                    note_source = note.clear_note_html_cover(note_source)
-        
-                    # Удаляем виртуальные начала строк
-                    note_source = re.sub('<p .*?>', '', note_source)
-                    # Удаляем последнее закрытие </p>
-        
-                    # profiler.checkpoint('Проводим склейку соседних span')
-
-                    # Склеиваем одинаковые соседние span
-                    note_source = note.union_concat_ident_span(note_source)
-
-                    # Применяем вики-форматирование
-        
-                    # profiler.checkpoint('Заменяем html-теги заголовков на вики-форматирование')
-                
-                    # Заголовок    
-                    note_source = re.sub(note.format.editor_h1_span+'(.*?)</span>', '====== \\1 ======', note_source)
-                    note_source = re.sub(note.format.editor_h2_span+'(.*?)</span>', '===== \\1 =====', note_source)
-                    note_source = re.sub(note.format.editor_h3_span+'(.*?)</span>', '==== \\1 ====', note_source)         
-                    note_source = re.sub(note.format.editor_h4_span+'(.*?)</span>', '=== \\1 ===', note_source)
-                    note_source = re.sub(note.format.editor_h5_span+'(.*?)</span>', '== \\1 ==', note_source)
-                    note_source = re.sub(note.format.editor_h6_span+'(.*?)</span>', '= \\1 =', note_source)         
-
-                    # Подчеркнутый (выделенный)
-                    note_source = re.sub(note.format.editor_mark_span+'(.*?)</span>', '__\\1__', note_source)         
-        
-                    # Код
-                    note_source = re.sub(note.format.editor_code_span+'(.*?)</span>', '\'\'\\1\'\'', note_source)         
-
-                    # profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
-
-                    # Ссылка
-                    # <a href="...">
-                    note_source = note.make_all_links_to_wiki_format(note_source)
-
-                    # profiler.checkpoint('Заменяем html-теги основной разметки на вики-форматирование')
-        
-                    # Нумерованный список
-                    # 
-        
-                    # Зачеркнутый текст
-                    # <span style=" font-family:'Sans'; font-size:15px; text-decoration: line-through; color:#aaaaaa;">
-                    # editor_strikethrough_span
-                    note_source = re.sub('<span [^>]*text-decoration: line-through;.*?>(.*?)</span>', '~~\\1~~', note_source)
-                    # Жирный
-                    # <span style=" font-family:'Sans'; font-size:15px; font-weight:600;">
-                    note_source = re.sub('<span [^>]*font-weight:600;.*?>(.*?)</span>', '**\\1**', note_source)
-                    # Наклонный
-                    # <span style=" font-family:'Sans'; font-size:15px; font-style:italic;">
-                    note_source = re.sub('<span [^>]*font-style:italic;.*?>(.*?)</span>', '//\\1//', note_source)
-        
-                    # Картинка
-                    # <img src="/home/vyacheslav//Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png" />
-                    # -->
-                    # {{~/Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png}}
-                    # Закомментировал, не работает сейчас, выдает ошибку про незакрытый \U. Наверное, это в пути к картинке.
-                    # note_source = re.sub('<img src="'+path_to_home+'(.*?)" />', '{{~\\1}}', note_source)
-                    note_source = re.sub('<img src="(.*?)" />', '{{\\1}}', note_source)
-
-        
-                    # Ненумерованный список
-                    # <ul style="..."><li style="..."><span style="..">Пункт 1</span></li></ul> 
-                    # note_source = re.sub('<ul .*?><li .*?>(.*?)</li></ul>', '* \\1<br />', note_source)
-                    note_source = re.sub('<li .*?>(.*?)</li>', '* \\1<br />', note_source)
-                    note_source = re.sub('<ul .*?>(.*?)</ul>', '\\1', note_source)
-
-                    # Чистим остатки
-                    # profiler.checkpoint('Чистим остатки html разметки')
-        
-                    # Удаление оставшихся span
-                    note_source = re.sub('<span .*?>', '', note_source)
-                    note_source = note_source.replace('</span>', '')
-        
-                    # Заменяем окончания на перенос строки
-                    note_source = note_source.replace('</p>', '\n')
-                    # Заменяем html переносы строк на обычные
-                    note_source = note_source.replace('<br />', '\n')
-        
-                    # note_source = note_source.replace('<a name="created"></a>','')
-                    note_source = re.sub('<a name="(.*?)"></a>', '', note_source)
-
-                    # profiler.stop()
-        
-                    # Добавляем начало файла как у Zim        
-                    note_source = begin_of_zim_note+note_source
-        
-                    saved_text = note_source
-
-                    #saved_text_lines = saved_text.splitlines()
-                    #print('### saved_text_lines:')
-                    #print(saved_text_lines)
-
+                    # Сравниваем оригинал и "сохраненный" вариант
                     diff_result = get_diff_text(original_text, saved_text, filename, filename+'-saved')
                     if diff_result:
                         print()
@@ -2110,14 +2011,113 @@ class Note():
         return note_source
     
 
-    def convert_text_to_rich(self):
+    def convert_zim_text_to_html(self, text):
+        # Конвертируем текст заметок Zim в формат для редактора заметки
+        html_text = ''
+        
+        return html_text
 
-        pass
 
 
-    def convert_rich_to_text(self):
+    def convert_rich_to_zim_text(self, html_text):
+        # Конвертируем текст из редактора заметки в формат zim
+        text = html_text
+        
+        # Оригинальный код был из функции save_note
 
-        pass
+        begin_of_zim_note = '''Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2012-09-02T11:16:31+04:00
+
+'''
+
+        text = self.clear_note_html_cover(text)
+        
+        # Удаляем виртуальные начала строк
+        text = re.sub('<p .*?>', '', text)
+        # Удаляем последнее закрытие </p>
+        
+        # profiler.checkpoint('Проводим склейку соседних span')
+
+        # Склеиваем одинаковые соседние span
+        text = self.union_concat_ident_span(text)
+
+        # Применяем вики-форматирование
+        
+        # profiler.checkpoint('Заменяем html-теги заголовков на вики-форматирование')
+                
+        # Заголовок    
+        text = re.sub(self.format.editor_h1_span+'(.*?)</span>', '====== \\1 ======', text)
+        text = re.sub(self.format.editor_h2_span+'(.*?)</span>', '===== \\1 =====', text)
+        text = re.sub(self.format.editor_h3_span+'(.*?)</span>', '==== \\1 ====', text)         
+        text = re.sub(self.format.editor_h4_span+'(.*?)</span>', '=== \\1 ===', text)
+        text = re.sub(self.format.editor_h5_span+'(.*?)</span>', '== \\1 ==', text)
+        text = re.sub(self.format.editor_h6_span+'(.*?)</span>', '= \\1 =', text)         
+
+        # Подчеркнутый (выделенный)
+        text = re.sub(self.format.editor_mark_span+'(.*?)</span>', '__\\1__', text)         
+        
+        # Код
+        text = re.sub(self.format.editor_code_span+'(.*?)</span>', '\'\'\\1\'\'', text)         
+
+        # profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
+
+        # Ссылка
+        # <a href="...">
+        text = self.make_all_links_to_wiki_format(text)
+
+        # profiler.checkpoint('Заменяем html-теги основной разметки на вики-форматирование')
+        
+        # Нумерованный список
+        # 
+        
+        # Зачеркнутый текст
+        # <span style=" font-family:'Sans'; font-size:15px; text-decoration: line-through; color:#aaaaaa;">
+        # editor_strikethrough_span
+        text = re.sub('<span [^>]*text-decoration: line-through;.*?>(.*?)</span>', '~~\\1~~', text)
+        # Жирный
+        # <span style=" font-family:'Sans'; font-size:15px; font-weight:600;">
+        text = re.sub('<span [^>]*font-weight:600;.*?>(.*?)</span>', '**\\1**', text)
+        # Наклонный
+        # <span style=" font-family:'Sans'; font-size:15px; font-style:italic;">
+        text = re.sub('<span [^>]*font-style:italic;.*?>(.*?)</span>', '//\\1//', text)
+        
+        # Картинка
+        # <img src="/home/vyacheslav//Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png" />
+        # -->
+        # {{~/Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png}}
+        # Закомментировал, не работает сейчас, выдает ошибку про незакрытый \U. Наверное, это в пути к картинке.
+        # text = re.sub('<img src="'+path_to_home+'(.*?)" />', '{{~\\1}}', text)
+        text = re.sub('<img src="(.*?)" />', '{{\\1}}', text)
+
+        
+        # Ненумерованный список
+        # <ul style="..."><li style="..."><span style="..">Пункт 1</span></li></ul> 
+        # text = re.sub('<ul .*?><li .*?>(.*?)</li></ul>', '* \\1<br />', text)
+        text = re.sub('<li .*?>(.*?)</li>', '* \\1<br />', text)
+        text = re.sub('<ul .*?>(.*?)</ul>', '\\1', text)
+
+        # Чистим остатки
+        # profiler.checkpoint('Чистим остатки html разметки')
+        
+        # Удаление оставшихся span
+        text = re.sub('<span .*?>', '', text)
+        text = text.replace('</span>', '')
+        
+        # Заменяем окончания на перенос строки
+        text = text.replace('</p>', '\n')
+        # Заменяем html переносы строк на обычные
+        text = text.replace('<br />', '\n')
+        
+        # text = text.replace('<a name="created"></a>','')
+        text = re.sub('<a name="(.*?)"></a>', '', text)
+
+        # profiler.stop()
+        
+        # Добавляем начало файла как у Zim        
+        text = begin_of_zim_note+text
+
+        return text
 
                 
     def save_note(self):
