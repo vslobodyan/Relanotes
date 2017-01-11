@@ -1900,6 +1900,7 @@ class Note():
     def convert_zim_text_to_html_source(self, text):
         # Конвертируем текст заметок Zim в формат для редактора заметки
 
+        print()
         print('convert_zim_text_to_html_source:')
         print(text)
         # make_initiative_html
@@ -1954,6 +1955,9 @@ class Note():
         # x. Собираем контент заметки обратно в строки
         html_source = '\n'.join(text_source_lines)
         
+        print()
+        print('После удаления служебных полей Zim:')
+        print(html_source)
 
         #html_source = re.sub('(Content-Type: text/x-zim-wiki)', '<!--', html_source)
         # html_source = re.sub('(======) (.*?) (======)\n', '--><font id=hide>\\1</font> <font id=head1>\\2</font>
