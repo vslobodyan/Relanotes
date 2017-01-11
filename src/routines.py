@@ -85,7 +85,13 @@ def get_correct_filename_from_url(filename):
 #    return text
 
 
-def get_diff_text(old, new, filename1, filename2):
+def get_diff_text(old_text, new_text, old_filename, new_filename):
+    # Функция сравнения текста.
+
+    # Поскольку unified_diff требует листы, то производим предварительное разбиение текста на листы построчные.
+    old_lines = old_text.splitlines()
+    new_lines = new_text.splitlines()
+
     #d = difflib.Differ()
     #diff = d.compare(old, new)
 
@@ -105,7 +111,7 @@ def get_diff_text(old, new, filename1, filename2):
     #            print(line[2:], end="")
 
 
-    diff_generator = difflib.unified_diff(old, new, n = 0)
+    diff_generator = difflib.unified_diff(old_lines, new_lines, old_filename, new_filename, n = 0)
     diff = [line for line in diff_generator]
     #processedDiff = self._processOutputText(diff, wcThreshold)
     processedDiff = '\n'.join(diff)

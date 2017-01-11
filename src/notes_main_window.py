@@ -584,7 +584,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #if not path_to_notes:
         #    print('Каталог не выбран.')
         #    return 0
-        path_to_notes = "D:\Test\\Notes-test\Linux\Debian"
+        #path_to_notes = "D:\Test\\Notes-test\Linux\Debian"
+        path_to_notes = "C:\Test\Test_Notes\компьютерное\Python"
         print('Пользователь выбрал для теста каталог %s' % path_to_notes)
 
         for root, dirs, files in os.walk(path_to_notes):
@@ -594,13 +595,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     # Читаем файл в память
                     fileObj = codecs.open( filename, "r", "utf-8" )
                     #original_text_lines = fileObj.readlines()
-                    print(filename)
-                    print('### READ:')
+                    #print(filename)
+                    #print('### READ:')
                     original_text = fileObj.read()
-                    print(original_text)
+                    #print(original_text)
                     fileObj.close()
 
-                    original_text_lines = original_text.splitlines()
+                    #original_text_lines = original_text.splitlines()
 
                     #fileObj = codecs.open( filename, "r", "utf-8" )
                     #print(filename)
@@ -762,22 +763,21 @@ Creation-Date: 2012-09-02T11:16:31+04:00
                     # Добавляем начало файла как у Zim        
                     note_source = begin_of_zim_note+note_source
         
-
                     saved_text = note_source
-                    saved_text_lines = saved_text.splitlines()
 
-                    print('### saved_text_lines:')
-                    print(saved_text_lines)
+                    #saved_text_lines = saved_text.splitlines()
+                    #print('### saved_text_lines:')
+                    #print(saved_text_lines)
 
-                    diff_result = get_diff_text(original_text_lines, saved_text_lines, filename, filename+'-saved')
+                    diff_result = get_diff_text(original_text, saved_text, filename, filename+'-saved')
                     if diff_result:
                         print()
-                        print('Результат сравнения:')
+                        #print('Результат сравнения:')
                         print(diff_result)
                         #for line in diff_result:
                         #    print(line)
-                    #else:
-                    #    print('.', end="", flush=True)
+                    else:
+                        print('.', end="", flush=True)
 
         print()
         print('Тестирование завершено.')
