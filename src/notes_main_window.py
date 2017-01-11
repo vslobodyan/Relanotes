@@ -617,57 +617,63 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
                     # Оригинальный код был из функции open_file_in_editor
 
-                    tmp_text = original_text
+                    #tmp_text = original_text
 
-                    ## В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
-                    tmp_text += '====== T ======\n' \
-                             '===== T =====\n' \
-                             '==== T ====\n' \
-                             '=== T ===\n' \
-                             '== T ==\n' \
-                             '= T =\n'
+                    html_source = note.convert_zim_text_to_html_source(original_text)
 
-                    ## Translate plain text to html and set as doc source
-                    self.doc_source.setHtml(self.convert_txt_to_html(tmp_text))
+                    self.doc_source.setHtml(html_source)
                     self.textBrowser_Note.setDocument(self.doc_source)
 
-                    ## Получаем реальные стили заголовков. И удаляем их из документа
-                    tmp_html_source = self.textBrowser_Note.toHtml()
 
-                    ## print(tmp_html_source, '=============')
+                    ## В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
+                    #tmp_text += '====== T ======\n' \
+                    #         '===== T =====\n' \
+                    #         '==== T ====\n' \
+                    #         '=== T ===\n' \
+                    #         '== T ==\n' \
+                    #         '= T =\n'
 
-                    l_a_name = len('<a name="head1"></a>')
-                    pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1')-1
-                    for i in range(1,7):
-                        pos_font_begin = tmp_html_source.find('<a name="head', pos_font_end)
-                        pos_font_end = tmp_html_source.find('>T<', pos_font_begin)+1
-                        tmp_str = tmp_html_source[pos_font_begin+l_a_name:pos_font_end]
-                        if i == 1:
-                            note.format.editor_h1_span = tmp_str
-                        if i == 2:
-                            note.format.editor_h2_span = tmp_str
-                        if i == 3:
-                            note.format.editor_h3_span = tmp_str
-                        if i == 4:
-                            note.format.editor_h4_span = tmp_str
-                        if i == 5:
-                            note.format.editor_h5_span = tmp_str
-                        if i == 6:
-                            note.format.editor_h6_span = tmp_str
+                    ### Translate plain text to html and set as doc source
+                    #self.doc_source.setHtml(self.convert_txt_to_html(tmp_text))
+                    #self.textBrowser_Note.setDocument(self.doc_source)
 
-                        ## print('str:', tmp_str)
+                    ### Получаем реальные стили заголовков. И удаляем их из документа
+                    #tmp_html_source = self.textBrowser_Note.toHtml()
 
-                    note.format.editor_h_span = ['0-empty', note.format.editor_h1_span, note.format.editor_h2_span,
-                                                  note.format.editor_h3_span, note.format.editor_h4_span,
-                                                  note.format.editor_h5_span, note.format.editor_h6_span]
+                    ### print(tmp_html_source, '=============')
 
-                    tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
-                    self.textBrowser_Note.setHtml(tmp_html_source)
+                    #l_a_name = len('<a name="head1"></a>')
+                    #pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1')-1
+                    #for i in range(1,7):
+                    #    pos_font_begin = tmp_html_source.find('<a name="head', pos_font_end)
+                    #    pos_font_end = tmp_html_source.find('>T<', pos_font_begin)+1
+                    #    tmp_str = tmp_html_source[pos_font_begin+l_a_name:pos_font_end]
+                    #    if i == 1:
+                    #        note.format.editor_h1_span = tmp_str
+                    #    if i == 2:
+                    #        note.format.editor_h2_span = tmp_str
+                    #    if i == 3:
+                    #        note.format.editor_h3_span = tmp_str
+                    #    if i == 4:
+                    #        note.format.editor_h4_span = tmp_str
+                    #    if i == 5:
+                    #        note.format.editor_h5_span = tmp_str
+                    #    if i == 6:
+                    #        note.format.editor_h6_span = tmp_str
+
+                    #    ## print('str:', tmp_str)
+
+                    #note.format.editor_h_span = ['0-empty', note.format.editor_h1_span, note.format.editor_h2_span,
+                    #                              note.format.editor_h3_span, note.format.editor_h4_span,
+                    #                              note.format.editor_h5_span, note.format.editor_h6_span]
+
+                    #tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
+                    #self.textBrowser_Note.setHtml(tmp_html_source)
 
 
                     # Конвертируем файл как-бы для сохранения на диск
-                    note_source = main_window.textBrowser_Note.toHtml()
-                    saved_text = note.convert_rich_to_zim_text(note_source)
+                    note_source = self.textBrowser_Note.toHtml()
+                    saved_text = note.convert_html_source_to_zim_text(note_source)
 
                     # Сравниваем оригинал и "сохраненный" вариант
                     diff_result = get_diff_text(original_text, saved_text, filename, filename+'-saved')
@@ -1099,133 +1105,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.doc_source.setHtml('<html><body>123<h3>123</h3></body></html>')
         # self.textBrowser_Note.setDocument(self.doc_source)
 
-    def convert_txt_to_html(self, lines):
-        # make_initiative_html
-
-        html_source = lines
-        # html_source = self.textBrowser_Note.toHtml()
-        # set header, include css style
-
-        # 'blockstart': re.compile("^(\t*''')\s*?\n", re.M),
-        # 'pre':        re.compile("^(?P<escape>\t*''')\s*?(?P<content>^.*?)^(?P=escape)\s*\n", re.M | re.S),
-        # 'splithead':  re.compile('^(==+[ \t]+\S.*?\n)', re.M),
-        # 'heading':    re.compile("\A((==+)[ \t]+(.*?)([ \t]+==+)?[ \t]*\n?)\Z"),
-        # 'splitlist':  re.compile("((?:^[ \t]*(?:%s)[ \t]+.*\n?)+)" % bullet_re, re.M),
-        # 'listitem':   re.compile("^([ \t]*)(%s)[ \t]+(.*\n?)" % bullet_re),
-        # 'unindented_line': re.compile('^\S', re.M),
-        # 'indent':     re.compile('^(\t+)'),
 
 
-        # Remove ZIM wiki tags from first strings of note:
-        # Content-Type:
-        # Wiki-Format:
-        # Creation-Date:
-        zim_wiki_tags = ['Content-Type', 'Wiki-Format', 'Creation-Date']
-        
-        # 1. Режем контент заметки на строки
-        text_source_lines = html_source.split('\n')
-        
-        # 2. Проверяем наличие ключевых слов в первых 3 строчках
-        first_part1 = text_source_lines[0].split(':')[0]
-        first_part2 = text_source_lines[1].split(':')[0]
-        first_part3 = text_source_lines[2].split(':')[0]
-        
-        # 3. Удаляем строки, в которых обнаружены служебные слова
-        if first_part1 in zim_wiki_tags and first_part2 in zim_wiki_tags and first_part3 in zim_wiki_tags:
-            # Удаляем первые 3 строчки
-            del text_source_lines[0:3]
-        
-        if first_part1 in zim_wiki_tags and first_part2 in zim_wiki_tags and first_part3 not in zim_wiki_tags:
-            # Удаляем первые 2 строчки
-            del text_source_lines[0:2]
-
-        if first_part1 in zim_wiki_tags and first_part2 not in zim_wiki_tags and first_part3 not in zim_wiki_tags:
-            # Удаляем первую строчку
-            del text_source_lines[0:1]
-
-        # 4. Если осталась первая пустая строка - удаляем и её (она обычно остается после служебных)
-        if not text_source_lines[0].strip():
-            # Удаляем первую строчку
-            del text_source_lines[0:1]
-
-
-        # x. Собираем контент заметки обратно в строки
-        html_source = '\n'.join(text_source_lines)
-        
-
-        #html_source = re.sub('(Content-Type: text/x-zim-wiki)', '<!--', html_source)
-        # html_source = re.sub('(======) (.*?) (======)\n', '--><font id=hide>\\1</font> <font id=head1>\\2</font>
-        #  <font id=hide>\\3</font><br>', html_source)
-        # html_source = re.sub('====== (.*?) ======\n', '--><h1>\\1</h1>', html_source)
-        # html_source = re.sub('===== (.*?) =====', '<h2>\\1</h2>', html_source)
-        # html_source = re.sub('==== (.*?) ====', '<h3>\\1</h3>', html_source)
-        # html_source = re.sub('=== (.*?) ===', '<h4>\\1</h4>', html_source)
-        # html_source = re.sub('== (.*?) ==', '<h5>\\1</h5>', html_source)
-        # html_source = re.sub('= (.*?) =', '<h6>\\1</h6>', html_source)
-        
-        # FIXME: скрытие служебных полей начала контента вики сделано неправильно, рассчитано только на 1 H1
-        # html_source = re.sub('====== (.*?) ======', '--><font id=head1>\\1</font>', html_source)
-        html_source = re.sub('====== (.*?) ======', '<font id=head1>\\1</font>', html_source)
-        html_source = re.sub('===== (.*?) =====', '<font id=head2>\\1</font>', html_source)
-        html_source = re.sub('==== (.*?) ====', '<font id=head3>\\1</font>', html_source)
-        html_source = re.sub('=== (.*?) ===', '<font id=head4>\\1</font>', html_source)
-        html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
-        html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
-        
-        # html_source = re.sub('====== (.*?) ======', '--><p id=head1>\\1</p>', html_source)
-        # html_source = re.sub('===== (.*?) =====', '<p id=head2>\\1</p>', html_source)
-        # html_source = re.sub('==== (.*?) ====', '<p id=head3>\\1</p>', html_source)
-        # html_source = re.sub('=== (.*?) ===', '<p id=head4>\\1</p>', html_source)
-        # html_source = re.sub('== (.*?) ==', '<p id=head5>\\1</p>', html_source)
-        # html_source = re.sub('= (.*?) =', '<p id=head6>\\1</p>', html_source)
-        
-        # TODO: re.search, groups - обнаружение и сохранение позиций вики-форматирования
-        
-        # 'strong':   Re('\*\*(?!\*)(.+?)\*\*'),
-        html_source = re.sub('\*\*(.*?)\*\*', '<strong>\\1</strong>', html_source)
-
-        html_source = re.sub('//(.*?)//', '<i>\\1</i>', html_source)
-
-        # 'strike':   Re('~~(?!~)(.+?)~~'),
-        html_source = re.sub('~~(.*?)~~', '<s>\\1</s>', html_source)
-
-        # 'emphasis': Re('//(?!/)(.+?)//'),
-        html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
-        html_source = re.sub('</ul>\n', '</ul>', html_source)
-
-        html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
-
-        # 'code':     Re("''(?!')(.+?)''"),
-        html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
-
-        # 'mark':     Re('__(?!_)(.+?)__'),
-        html_source = re.sub('__(?!_)(.+?)__', '<font id="mark">\\1</font>', html_source)
-
-        # Внутренний линк
-        # 'link':     Re('\[\[(?!\[)(.+?)\]\]'),
-        html_source = re.sub('\[\[(?!\[)(.+?)\]\]', '<a href="\\1">\\1</a>', html_source)
-
-        # Внешний линк
-        # html_source = re.sub('(http://[^ \n]*)','<a href="\\1">\\1</a>', html_source)
-        html_source = re.sub('([^ \n]*://[^ \n]*)', '<a href="\\1">\\1</a>', html_source)
-
-        # 'img':      Re('\{\{(?!\{)(.+?)\}\}'),
-        html_source = re.sub('\{\{(?!\{)(.+?)\}\}', '<img src="\\1">', html_source)
-        html_source = re.sub('<img src="~', '<img src="'+path_to_home, html_source)
-        
-        # TODO: . Сделать превращение в линк электронной почты и её сохранение
-
-        # 'tag':        Re(r'(?<!\S)@(?P<name>\w+)\b', re.U),
-        # 'sub':	    Re('_\{(?!~)(.+?)\}'),
-        # 'sup':	    Re('\^\{(?!~)(.+?)\}'),
-        # \n --> <br>
-
-        html_source = html_source.replace('\n', '<br>')
-        # html_source = html_source.replace('\n', '</p><p>')
-        
-        html_source = '<html>%s<body>%s</body></html>' % (Theme.html_theme_head, html_source, )
-        return html_source
-
+ 
 
 class Theme():
     """ Все что определяет работу с темами интерфейса и текста
@@ -2011,15 +1893,147 @@ class Note():
         return note_source
     
 
-    def convert_zim_text_to_html(self, text):
+
+
+
+    def convert_zim_text_to_html_source(self, text):
         # Конвертируем текст заметок Zim в формат для редактора заметки
-        html_text = ''
+
+        # make_initiative_html
+
+        html_source = text
+        # html_source = self.textBrowser_Note.toHtml()
+        # set header, include css style
+
+        # 'blockstart': re.compile("^(\t*''')\s*?\n", re.M),
+        # 'pre':        re.compile("^(?P<escape>\t*''')\s*?(?P<content>^.*?)^(?P=escape)\s*\n", re.M | re.S),
+        # 'splithead':  re.compile('^(==+[ \t]+\S.*?\n)', re.M),
+        # 'heading':    re.compile("\A((==+)[ \t]+(.*?)([ \t]+==+)?[ \t]*\n?)\Z"),
+        # 'splitlist':  re.compile("((?:^[ \t]*(?:%s)[ \t]+.*\n?)+)" % bullet_re, re.M),
+        # 'listitem':   re.compile("^([ \t]*)(%s)[ \t]+(.*\n?)" % bullet_re),
+        # 'unindented_line': re.compile('^\S', re.M),
+        # 'indent':     re.compile('^(\t+)'),
+
+
+        # Remove ZIM wiki tags from first strings of note:
+        # Content-Type:
+        # Wiki-Format:
+        # Creation-Date:
+        zim_wiki_tags = ['Content-Type', 'Wiki-Format', 'Creation-Date']
         
-        return html_text
+        # 1. Режем контент заметки на строки
+        text_source_lines = html_source.split('\n')
+        
+        # 2. Проверяем наличие ключевых слов в первых 3 строчках
+        first_part1 = text_source_lines[0].split(':')[0]
+        first_part2 = text_source_lines[1].split(':')[0]
+        first_part3 = text_source_lines[2].split(':')[0]
+        
+        # 3. Удаляем строки, в которых обнаружены служебные слова
+        if first_part1 in zim_wiki_tags and first_part2 in zim_wiki_tags and first_part3 in zim_wiki_tags:
+            # Удаляем первые 3 строчки
+            del text_source_lines[0:3]
+        
+        if first_part1 in zim_wiki_tags and first_part2 in zim_wiki_tags and first_part3 not in zim_wiki_tags:
+            # Удаляем первые 2 строчки
+            del text_source_lines[0:2]
+
+        if first_part1 in zim_wiki_tags and first_part2 not in zim_wiki_tags and first_part3 not in zim_wiki_tags:
+            # Удаляем первую строчку
+            del text_source_lines[0:1]
+
+        # 4. Если осталась первая пустая строка - удаляем и её (она обычно остается после служебных)
+        if not text_source_lines[0].strip():
+            # Удаляем первую строчку
+            del text_source_lines[0:1]
+
+
+        # x. Собираем контент заметки обратно в строки
+        html_source = '\n'.join(text_source_lines)
+        
+
+        #html_source = re.sub('(Content-Type: text/x-zim-wiki)', '<!--', html_source)
+        # html_source = re.sub('(======) (.*?) (======)\n', '--><font id=hide>\\1</font> <font id=head1>\\2</font>
+        #  <font id=hide>\\3</font><br>', html_source)
+        # html_source = re.sub('====== (.*?) ======\n', '--><h1>\\1</h1>', html_source)
+        # html_source = re.sub('===== (.*?) =====', '<h2>\\1</h2>', html_source)
+        # html_source = re.sub('==== (.*?) ====', '<h3>\\1</h3>', html_source)
+        # html_source = re.sub('=== (.*?) ===', '<h4>\\1</h4>', html_source)
+        # html_source = re.sub('== (.*?) ==', '<h5>\\1</h5>', html_source)
+        # html_source = re.sub('= (.*?) =', '<h6>\\1</h6>', html_source)
+        
+        # FIXME: скрытие служебных полей начала контента вики сделано неправильно, рассчитано только на 1 H1
+        # html_source = re.sub('====== (.*?) ======', '--><font id=head1>\\1</font>', html_source)
+        html_source = re.sub('====== (.*?) ======', '<font id=head1>\\1</font>', html_source)
+        html_source = re.sub('===== (.*?) =====', '<font id=head2>\\1</font>', html_source)
+        html_source = re.sub('==== (.*?) ====', '<font id=head3>\\1</font>', html_source)
+        html_source = re.sub('=== (.*?) ===', '<font id=head4>\\1</font>', html_source)
+        html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
+        html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
+        
+        # html_source = re.sub('====== (.*?) ======', '--><p id=head1>\\1</p>', html_source)
+        # html_source = re.sub('===== (.*?) =====', '<p id=head2>\\1</p>', html_source)
+        # html_source = re.sub('==== (.*?) ====', '<p id=head3>\\1</p>', html_source)
+        # html_source = re.sub('=== (.*?) ===', '<p id=head4>\\1</p>', html_source)
+        # html_source = re.sub('== (.*?) ==', '<p id=head5>\\1</p>', html_source)
+        # html_source = re.sub('= (.*?) =', '<p id=head6>\\1</p>', html_source)
+        
+        # TODO: re.search, groups - обнаружение и сохранение позиций вики-форматирования
+        
+        # 'strong':   Re('\*\*(?!\*)(.+?)\*\*'),
+        html_source = re.sub('\*\*(.*?)\*\*', '<strong>\\1</strong>', html_source)
+
+        html_source = re.sub('//(.*?)//', '<i>\\1</i>', html_source)
+
+        # 'strike':   Re('~~(?!~)(.+?)~~'),
+        html_source = re.sub('~~(.*?)~~', '<s>\\1</s>', html_source)
+
+        # 'emphasis': Re('//(?!/)(.+?)//'),
+        html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
+        html_source = re.sub('</ul>\n', '</ul>', html_source)
+
+        html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
+
+        # 'code':     Re("''(?!')(.+?)''"),
+        html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
+
+        # 'mark':     Re('__(?!_)(.+?)__'),
+        html_source = re.sub('__(?!_)(.+?)__', '<font id="mark">\\1</font>', html_source)
+
+        # Внутренний линк
+        # 'link':     Re('\[\[(?!\[)(.+?)\]\]'),
+        html_source = re.sub('\[\[(?!\[)(.+?)\]\]', '<a href="\\1">\\1</a>', html_source)
+
+        # Внешний линк
+        # html_source = re.sub('(http://[^ \n]*)','<a href="\\1">\\1</a>', html_source)
+        html_source = re.sub('([^ \n]*://[^ \n]*)', '<a href="\\1">\\1</a>', html_source)
+
+        # 'img':      Re('\{\{(?!\{)(.+?)\}\}'),
+        html_source = re.sub('\{\{(?!\{)(.+?)\}\}', '<img src="\\1">', html_source)
+        html_source = re.sub('<img src="~', '<img src="'+path_to_home, html_source)
+        
+        # TODO: . Сделать превращение в линк электронной почты и её сохранение
+
+        # 'tag':        Re(r'(?<!\S)@(?P<name>\w+)\b', re.U),
+        # 'sub':	    Re('_\{(?!~)(.+?)\}'),
+        # 'sup':	    Re('\^\{(?!~)(.+?)\}'),
+        # \n --> <br>
+
+        html_source = html_source.replace('\n', '<br>')
+        # html_source = html_source.replace('\n', '</p><p>')
+        
+        html_source = '<html>%s<body>%s</body></html>' % (Theme.html_theme_head, html_source, )
+        return html_source
 
 
 
-    def convert_rich_to_zim_text(self, html_text):
+
+
+
+
+
+
+    def convert_html_source_to_zim_text(self, html_text):
         # Конвертируем текст из редактора заметки в формат zim
         text = html_text
         
