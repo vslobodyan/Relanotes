@@ -584,7 +584,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #if not path_to_notes:
         #    print('Каталог не выбран.')
         #    return 0
-        path_to_notes = "D:\Test\\Notes-test\Linux\Debian"
+        #path_to_notes = "D:\Test\\Notes-test\Linux\Debian"
+        path_to_notes = "D:\Test\\Notes-test\Linux"
         #path_to_notes = "C:\Test\Test_Notes\компьютерное\Python"
         #path_to_notes = "C:\Test\Test_Notes\компьютерное\Linux\Debian"
         print('Пользователь выбрал для теста каталог %s' % path_to_notes)
@@ -1890,9 +1891,9 @@ class Note():
 
         # Оригинальный код был из функции open_file_in_editor        
 
-        print()
-        print('convert_zim_text_to_html_source:')
-        print(text)
+        #print()
+        #print('convert_zim_text_to_html_source:')
+        #print(text)
         # make_initiative_html
 
         html_source = text
@@ -1945,9 +1946,9 @@ class Note():
         # x. Собираем контент заметки обратно в строки
         html_source = '\n'.join(text_source_lines)
         
-        print()
-        print('После удаления служебных полей Zim:')
-        print(html_source)
+        #print()
+        #print('После удаления служебных полей Zim:')
+        #print(html_source)
 
         #html_source = re.sub('(Content-Type: text/x-zim-wiki)', '<!--', html_source)
         # html_source = re.sub('(======) (.*?) (======)\n', '--><font id=hide>\\1</font> <font id=head1>\\2</font>
@@ -1975,9 +1976,9 @@ class Note():
         # html_source = re.sub('== (.*?) ==', '<p id=head5>\\1</p>', html_source)
         # html_source = re.sub('= (.*?) =', '<p id=head6>\\1</p>', html_source)
         
-        print()
-        print('После замены заголовков:')
-        print(html_source)
+        #print()
+        #print('После замены заголовков:')
+        #print(html_source)
 
         # TODO: re.search, groups - обнаружение и сохранение позиций вики-форматирования
         
@@ -2013,9 +2014,9 @@ class Note():
         html_source = re.sub('\{\{(?!\{)(.+?)\}\}', '<img src="\\1">', html_source)
         html_source = re.sub('<img src="~', '<img src="'+path_to_home, html_source)
         
-        print()
-        print('После остальной замены:')
-        print(html_source)
+        #print()
+        #print('После остальной замены:')
+        #print(html_source)
 
         # TODO: . Сделать превращение в линк электронной почты и её сохранение
 
