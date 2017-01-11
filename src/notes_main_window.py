@@ -1985,6 +1985,10 @@ class Note():
         # html_source = re.sub('== (.*?) ==', '<p id=head5>\\1</p>', html_source)
         # html_source = re.sub('= (.*?) =', '<p id=head6>\\1</p>', html_source)
         
+        print()
+        print('После замены заголовков:')
+        print(html_source)
+
         # TODO: re.search, groups - обнаружение и сохранение позиций вики-форматирования
         
         # 'strong':   Re('\*\*(?!\*)(.+?)\*\*'),
@@ -2019,6 +2023,10 @@ class Note():
         html_source = re.sub('\{\{(?!\{)(.+?)\}\}', '<img src="\\1">', html_source)
         html_source = re.sub('<img src="~', '<img src="'+path_to_home, html_source)
         
+        print()
+        print('После остальной замены:')
+        print(html_source)
+
         # TODO: . Сделать превращение в линк электронной почты и её сохранение
 
         # 'tag':        Re(r'(?<!\S)@(?P<name>\w+)\b', re.U),
