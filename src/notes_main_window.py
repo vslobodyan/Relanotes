@@ -585,7 +585,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #    print('Каталог не выбран.')
         #    return 0
         #path_to_notes = "D:\Test\\Notes-test\Linux\Debian"
-        path_to_notes = "C:\Test\Test_Notes\компьютерное\Python"
+        #path_to_notes = "C:\Test\Test_Notes\компьютерное\Python"
+        path_to_notes = "C:\Test\Test_Notes\компьютерное\Linux\Debian"
         print('Пользователь выбрал для теста каталог %s' % path_to_notes)
 
         for root, dirs, files in os.walk(path_to_notes):
@@ -1899,6 +1900,8 @@ class Note():
     def convert_zim_text_to_html_source(self, text):
         # Конвертируем текст заметок Zim в формат для редактора заметки
 
+        print('convert_zim_text_to_html_source:')
+        print(text)
         # make_initiative_html
 
         html_source = text
@@ -1922,7 +1925,7 @@ class Note():
         zim_wiki_tags = ['Content-Type', 'Wiki-Format', 'Creation-Date']
         
         # 1. Режем контент заметки на строки
-        text_source_lines = html_source.split('\n')
+        text_source_lines = html_source.splitlines() #('\n')
         
         # 2. Проверяем наличие ключевых слов в первых 3 строчках
         first_part1 = text_source_lines[0].split(':')[0]
