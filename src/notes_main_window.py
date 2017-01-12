@@ -2584,6 +2584,8 @@ class Notelist():
             return False
 
 
+
+
     def rescan_files_in_notes_path(self):
         # Обновляем список заметок в зависимости от фильтров
         self.get_and_display_filters()
@@ -2634,7 +2636,10 @@ class Notelist():
             # Добавляем элемент во внутренний список элементов
             self.items.append(rec_item)
 
-            html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(rec_filename), rec_last_open)
+            # Поле времени доступа хранится почему-то в виде текста.
+            # Приходит отрезать правую часть с секундами и милисекундами
+            rec_last_open_str = rec_last_open.rpartition(':')[0]
+            html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(rec_filename), rec_last_open_str )
 
 
         html_string += '<p id=history_date>Список всех заметок</p>'
