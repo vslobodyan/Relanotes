@@ -2584,6 +2584,18 @@ class Notelist():
             return False
 
 
+    def collect_items_list(self):
+        # Собираем элементы (заметки) из истории и при рескане файлов
+
+        pass
+
+
+
+    def make_html_source_from_items_list(self):
+        # Создать исходник для окна списка заметок из списка найденных элементов
+
+        pass
+
 
 
     def rescan_files_in_notes_path(self):
