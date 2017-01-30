@@ -2621,7 +2621,11 @@ class Notelist():
     def collect_items_list(self):
         # Собираем новые элементы (заметки) при рескане файлов (которых не было в истории)
 
+
+
         pass
+
+
 
 
     def make_html_source_for_item(self, one_item):
@@ -2725,20 +2729,10 @@ class Notelist():
         for root, dirs, files in os.walk(path_to_notes):
             for file in files:
                 if file.endswith('.txt'):
-                    # main_window.statusbar.showMessage('Rescan notes: '+str(i+1)+' of ?')
-                    # if root[-1] != '/':
-                    #    filename = root + '/' + file
-                    # else:
-                    #    filename = root + file
                     filename = os.path.join(root, file)
-                    #print('DEBUG: ROOT="%s" FILE="=%s"' % (root, file) )
-                    #print('DEBUG: os.path.join(root, file)=%s' % filename)
-                    size = os.stat(filename).st_size
-                    
+                    size = os.stat(filename).st_size                    
                     access_time = os.stat(filename).st_atime  # time of most recent access.
                     modification_time = os.stat(filename).st_mtime  # time of most recent content modification
-                    # print('filename: '+filename, 'size: '+str(size), 'access_time: %s' % time.ctime(access_time),
-                    #  'modification_time: %s' % time.ctime(modification_time) )
 
                     # Продолжаем с найденным файловым элементом
                     # Проверяем - нет ли этого элемента уже добавленного из истории
@@ -2755,6 +2749,7 @@ class Notelist():
                     
                     # Проверяем на неудовлетворение фильтру
                     if self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower():
+                        # Если установлен фильтр имени и текущее имя не подходит, то проходим мимо и идем дальше
                         continue
 
                     # Проверяем на неудовлетворение фильтру по тексту содержимого заметки
@@ -2766,19 +2761,15 @@ class Notelist():
                         fileObj.close()
                         #if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
                         if self.filter_text.lower() not in lines.lower():
+                            # Если искомого текста в заметке нет - просто идем к следующей
                             continue
 
                     notes_count += 1
                     notes_size += size
                     asps.append(file)
 
-                    # rec = [ filename, cute_name, parent_id, subnotes_count, last_change, last_open, count_opens ]
-                    # file_recs = [ rec1, rec2, rec3, .. ]
-                    # При полном рескане очищаем полностью список файлов
-
                     # Вынимаем текстовый контент заметки и добавляем в массив
 
-                    #notelist.file_recs.append([filename, cute_filename, lines])
                     self.file_recs.append([filename, cute_filename, lines])
 
                     # Добавляем в список элементов
