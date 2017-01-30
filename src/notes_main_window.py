@@ -2624,6 +2624,19 @@ class Notelist():
         pass
 
 
+    def make_html_source_for_item(self, one_item):
+        # Создаем оформление и html-форматирование для представления одного элемента из списка в общем исходнике html
+        html_string = ''
+        if one_item['history']:
+            # Это - элемент истории
+            rec_last_open_str = one_item['last_open'].rpartition(':')[0]
+            html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(one_item['filename']), rec_last_open_str )
+            return html_string
+
+        # Если продолжаем - значит обычный элемент списка, не история
+
+        
+
 
     def make_html_source_from_items_list(self):
         # Создать исходник для окна списка заметок из списка найденных элементов
@@ -2689,10 +2702,11 @@ class Notelist():
         #    html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(rec_filename), rec_last_open_str )
 
         for one_item in self.items:
-            if one_item['history']:
-                # Отображение элемента истории
-                rec_last_open_str = one_item['last_open'].rpartition(':')[0]
-                html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(one_item['filename']), rec_last_open_str )
+            #if one_item['history']:
+            #    # Отображение элемента истории
+            #    rec_last_open_str = one_item['last_open'].rpartition(':')[0]
+            #    html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(one_item['filename']), rec_last_open_str )
+            html_string += self.make_html_source_for_item(one_item)
 
         html_string += '<p id=history_date>Список всех заметок</p>'
 
