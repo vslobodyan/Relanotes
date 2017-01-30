@@ -2584,8 +2584,42 @@ class Notelist():
             return False
 
 
+    def collect_history_items_list(self):
+        # Собираем элементы (заметки) из истории при рескане файлов в переменную self.items[]
+
+        file_recs_rows = state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
+
+        for row in file_recs_rows:
+            rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
+            # Проверка файла из истории на существование 
+            if not os.path.isfile(rec_filename):
+                # Файл не существует или это каталог, а не файл.
+                # Удаляем из истории
+                state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
+                continue  # Переходим на следующий виток цикла
+
+            # Продолжаем с элементом истории, у которого есть файл
+            rec_item = self.item.copy()  # Делаем копию образца словаря
+            rec_item['filename'] = rec_filename
+            rec_item['cutename'] = self.make_cute_name(rec_filename)
+            rec_item['history'] = True
+            rec_item['last_open'] = rec_last_open
+            rec_item['size'] = os.stat(rec_filename).st_size
+            self.items_size += rec_item['size']  # Добавляем в общий размер
+            # Добавляем элемент во внутренний список элементов
+            self.items.append(rec_item)
+
+            # Поле времени доступа хранится почему-то в виде текста.
+            # Приходит отрезать правую часть с секундами и милисекундами
+            #rec_last_open_str = rec_last_open.rpartition(':')[0]
+            #html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(rec_filename), rec_last_open_str )
+
+
+
+
+
     def collect_items_list(self):
-        # Собираем элементы (заметки) из истории и при рескане файлов
+        # Собираем новые элементы (заметки) при рескане файлов (которых не было в истории)
 
         pass
 
@@ -2625,34 +2659,40 @@ class Notelist():
 
 
         html_string = '<p id=history_date>История обращений к заметкам</p>'
+        self.collect_history_items_list()
 
-        file_recs_rows = state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
+        #file_recs_rows = state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
 
-        for row in file_recs_rows:
-            rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
-            # Проверка файла из истории на существование 
-            if not os.path.isfile(rec_filename):
-                # Файл не существует или это каталог, а не файл.
-                # Удаляем из истории
-                state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
-                continue  # Переходим на следующий виток цикла
+        #for row in file_recs_rows:
+        #    rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
+        #    # Проверка файла из истории на существование 
+        #    if not os.path.isfile(rec_filename):
+        #        # Файл не существует или это каталог, а не файл.
+        #        # Удаляем из истории
+        #        state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
+        #        continue  # Переходим на следующий виток цикла
 
-            # Продолжаем с элементом истории, у которого есть файл
-            rec_item = self.item.copy()  # Делаем копию образца словаря
-            rec_item['filename'] = rec_filename
-            rec_item['cutename'] = self.make_cute_name(rec_filename)
-            rec_item['history'] = True
-            rec_item['last_open'] = rec_last_open
-            rec_item['size'] = os.stat(rec_filename).st_size
-            self.items_size += rec_item['size']  # Добавляем в общий размер
-            # Добавляем элемент во внутренний список элементов
-            self.items.append(rec_item)
+        #    # Продолжаем с элементом истории, у которого есть файл
+        #    rec_item = self.item.copy()  # Делаем копию образца словаря
+        #    rec_item['filename'] = rec_filename
+        #    rec_item['cutename'] = self.make_cute_name(rec_filename)
+        #    rec_item['history'] = True
+        #    rec_item['last_open'] = rec_last_open
+        #    rec_item['size'] = os.stat(rec_filename).st_size
+        #    self.items_size += rec_item['size']  # Добавляем в общий размер
+        #    # Добавляем элемент во внутренний список элементов
+        #    self.items.append(rec_item)
 
-            # Поле времени доступа хранится почему-то в виде текста.
-            # Приходит отрезать правую часть с секундами и милисекундами
-            rec_last_open_str = rec_last_open.rpartition(':')[0]
-            html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(rec_filename), rec_last_open_str )
+        #    # Поле времени доступа хранится почему-то в виде текста.
+        #    # Приходит отрезать правую часть с секундами и милисекундами
+        #    rec_last_open_str = rec_last_open.rpartition(':')[0]
+        #    html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(rec_filename), rec_last_open_str )
 
+        for one_item in self.items:
+            if one_item['history']:
+                # Отображение элемента истории
+                rec_last_open_str = one_item['last_open'].rpartition(':')[0]
+                html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(one_item['filename']), rec_last_open_str )
 
         html_string += '<p id=history_date>Список всех заметок</p>'
 
