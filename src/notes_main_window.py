@@ -2645,14 +2645,22 @@ class Notelist():
     def make_html_source_from_items_list(self):
         # Собираем html-исходник для окна со списком заметок, используя внутриклассовый список найденных элементов
         html_source=''
-        html_string = '<p id=history_date>История обращений к заметкам</p>'
         collect_history_is_done = False
+        first_history_item_done = False
         for one_item in self.items:
+            if not first_history_item_done and not one_item['history']:
+                # У нас отсутствует история - ещё не обработали первый элемент истории, а уже обычная заметка
+                first_history_item_done = True
+            elif not first_history_item_done and one_item['history']:
+                # У нас первый элемент истории. Добавляем заголовк для этого блока
+                first_history_item_done = True
+                html_string += '<p id=history_date>История обращений к заметкам</p>'
             if not collect_history_is_done and not one_item['history']:
                 # У нас первый элемент, который не связан с историей. Надо внести новый заголовок
                 collect_history_is_done = True
                 html_string += '<p id=history_date>Список всех заметок</p>'
                 html_string += '<div id=notelist>'
+            # Добавляем собственно сам элемент в html-обертке
             html_source += self.make_html_source_for_item(one_item)
         # Используем настройки темы для оформления списка элементов
         html_string = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_string, )
@@ -2859,6 +2867,10 @@ class Notelist():
 
                 
         html_string = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_string, )
+        
+        # НОВАЯ ФУНКЦИЯ
+        # html_string = self.make_html_source_from_items_list()
+        
         main_window.notelist_source.setHtml(html_string)
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
         notelist.set_visible()
