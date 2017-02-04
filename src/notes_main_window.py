@@ -2628,7 +2628,7 @@ class Notelist():
 
 
 
-    def make_html_source_for_item(self, one_item):
+    def make_html_source_for_item(self, one_item, item_number):
         # Создаем оформление и html-форматирование для представления одного элемента из списка в общем исходнике html
         html_string = ''
         if one_item['history']:
@@ -2639,7 +2639,140 @@ class Notelist():
 
         # Если продолжаем - значит обычный элемент списка, не история
 
+        global notelist_selected_url
+
+        active_link = main_window.current_open_note_link
         
+        asps = []
+        notes_count = 0
+        notes_count_all = 0
+        notes_size = 0
+        notes_size_all = 0
+        i = 0
+        # print('Обновляем список файлов. Найдено:')
+
+        for root, dirs, files in os.walk(path_to_notes):
+            for file in files:
+                if file.endswith('.txt'):
+                    filename = os.path.join(root, file)
+                    size = os.stat(filename).st_size                    
+                    access_time = os.stat(filename).st_atime  # time of most recent access.
+                    modification_time = os.stat(filename).st_mtime  # time of most recent content modification
+
+                    # Продолжаем с найденным файловым элементом
+                    # Проверяем - нет ли этого элемента уже добавленного из истории
+                    if self.file_in_history(filename):
+                        continue # Переходим на следующий виток цикла
+
+                    cute_filename = self.make_cute_name(filename)
+
+                    # Анализ актуальности кеша, обновление базы списка заметок
+
+                    notes_count_all += 1
+                    notes_size_all += size
+                    lines = ''
+                    
+                    # Проверяем на неудовлетворение фильтру
+                    if self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower():
+                        # Если установлен фильтр имени и текущее имя не подходит, то проходим мимо и идем дальше
+                        continue
+
+                    # Проверяем на неудовлетворение фильтру по тексту содержимого заметки
+                    #if main_window.lineEdit_Filter_Note_Text.text() != '':
+                    if self.filter_text != '':
+                        # Надо загрузить заметку и провести поиск в ней на предмет содержимого
+                        fileObj = codecs.open( filename, "r", "utf-8" )
+                        lines = fileObj.read()
+                        fileObj.close()
+                        #if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
+                        if self.filter_text.lower() not in lines.lower():
+                            # Если искомого текста в заметке нет - просто идем к следующей
+                            continue
+
+                    notes_count += 1
+                    notes_size += size
+                    asps.append(file)
+
+                    # Вынимаем текстовый контент заметки и добавляем в массив
+
+                    self.file_recs.append([filename, cute_filename, lines])
+
+                    # Добавляем в список элементов
+                    rec_item = self.item.copy()  # Делаем копию образца словаря
+                    rec_item['filename'] = filename
+                    rec_item['cutename'] = self.make_cute_name(filename)
+                    rec_item['size'] = size
+                    self.items_size += rec_item['size']  # Добавляем в общий размер
+                    # Добавляем элемент во внутренний список элементов
+                    self.items.append(rec_item)
+
+
+
+                    # Устанавливаем картинку - заметка с курсором, или без него
+                    if notelist_selected_position == i:
+                        # Текущая позиция - должна быть с курсором
+                        img_src = 'resources/icons/notelist/arrow130_h11.png'
+                        notelist_selected_url = 'note?'+filename
+                    else:
+                        if filename == active_link:
+                            img_src = 'resources/icons/notelist/g3-g1.png'
+                        else:
+                            img_src = 'resources/icons/notelist/g3.png'
+
+                    if filename == active_link:
+                        line_style = ' id="current_note" '
+                    else:
+                        line_style = ' id="notelist"'
+
+                    if self.filter_name != '':
+                        # Делаем подсветку текста из фильтра в списке заметки
+                        cute_filename = re.sub('('+self.filter_name+')', '<span id="highlight">'+'\\1</span>',
+                                               cute_filename, flags=re.I)
+
+                    # html_string += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
+                    # Format: multiaction / note :|: note_filename
+                    '''html_string += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
+                                   cute_filename+'</a>' + '&nbsp;&nbsp;<a href="contents?'+filename + \
+                                   '"><img src="resources/icons/notelist/list41-2-4.png"></a>' + \
+                                   '&nbsp;&nbsp;<a href="multiaction?'+filename + \
+                                   '"><img src="resources/icons/notelist/document62-3.png"></a>' + \
+                                   '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + '</p>'
+                                   '''
+                    html_string += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
+                                   cute_filename+'</a>' + '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + \
+                                   '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?'+filename + \
+                                   '"><img src="resources/icons/notelist/document62-3.png"></a> </p>'
+
+                    i += 1
+
+                    # Если надо, добавляем ссылки на позиции вхождения текста в заметке
+                    #if main_window.lineEdit_Filter_Note_Text.text() != '':
+                    #    filter_note_text = main_window.lineEdit_Filter_Note_Text.text()
+                    if self.filter_text != '':
+                        filter_note_text = self.filter_text
+                        founded_i = 0
+                        # print('Ищем текст "'+filter_note_text+'" в строчках внутри заметки')
+                        line_i = 1
+                        for line in lines.split('\n'):
+                            pos = line.lower().find(filter_note_text.lower())
+                            if pos >= 0:
+                            # if filter_note_text.lower() in line.lower():
+                                # print('Нашли вхождение в строку '+str(line_i)+' - '+filter_note_text)
+                                # Нашли вхождение. Подсвечиваем и добавляем к выводу в Notelist
+                                founded_i += 1
+                                line = re.sub('('+filter_note_text+')', '<span id="highlight">'+'\\1</span>', line,
+                                              flags=re.I)
+                                html_string += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + \
+                                               ':</small>&nbsp;&nbsp;<a href="note?' + \
+                                               filename+'?'+str(founded_i)+'">'+line+'</a></p>'
+                                # <ul id=founded_text_in_note>
+                            line_i += 1  
+
+
+
+
+
+
 
 
     def make_html_source_from_items_list(self):
@@ -2647,6 +2780,7 @@ class Notelist():
         html_source=''
         collect_history_is_done = False  # Признак завершения обработки всех элементов истории
         first_history_item_done = False  # Признак завершения обработки первого элемента истории
+        item_number = 0     # Порядковый номер элемента в списке
         for one_item in self.items:
             if not first_history_item_done and not one_item['history']:
                 # У нас отсутствует история - ещё не обработали первый элемент истории, а уже обычная заметка
@@ -2660,8 +2794,10 @@ class Notelist():
                 collect_history_is_done = True
                 html_string += '<p id=history_date>Список всех заметок</p>'
                 html_string += '<div id=notelist>'
+            # Увеличиваем порядковый номер элемента
+            item_number += 1
             # Добавляем собственно сам элемент в html-обертке
-            html_source += self.make_html_source_for_item(one_item)
+            html_source += self.make_html_source_for_item(one_item, item_number)
         # Используем настройки темы для оформления списка элементов
         html_string = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_string, )
         return html_source
