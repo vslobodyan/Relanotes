@@ -2643,9 +2643,11 @@ class Notelist():
 
 
     def make_html_source_from_items_list(self):
-        # Создать исходник для окна списка заметок из списка найденных элементов
-
-        pass
+        # Собираем html-исходник для окна со списком заметок, используя внутриклассовый список найденных элементов
+        html_source=''
+        for one_item in self.items:
+            html_source += self.make_html_source_for_item(one_item)
+        return html_source
 
 
 
