@@ -2636,13 +2636,55 @@ class Notelist():
     def make_html_source_for_item(self, one_item, item_number):
         # Создаем оформление и html-форматирование для представления одного элемента из списка в общем исходнике html
         html_string = ''
+
         if one_item['history']:
-            # Это - элемент истории
+            # Это элемент истории
             rec_last_open_str = one_item['last_open'].rpartition(':')[0]
             html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(one_item['filename']), rec_last_open_str )
             return html_string
 
+        if one_item['found_line_number']:
+            # Это найденный текст внутри заметки
+            line = re.sub('('+self.filter_text+')', '<span id="highlight">'+'\\1</span>', line, flags=re.I)
+            html_string += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename+'?'+str(line_i)+'">'+line+'</a></p>'
+            return html_string
+
         # Если продолжаем - значит обычный элемент списка, не история
+                            
+        # Устанавливаем картинку - заметка с курсором, или без него
+        if notelist_selected_position == i:
+            # Текущая позиция - должна быть с курсором
+            img_src = 'resources/icons/notelist/arrow130_h11.png'
+            notelist_selected_url = 'note?'+filename
+        else:
+            if filename == active_link:
+                img_src = 'resources/icons/notelist/g3-g1.png'
+            else:
+                img_src = 'resources/icons/notelist/g3.png'
+
+        if filename == active_link:
+            line_style = ' id="current_note" '
+        else:
+            line_style = ' id="notelist"'
+
+        if self.filter_name != '':
+            # Делаем подсветку текста из фильтра в списке заметки
+            cute_filename = re.sub('('+self.filter_name+')', '<span id="highlight">'+'\\1</span>', cute_filename, flags=re.I)
+
+         # html_string += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
+         # Format: multiaction / note :|: note_filename
+
+        html_string += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
+                                   cute_filename+'</a>' + '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + \
+                                   '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?'+filename + \
+                                   '"><img src="resources/icons/notelist/document62-3.png"></a> </p>'
+        
+        return html_string
+
+
+
+
+
 
         global notelist_selected_url
 
@@ -2716,41 +2758,6 @@ class Notelist():
 
 
 
-                    # Устанавливаем картинку - заметка с курсором, или без него
-                    if notelist_selected_position == i:
-                        # Текущая позиция - должна быть с курсором
-                        img_src = 'resources/icons/notelist/arrow130_h11.png'
-                        notelist_selected_url = 'note?'+filename
-                    else:
-                        if filename == active_link:
-                            img_src = 'resources/icons/notelist/g3-g1.png'
-                        else:
-                            img_src = 'resources/icons/notelist/g3.png'
-
-                    if filename == active_link:
-                        line_style = ' id="current_note" '
-                    else:
-                        line_style = ' id="notelist"'
-
-                    if self.filter_name != '':
-                        # Делаем подсветку текста из фильтра в списке заметки
-                        cute_filename = re.sub('('+self.filter_name+')', '<span id="highlight">'+'\\1</span>',
-                                               cute_filename, flags=re.I)
-
-                    # html_string += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
-                    # Format: multiaction / note :|: note_filename
-                    '''html_string += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
-                                   cute_filename+'</a>' + '&nbsp;&nbsp;<a href="contents?'+filename + \
-                                   '"><img src="resources/icons/notelist/list41-2-4.png"></a>' + \
-                                   '&nbsp;&nbsp;<a href="multiaction?'+filename + \
-                                   '"><img src="resources/icons/notelist/document62-3.png"></a>' + \
-                                   '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + '</p>'
-                                   '''
-                    html_string += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
-                                   cute_filename+'</a>' + '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + \
-                                   '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?'+filename + \
-                                   '"><img src="resources/icons/notelist/document62-3.png"></a> </p>'
-
                     i += 1
 
                     # Если надо, добавляем ссылки на позиции вхождения текста в заметке
@@ -2778,13 +2785,13 @@ class Notelist():
                                 # Добавляем элемент во внутренний список элементов
                                 self.items.append(rec_item)
 
-
                                 founded_i += 1
-                                line = re.sub('('+filter_note_text+')', '<span id="highlight">'+'\\1</span>', line,
-                                              flags=re.I)
-                                html_string += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + \
-                                               ':</small>&nbsp;&nbsp;<a href="note?' + \
-                                               filename+'?'+str(founded_i)+'">'+line+'</a></p>'
+
+                                #line = re.sub('('+filter_note_text+')', '<span id="highlight">'+'\\1</span>', line,
+                                #              flags=re.I)
+                                #html_string += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + \
+                                #               ':</small>&nbsp;&nbsp;<a href="note?' + \
+                                #               filename+'?'+str(founded_i)+'">'+line+'</a></p>'
                                 # <ul id=founded_text_in_note>
                             line_i += 1  
 
