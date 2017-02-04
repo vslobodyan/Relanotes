@@ -2645,8 +2645,17 @@ class Notelist():
     def make_html_source_from_items_list(self):
         # Собираем html-исходник для окна со списком заметок, используя внутриклассовый список найденных элементов
         html_source=''
+        html_string = '<p id=history_date>История обращений к заметкам</p>'
+        collect_history_is_done = False
         for one_item in self.items:
+            if not collect_history_is_done and not one_item['history']:
+                # У нас первый элемент, который не связан с историей. Надо внести новый заголовок
+                collect_history_is_done = True
+                html_string += '<p id=history_date>Список всех заметок</p>'
+                html_string += '<div id=notelist>'
             html_source += self.make_html_source_for_item(one_item)
+        # Используем настройки темы для оформления списка элементов
+        html_string = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_string, )
         return html_source
 
 
