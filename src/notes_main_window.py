@@ -2382,7 +2382,10 @@ class Notelist():
     item['history'] = False  # Элемент истории
     item['last_open'] = None  # Когда открывали последний раз. Больше относится к истории.
     item['size'] = None  # Размер файла заметки
- 
+    # Поля для найденного текста внутри заметки
+    item['found_line_number'] = None   # Номер строчки, в которой найдено
+    item['found_line_text'] = None   # Текст строчки, в которой найдено
+
     need_rescan = True  # Признак необходимости рескана списка заметок/файлов
 
     history_back_offset = 0  # Обратное смещение по списку истории
@@ -2764,6 +2767,18 @@ class Notelist():
                             # if filter_note_text.lower() in line.lower():
                                 # print('Нашли вхождение в строку '+str(line_i)+' - '+filter_note_text)
                                 # Нашли вхождение. Подсвечиваем и добавляем к выводу в Notelist
+
+                                # Добавляем в массив элементов
+
+                                # Добавляем в список элементов
+                                rec_item = self.item.copy()  # Делаем копию образца словаря
+                                rec_item['filename'] = filename
+                                rec_item['found_line_number'] = line_i
+                                rec_item['found_line_text'] = line
+                                # Добавляем элемент во внутренний список элементов
+                                self.items.append(rec_item)
+
+
                                 founded_i += 1
                                 line = re.sub('('+filter_note_text+')', '<span id="highlight">'+'\\1</span>', line,
                                               flags=re.I)
