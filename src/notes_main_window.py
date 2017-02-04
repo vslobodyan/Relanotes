@@ -2645,8 +2645,8 @@ class Notelist():
     def make_html_source_from_items_list(self):
         # Собираем html-исходник для окна со списком заметок, используя внутриклассовый список найденных элементов
         html_source=''
-        collect_history_is_done = False
-        first_history_item_done = False
+        collect_history_is_done = False  # Признак завершения обработки всех элементов истории
+        first_history_item_done = False  # Признак завершения обработки первого элемента истории
         for one_item in self.items:
             if not first_history_item_done and not one_item['history']:
                 # У нас отсутствует история - ещё не обработали первый элемент истории, а уже обычная заметка
