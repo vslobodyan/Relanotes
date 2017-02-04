@@ -2370,6 +2370,8 @@ class Notelist():
     filter_name = '' # Фильтрация списка заметок по имени заметки
     filter_text = ''  # Фильтрация списка заметок по тексту, содержащемуся внутри заметок
     
+    allowed_note_files_extensions = ['txt']
+
     items = []  # Элементы списка заметок
     items_cursor_position = 0  # Положение курсора в списке элементов
     items_size = 0 # Общий объём данных в заметках из списка
@@ -2653,7 +2655,10 @@ class Notelist():
 
         for root, dirs, files in os.walk(path_to_notes):
             for file in files:
-                if file.endswith('.txt'):
+                #if file.endswith('.txt'):
+                # Проверяем - разрешенное ли расширение у файла
+                if os.path.splitext(file)[-1] in self.allowed_note_files_extensions:
+                    # Обрабатываем файл заметки
                     filename = os.path.join(root, file)
                     size = os.stat(filename).st_size                    
                     access_time = os.stat(filename).st_atime  # time of most recent access.
