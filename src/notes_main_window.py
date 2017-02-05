@@ -2659,13 +2659,71 @@ class Notelist():
         self.items_cursor_position = 0
 
 
-    def work_with_found_note(self, filename):
+
+    def work_with_found_note(self, filename, history=False, size=None, last_open=None):
         # Определяем - надо ли добавлять заметку в список.
         # Надо ли искать в ней текст.
         # И удовлетворяет ли она всем установленным фильтрам.
         # Затем добавляем все необходимое в список и меняем соответствующие переменные.
+
+        cutename = self.make_cute_name(filename)
         
-        pass
+        # Если не история - добавляем инфу о найденных файлах в общий счетчик всех доступных файлов заметок
+        if not history:
+            self.all_found_files_count += 1
+            self.all_found_files_size += size
+        
+        # Если не подходит под фильтр имени - выходим
+        if self.cute_filename_is_allowed(cute_filename):
+            return 0
+
+        lines = ''
+
+        # Проверяем на неудовлетворение фильтру по тексту содержимого заметки
+        # if main_window.lineEdit_Filter_Note_Text.text() != '':
+        if self.filter_text != '':
+            # Надо загрузить заметку и провести поиск в ней на предмет содержимого
+            fileObj = codecs.open(filename, "r", "utf-8")
+            lines = fileObj.read()
+            fileObj.close()
+            # if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
+            if self.filter_text.lower() not in lines.lower():
+                # Если искомого текста в заметке нет - просто идем к следующей
+                #print('Файл %s не подходит под фильтр текста "%s"' % (cute_filename.lower(), self.filter_text.lower()) )
+                continue
+
+        self.add_item(filename=filename, 
+                      cutename=cutename, 
+                      history=history, 
+                      last_open=last_open, 
+                      size=size)
+
+        i += 1
+
+        # Если надо, добавляем ссылки на позиции вхождения текста в заметке
+        if self.filter_text != '':
+            filter_note_text = self.filter_text
+            founded_i = 0
+            # print('Ищем текст "'+filter_note_text+'" в строчках внутри заметки')
+            line_i = 1
+            for line in lines.split('\n'):
+                pos = line.lower().find(filter_note_text.lower())
+                if pos >= 0:
+                    # print('Нашли вхождение в строку '+str(line_i)+' - '+filter_note_text)
+                    # Нашли вхождение. Подсвечиваем и добавляем к выводу в Notelist
+
+                    self.add_item(filename = filename,
+                                  history = history,
+                                  found_line_number = line_i,
+                                  found_line_text = line)
+
+                    founded_i += 1
+
+                line_i += 1
+
+        
+        
+        
 
 
     def collect_history_items_list(self):
@@ -2684,18 +2742,24 @@ class Notelist():
 
 
 
-            cute_filename = self.make_cute_name(rec_filename)
+            #cute_filename = self.make_cute_name(rec_filename)
 
-            # Если не подходит под фильтр имени - переходим к следующему
-            if self.cute_filename_is_allowed(cute_filename):
-                continue
+            ## Если не подходит под фильтр имени - переходим к следующему
+            #if self.cute_filename_is_allowed(cute_filename):
+                #continue
+
+            #self.add_item(filename=rec_filename, 
+                          #cutename=cute_filename, 
+                          #history=True, 
+                          #last_open=rec_last_open, 
+                          #size=os.stat(rec_filename).st_size)
 
 
-            self.add_item(filename=rec_filename, 
-                          cutename=cute_filename, 
-                          history=True, 
-                          last_open=rec_last_open, 
-                          size=os.stat(rec_filename).st_size)
+            self.work_with_found_note(filename=rec_filename, 
+                                      history=True, 
+                                      size=os.stat(rec_filename).st_size, 
+                                      last_open=rec_last_open)
+
 
 
 
@@ -2720,67 +2784,75 @@ class Notelist():
                     # Обрабатываем файл заметки
                     filename = os.path.join(root, file)
                     size = os.stat(filename).st_size
-                    access_time = os.stat(filename).st_atime  # time of most recent access.
-                    modification_time = os.stat(filename).st_mtime  # time of most recent content modification
+                    #access_time = os.stat(filename).st_atime  # time of most recent access.
+                    #modification_time = os.stat(filename).st_mtime  # time of most recent content modification
 
                     # Продолжаем с найденным файловым элементом
                     # Проверяем - нет ли этого элемента уже добавленного из истории
                     if self.file_in_history(filename):
                         continue  # Переходим на следующий виток цикла
 
-                    cute_filename = self.make_cute_name(filename)
 
-                    self.all_found_files_count += 1
-                    self.all_found_files_size += size
-                    lines = ''
 
-                    # Если не подходит под фильтр имени - переходим к следующему
-                    if self.cute_filename_is_allowed(cute_filename):
-                        continue
+                    self.work_with_found_note(filename=rec_filename, 
+                                              size=size)
 
-                    # Проверяем на неудовлетворение фильтру по тексту содержимого заметки
-                    # if main_window.lineEdit_Filter_Note_Text.text() != '':
-                    if self.filter_text != '':
-                        # Надо загрузить заметку и провести поиск в ней на предмет содержимого
-                        fileObj = codecs.open(filename, "r", "utf-8")
-                        lines = fileObj.read()
-                        fileObj.close()
-                        # if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
-                        if self.filter_text.lower() not in lines.lower():
-                            # Если искомого текста в заметке нет - просто идем к следующей
-                            #print('Файл %s не подходит под фильтр текста "%s"' % (cute_filename.lower(), self.filter_text.lower()) )
-                            continue
 
-                    #asps.append(file)
 
-                    # Вынимаем текстовый контент заметки и добавляем в массив
 
-                    # self.file_recs.append([filename, cute_filename, lines])
+                    #cute_filename = self.make_cute_name(filename)
 
-                    self.add_item(filename=filename,
-                                  cutename=self.make_cute_name(filename),
-                                  size=size)
-                    i += 1
+                    #self.all_found_files_count += 1
+                    #self.all_found_files_size += size
+                    #lines = ''
 
-                    # Если надо, добавляем ссылки на позиции вхождения текста в заметке
-                    if self.filter_text != '':
-                        filter_note_text = self.filter_text
-                        founded_i = 0
-                        # print('Ищем текст "'+filter_note_text+'" в строчках внутри заметки')
-                        line_i = 1
-                        for line in lines.split('\n'):
-                            pos = line.lower().find(filter_note_text.lower())
-                            if pos >= 0:
-                                # print('Нашли вхождение в строку '+str(line_i)+' - '+filter_note_text)
-                                # Нашли вхождение. Подсвечиваем и добавляем к выводу в Notelist
+                    ## Если не подходит под фильтр имени - переходим к следующему
+                    #if self.cute_filename_is_allowed(cute_filename):
+                        #continue
 
-                                self.add_item(filename = filename,
-                                              found_line_number = line_i,
-                                              found_line_text = line)
+                    ## Проверяем на неудовлетворение фильтру по тексту содержимого заметки
+                    ## if main_window.lineEdit_Filter_Note_Text.text() != '':
+                    #if self.filter_text != '':
+                        ## Надо загрузить заметку и провести поиск в ней на предмет содержимого
+                        #fileObj = codecs.open(filename, "r", "utf-8")
+                        #lines = fileObj.read()
+                        #fileObj.close()
+                        ## if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
+                        #if self.filter_text.lower() not in lines.lower():
+                            ## Если искомого текста в заметке нет - просто идем к следующей
+                            ##print('Файл %s не подходит под фильтр текста "%s"' % (cute_filename.lower(), self.filter_text.lower()) )
+                            #continue
 
-                                founded_i += 1
+                    ##asps.append(file)
 
-                            line_i += 1
+                    ## Вынимаем текстовый контент заметки и добавляем в массив
+
+                    ## self.file_recs.append([filename, cute_filename, lines])
+
+                    #self.add_item(filename=filename,
+                                  #cutename=self.make_cute_name(filename),
+                                  #size=size)
+                    #i += 1
+
+                    ## Если надо, добавляем ссылки на позиции вхождения текста в заметке
+                    #if self.filter_text != '':
+                        #filter_note_text = self.filter_text
+                        #founded_i = 0
+                        ## print('Ищем текст "'+filter_note_text+'" в строчках внутри заметки')
+                        #line_i = 1
+                        #for line in lines.split('\n'):
+                            #pos = line.lower().find(filter_note_text.lower())
+                            #if pos >= 0:
+                                ## print('Нашли вхождение в строку '+str(line_i)+' - '+filter_note_text)
+                                ## Нашли вхождение. Подсвечиваем и добавляем к выводу в Notelist
+
+                                #self.add_item(filename = filename,
+                                              #found_line_number = line_i,
+                                              #found_line_text = line)
+
+                                #founded_i += 1
+
+                            #line_i += 1
 
 
 
