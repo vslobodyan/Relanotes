@@ -2595,6 +2595,20 @@ class Notelist():
             return False
 
 
+    def cute_filename_is_allowed(self, cute_filename):
+        # Проверяем - проходит ли установленный фильтр имени текущее симпатичное имя заметки
+        return (self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower())
+    
+    
+    def note_text_is_allowed(self, filename):
+        # Проверяем - проходит ли фильтр на содержимое текста текущий файл заметки
+        
+        
+        
+        return 0
+        
+
+
     def collect_history_items_list(self):
         # Собираем элементы (заметки) из истории при рескане файлов в переменную self.items[]
 
@@ -2609,10 +2623,17 @@ class Notelist():
                 state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
                 continue  # Переходим на следующий виток цикла
 
+            cute_filename = self.make_cute_name(rec_filename)
+
+            # Если не подходит под фильтр имени - переходим к следующему
+            if self.cute_filename_is_allowed(cute_filename):
+                continue
+
+
             # Продолжаем с элементом истории, у которого есть файл
             rec_item = self.item.copy()  # Делаем копию образца словаря
             rec_item['filename'] = rec_filename
-            rec_item['cutename'] = self.make_cute_name(rec_filename)
+            rec_item['cutename'] = cute_filename
             rec_item['history'] = True
             rec_item['last_open'] = rec_last_open
             rec_item['size'] = os.stat(rec_filename).st_size
@@ -2668,10 +2689,8 @@ class Notelist():
                     self.all_found_files_size += size
                     lines = ''
 
-                    # Проверяем на неудовлетворение фильтру
-                    if self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower():
-                        # Если установлен фильтр имени и текущее имя не подходит, то проходим мимо и идем 
-                        #print('Файл %s не подходит под фильтр имени "%s"' % (cute_filename.lower(), self.filter_name) )
+                    # Если не подходит под фильтр имени - переходим к следующему
+                    if self.cute_filename_is_allowed(cute_filename):
                         continue
 
                     # Проверяем на неудовлетворение фильтру по тексту содержимого заметки
@@ -2741,12 +2760,7 @@ class Notelist():
         filename = one_item['filename']
         cute_filename = self.make_cute_name(filename)
         active_link = main_window.current_open_note_link
-
-        if one_item['history']:
-            # Это элемент истории
-            rec_last_open_str = one_item['last_open'].rpartition(':')[0]
-            html_source += '<p>%s <span id=history_date>%s</span></p>' % (cute_filename, rec_last_open_str )
-            return html_source
+        last_open = ''  # Признак элемента из истории
 
         if one_item['found_line_number']:
             # Это найденный текст внутри заметки
@@ -2757,7 +2771,16 @@ class Notelist():
             html_source += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename+'?'+str(line_i)+'">'+line+'</a></p>'
             return html_source
 
-        # Если продолжаем - значит обычный элемент списка, не история
+
+        if one_item['history']:
+            # Это элемент истории. Заполняем признак last_open
+            last_open = one_item['last_open'].rpartition(':')[0]
+            # Переопределяем в ячейку для элемента истории
+            last_open = '&nbsp;'*4 + '<span id=history_date>%s</span>' % last_open
+            
+                        
+
+        # Если продолжаем - значит или обычный элемент списка или из истории
         size = one_item['size']
 
         # Устанавливаем картинку - заметка с курсором, или без него
@@ -2786,7 +2809,8 @@ class Notelist():
         html_source += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
             cute_filename+'</a>' + '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + \
             '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?'+filename + \
-            '"><img src="resources/icons/notelist/document62-3.png"></a> </p>'
+            '"><img src="resources/icons/notelist/document62-3.png"></a> ' + \
+            last_open + '</p>'
         #print('Сделали html для элемента %s:' % filename)
         #print(html_source)
         #print()
@@ -2813,7 +2837,7 @@ class Notelist():
                 # У нас первый элемент истории. Добавляем заголовк для этого блока
                 first_history_item_done = True
                 if self.filter_name or self.filter_text:
-                    header_string = "Найдено в истории обращений к заметкам"
+                    header_string = "Найдено в истории обращений к заметкам:"
                 else:
                     header_string = "История обращений к заметкам"
                 html_source += '<p id=history_date>%s</p>' % header_string
@@ -2821,7 +2845,7 @@ class Notelist():
                 # У нас первый элемент, который не связан с историей. Надо внести новый заголовок
                 collect_history_is_done = True
                 if self.filter_name or self.filter_text:
-                    header_string = "Найдено в списке всех остальных заметок"
+                    header_string = "Найдено в списке всех остальных заметок:"
                 else:
                     header_string = "Список всех остальных заметок"
                 html_source += '<p id=history_date>%s</p>' % header_string
