@@ -2373,7 +2373,8 @@ class Notelist():
 
     items = []  # Элементы списка заметок
     items_cursor_position = 0  # Положение курсора в списке элементов
-    items_size = 0 # Общий объём данных в заметках из списка
+    items_notes_size = 0 # Общий объём данных в заметках из списка
+    items_notes_count = 0 # Количество отдельных заметок в списке элементов
 
     # Информация обо всех подходящих под заметки файлах, найденных в процессе обхода, но, часть из которых может быть впоследствии может быть отфильтрована
     all_found_files_count = 0
@@ -2598,20 +2599,6 @@ class Notelist():
     def cute_filename_is_allowed(self, cute_filename):
         # Проверяем - проходит ли установленный фильтр имени текущее симпатичное имя заметки
         return (self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower())
-    
-    
-    #def note_text_lines_is_allowed(self, filename):
-        ## Проверяем - проходит ли фильтр на содержимое текста текущий файл заметки
-        #fileObj = codecs.open(filename, "r", "utf-8")
-        #lines = fileObj.read()
-        #fileObj.close()
-        ## if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
-        #if self.filter_text.lower() in lines.lower():
-            ## Если искомый текст есть в заметке - возвращаем его
-            #return lines
-        #else:
-            #return None
-        
 
 
     def add_item(self,
@@ -2636,7 +2623,7 @@ class Notelist():
 
         if size:
             # Добавляем в общий размер
-            self.items_size += size
+            self.items_notes_size += size
         
         # Добавляем элемент во внутренний список элементов
         self.items.append(rec_item)
@@ -2651,7 +2638,8 @@ class Notelist():
         
         # Данные об отображенных (отфильтрованных) заметках
         self.items = []
-        self.items_size = 0        
+        self.items_notes_size = 0
+        self.items_notes_count = 0
 
         # Данные о курсоре
         self.selected_position = 0
@@ -2666,12 +2654,10 @@ class Notelist():
         # И удовлетворяет ли она всем установленным фильтрам.
         # Затем добавляем все необходимое в список и меняем соответствующие переменные.
 
+        #if self.file_in_history(filename):
+            #print('Файл из истории: %s' % filename)
+
         cutename = self.make_cute_name(filename)
-        
-        # Если не история - добавляем инфу о найденных файлах в общий счетчик всех доступных файлов заметок
-        if not history:
-            self.all_found_files_count += 1
-            self.all_found_files_size += size
         
         # Если не подходит под фильтр имени - выходим
         if self.cute_filename_is_allowed(cutename):
@@ -2697,6 +2683,8 @@ class Notelist():
                       history=history, 
                       last_open=last_open, 
                       size=size)
+        # Увеличиваем счетчик количества заметок в списке
+        self.items_notes_count += 1
 
         # Если надо, добавляем ссылки на позиции вхождения текста в заметке
         if self.filter_text != '':
@@ -2762,6 +2750,11 @@ class Notelist():
                     size = os.stat(filename).st_size
                     #access_time = os.stat(filename).st_atime  # time of most recent access.
                     #modification_time = os.stat(filename).st_mtime  # time of most recent content modification
+
+                    # Добавляем инфу о найденных файлах в общий счетчик всех доступных файлов заметок
+                    self.all_found_files_count += 1
+                    self.all_found_files_size += size
+
 
                     # Продолжаем с найденным файловым элементом
                     # Проверяем - нет ли этого элемента уже добавленного из истории
@@ -2894,7 +2887,7 @@ class Notelist():
 
         # Обновляем информацию в статусной строке главного окна
         main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count)+' notes ('+hbytes(self.all_found_files_size) + ') at ' + path_to_notes +
-                                            ', showed ' + str(len(self.items))+' notes ('+hbytes(self.items_size)+') in list.' )
+                                            ', showed ' + str(self.items_notes_count)+' notes ('+hbytes(self.items_notes_size)+') in list.' )
 
         html_string = self.make_html_source_from_items_list()
         
