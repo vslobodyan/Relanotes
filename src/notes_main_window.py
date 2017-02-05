@@ -2589,6 +2589,7 @@ class Notelist():
         state_db_connection.execute("SELECT * FROM file_recs WHERE filename=?", (filename,) )
         existed_rec = state_db_connection.fetchall()
         if len(existed_rec) > 0:
+            #print('Файл обнаружен в истории: ', filename)
             return True
         else:
             return False
@@ -2647,7 +2648,7 @@ class Notelist():
         for root, dirs, files in os.walk(path_to_notes):
             for file in files:
                 # Проверяем - разрешенное ли расширение у файла
-                print('os.path.splitext(file)[-1]=', os.path.splitext(file)[-1])
+                #print('os.path.splitext(file)[-1]=', os.path.splitext(file)[-1])
                 if os.path.splitext(file)[-1] in self.allowed_note_files_extensions:
                 #if file.endswith('.txt'):
                     # Обрабатываем файл заметки
@@ -2663,15 +2664,14 @@ class Notelist():
 
                     cute_filename = self.make_cute_name(filename)
 
-                    # Анализ актуальности кеша, обновление базы списка заметок
-
                     self.all_found_files_count += 1
                     self.all_found_files_size += size
                     lines = ''
 
                     # Проверяем на неудовлетворение фильтру
                     if self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower():
-                        # Если установлен фильтр имени и текущее имя не подходит, то проходим мимо и идем дальше
+                        # Если установлен фильтр имени и текущее имя не подходит, то проходим мимо и идем 
+                        #print('Файл %s не подходит под фильтр имени "%s"' % (cute_filename.lower(), self.filter_name) )
                         continue
 
                     # Проверяем на неудовлетворение фильтру по тексту содержимого заметки
@@ -2684,6 +2684,7 @@ class Notelist():
                         # if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
                         if self.filter_text.lower() not in lines.lower():
                             # Если искомого текста в заметке нет - просто идем к следующей
+                            #print('Файл %s не подходит под фильтр текста "%s"' % (cute_filename.lower(), self.filter_text.lower()) )
                             continue
 
                     notes_count += 1
@@ -2782,11 +2783,13 @@ class Notelist():
          # html_source += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
          # Format: multiaction / note :|: note_filename
 
-            html_source += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
-                                   cute_filename+'</a>' + '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + \
-                                   '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?'+filename + \
-                                   '"><img src="resources/icons/notelist/document62-3.png"></a> </p>'
-        
+        html_source += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
+            cute_filename+'</a>' + '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + \
+            '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?'+filename + \
+            '"><img src="resources/icons/notelist/document62-3.png"></a> </p>'
+        #print('Сделали html для элемента %s:' % filename)
+        #print(html_source)
+        #print()
         return html_source
 
 
@@ -2809,18 +2812,29 @@ class Notelist():
             elif not first_history_item_done and one_item['history']:
                 # У нас первый элемент истории. Добавляем заголовк для этого блока
                 first_history_item_done = True
-                html_source += '<p id=history_date>История обращений к заметкам</p>'
+                if self.filter_name or self.filter_text:
+                    header_string = "Найдено в истории обращений к заметкам"
+                else:
+                    header_string = "История обращений к заметкам"
+                html_source += '<p id=history_date>%s</p>' % header_string
             if not collect_history_is_done and not one_item['history']:
                 # У нас первый элемент, который не связан с историей. Надо внести новый заголовок
                 collect_history_is_done = True
-                html_source += '<p id=history_date>Список всех заметок</p>'
+                if self.filter_name or self.filter_text:
+                    header_string = "Найдено в списке всех остальных заметок"
+                else:
+                    header_string = "Список всех остальных заметок"
+                html_source += '<p id=history_date>%s</p>' % header_string
                 html_source += '<div id=notelist>'
             # Увеличиваем порядковый номер элемента
             item_number += 1
+            #print('Создаем html-код для элемента %s' % item_number)
+
             # Добавляем собственно сам элемент в html-обертке
             html_source += self.make_html_source_for_item(one_item, item_number)
+
         # Используем настройки темы для оформления списка элементов
-            html_source = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_source, )
+        html_source = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_source, )
         return html_source
 
 
