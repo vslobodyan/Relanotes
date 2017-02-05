@@ -2369,7 +2369,7 @@ class Notelist():
     selected_position = 0 # Выделенная курсором позиция в списке, которую можно открыть по нажатию Enter
     selected_url = None # Ссылка под курсором, которая откроется при нажатии Enter
 
-    allowed_note_files_extensions = ['txt']
+    allowed_note_files_extensions = ['.txt']
 
     items = []  # Элементы списка заметок
     items_cursor_position = 0  # Положение курсора в списке элементов
@@ -2647,7 +2647,9 @@ class Notelist():
         for root, dirs, files in os.walk(path_to_notes):
             for file in files:
                 # Проверяем - разрешенное ли расширение у файла
+                print('os.path.splitext(file)[-1]=', os.path.splitext(file)[-1])
                 if os.path.splitext(file)[-1] in self.allowed_note_files_extensions:
+                #if file.endswith('.txt'):
                     # Обрабатываем файл заметки
                     filename = os.path.join(root, file)
                     size = os.stat(filename).st_size
@@ -2758,7 +2760,7 @@ class Notelist():
         size = one_item['size']
 
         # Устанавливаем картинку - заметка с курсором, или без него
-        if self.selected_position == i:
+        if self.selected_position == item_number:
             # Текущая позиция - должна быть с курсором
             img_src = 'resources/icons/notelist/arrow130_h11.png'
             self.selected_url = 'note?'+filename
