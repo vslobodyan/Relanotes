@@ -2369,7 +2369,10 @@ class Notelist():
     """
     filter_name = '' # Фильтрация списка заметок по имени заметки
     filter_text = ''  # Фильтрация списка заметок по тексту, содержащемуся внутри заметок
-    
+    selected_url = None # Ссылка под курсором
+    opened_url = None # Ссылка на открытую заметку
+    selected_position = 0 # Выделенная курсором позиция в списке
+
     allowed_note_files_extensions = ['txt']
 
     items = []  # Элементы списка заметок
@@ -2636,21 +2639,28 @@ class Notelist():
     def make_html_source_for_item(self, one_item, item_number):
         # Создаем оформление и html-форматирование для представления одного элемента из списка в общем исходнике html
         html_string = ''
+        # Готовим переменные, которые понадобятся в любом случае
+        filename = one_item['filename']
+        cute_filename = self.make_cute_name(filename)
 
         if one_item['history']:
             # Это элемент истории
             rec_last_open_str = one_item['last_open'].rpartition(':')[0]
-            html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(one_item['filename']), rec_last_open_str )
+            html_string += '<p>%s <span id=history_date>%s</span></p>' % (cute_filename, rec_last_open_str )
             return html_string
 
         if one_item['found_line_number']:
             # Это найденный текст внутри заметки
+            line = one_item['found_line_text']
+            line_i = one_item['found_line_number']
+
             line = re.sub('('+self.filter_text+')', '<span id="highlight">'+'\\1</span>', line, flags=re.I)
             html_string += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename+'?'+str(line_i)+'">'+line+'</a></p>'
             return html_string
 
         # Если продолжаем - значит обычный элемент списка, не история
-                            
+        size = one_item['size']
+
         # Устанавливаем картинку - заметка с курсором, или без него
         if notelist_selected_position == i:
             # Текущая позиция - должна быть с курсором
