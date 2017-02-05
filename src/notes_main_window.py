@@ -2733,7 +2733,7 @@ class Notelist():
 
     def make_html_source_for_item(self, one_item, item_number):
         # Создаем оформление и html-форматирование для представления одного элемента из списка в общем исходнике html
-        html_string = ''
+        html_source = ''
         # Готовим переменные, которые понадобятся в любом случае
         filename = one_item['filename']
         cute_filename = self.make_cute_name(filename)
@@ -2742,8 +2742,8 @@ class Notelist():
         if one_item['history']:
             # Это элемент истории
             rec_last_open_str = one_item['last_open'].rpartition(':')[0]
-            html_string += '<p>%s <span id=history_date>%s</span></p>' % (cute_filename, rec_last_open_str )
-            return html_string
+            html_source += '<p>%s <span id=history_date>%s</span></p>' % (cute_filename, rec_last_open_str )
+            return html_source
 
         if one_item['found_line_number']:
             # Это найденный текст внутри заметки
@@ -2751,8 +2751,8 @@ class Notelist():
             line_i = one_item['found_line_number']
 
             line = re.sub('('+self.filter_text+')', '<span id="highlight">'+'\\1</span>', line, flags=re.I)
-            html_string += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename+'?'+str(line_i)+'">'+line+'</a></p>'
-            return html_string
+            html_source += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename+'?'+str(line_i)+'">'+line+'</a></p>'
+            return html_source
 
         # Если продолжаем - значит обычный элемент списка, не история
         size = one_item['size']
@@ -2777,15 +2777,15 @@ class Notelist():
             # Делаем подсветку текста из фильтра в списке заметки
             cute_filename = re.sub('('+self.filter_name+')', '<span id="highlight">'+'\\1</span>', cute_filename, flags=re.I)
 
-         # html_string += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
+         # html_source += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
          # Format: multiaction / note :|: note_filename
 
-        html_string += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
+            html_source += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
                                    cute_filename+'</a>' + '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + \
                                    '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?'+filename + \
                                    '"><img src="resources/icons/notelist/document62-3.png"></a> </p>'
         
-        return html_string
+        return html_source
 
 
 
@@ -2807,18 +2807,18 @@ class Notelist():
             elif not first_history_item_done and one_item['history']:
                 # У нас первый элемент истории. Добавляем заголовк для этого блока
                 first_history_item_done = True
-                html_string += '<p id=history_date>История обращений к заметкам</p>'
+                html_source += '<p id=history_date>История обращений к заметкам</p>'
             if not collect_history_is_done and not one_item['history']:
                 # У нас первый элемент, который не связан с историей. Надо внести новый заголовок
                 collect_history_is_done = True
-                html_string += '<p id=history_date>Список всех заметок</p>'
-                html_string += '<div id=notelist>'
+                html_source += '<p id=history_date>Список всех заметок</p>'
+                html_source += '<div id=notelist>'
             # Увеличиваем порядковый номер элемента
             item_number += 1
             # Добавляем собственно сам элемент в html-обертке
             html_source += self.make_html_source_for_item(one_item, item_number)
         # Используем настройки темы для оформления списка элементов
-        html_string = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_string, )
+            html_source = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_source, )
         return html_source
 
 
@@ -3013,7 +3013,7 @@ class Notelist():
 
         # Обновляем информацию в статусной строке главного окна
         main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count)+' notes ('+hbytes(self.all_found_files_size) + ') at ' + path_to_notes +
-                                            ', showed ' + str(self.items.count())+' notes ('+hbytes(self.items_size)+') in list.' )
+                                            ', showed ' + str(len(self.items))+' notes ('+hbytes(self.items_size)+') in list.' )
 
                 
         # html_string = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_string, )
@@ -3099,7 +3099,7 @@ class Notelist():
         # Скрываем дополнительные фреймы
         # main_window.frameNotelist_Filter.setVisible(False)
                 
-        self.db = self.DB()
+        # self.db = self.DB()
 
 
 class Table_of_note_contents():
