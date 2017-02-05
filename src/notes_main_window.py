@@ -2391,7 +2391,7 @@ class Notelist():
     
     note_contents_source = QtGui.QTextDocument()
     
-    file_recs = []
+    # file_recs = []
 
     timer_update = QtCore.QTimer()
     update_timeout = 350  # было 350
@@ -2625,9 +2625,102 @@ class Notelist():
     def collect_items_list(self):
         # Собираем новые элементы (заметки) при рескане файлов (которых не было в истории)
 
+        # Как собирать список файлов:
+        # http://stackoverflow.com/questions/1274506/how-can-i-create-a-list-of-files-in-the-current-directory-and-its-
+        # subdirectories
+        # http://stackoverflow.com/questions/2225564/get-a-filtered-list-of-files-in-a-directory
 
+        asps = []
+        notes_count = 0
+        notes_count_all = 0
+        notes_size = 0
+        notes_size_all = 0
+        i = 0
+        # print('Обновляем список файлов. Найдено:')
 
-        pass
+        for root, dirs, files in os.walk(path_to_notes):
+            for file in files:
+                # Проверяем - разрешенное ли расширение у файла
+                if os.path.splitext(file)[-1] in self.allowed_note_files_extensions:
+                    # Обрабатываем файл заметки
+                    filename = os.path.join(root, file)
+                    size = os.stat(filename).st_size
+                    access_time = os.stat(filename).st_atime  # time of most recent access.
+                    modification_time = os.stat(filename).st_mtime  # time of most recent content modification
+
+                    # Продолжаем с найденным файловым элементом
+                    # Проверяем - нет ли этого элемента уже добавленного из истории
+                    if self.file_in_history(filename):
+                        continue  # Переходим на следующий виток цикла
+
+                    cute_filename = self.make_cute_name(filename)
+
+                    # Анализ актуальности кеша, обновление базы списка заметок
+
+                    notes_count_all += 1
+                    notes_size_all += size
+                    lines = ''
+
+                    # Проверяем на неудовлетворение фильтру
+                    if self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower():
+                        # Если установлен фильтр имени и текущее имя не подходит, то проходим мимо и идем дальше
+                        continue
+
+                    # Проверяем на неудовлетворение фильтру по тексту содержимого заметки
+                    # if main_window.lineEdit_Filter_Note_Text.text() != '':
+                    if self.filter_text != '':
+                        # Надо загрузить заметку и провести поиск в ней на предмет содержимого
+                        fileObj = codecs.open(filename, "r", "utf-8")
+                        lines = fileObj.read()
+                        fileObj.close()
+                        # if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
+                        if self.filter_text.lower() not in lines.lower():
+                            # Если искомого текста в заметке нет - просто идем к следующей
+                            continue
+
+                    notes_count += 1
+                    notes_size += size
+                    asps.append(file)
+
+                    # Вынимаем текстовый контент заметки и добавляем в массив
+
+                    # self.file_recs.append([filename, cute_filename, lines])
+
+                    # Добавляем в список элементов
+                    rec_item = self.item.copy()  # Делаем копию образца словаря
+                    rec_item['filename'] = filename
+                    rec_item['cutename'] = self.make_cute_name(filename)
+                    rec_item['size'] = size
+                    self.items_size += rec_item['size']  # Добавляем в общий размер
+                    # Добавляем элемент во внутренний список элементов
+                    self.items.append(rec_item)
+
+                    i += 1
+
+                    # Если надо, добавляем ссылки на позиции вхождения текста в заметке
+                    if self.filter_text != '':
+                        filter_note_text = self.filter_text
+                        founded_i = 0
+                        # print('Ищем текст "'+filter_note_text+'" в строчках внутри заметки')
+                        line_i = 1
+                        for line in lines.split('\n'):
+                            pos = line.lower().find(filter_note_text.lower())
+                            if pos >= 0:
+                                # print('Нашли вхождение в строку '+str(line_i)+' - '+filter_note_text)
+                                # Нашли вхождение. Подсвечиваем и добавляем к выводу в Notelist
+
+                                # Добавляем в список элементов
+                                rec_item = self.item.copy()  # Делаем копию образца словаря
+                                rec_item['filename'] = filename
+                                rec_item['found_line_number'] = line_i
+                                rec_item['found_line_text'] = line
+                                # Добавляем элемент во внутренний список элементов
+                                self.items.append(rec_item)
+
+                                founded_i += 1
+
+                            line_i += 1
+
 
 
 
@@ -2638,6 +2731,7 @@ class Notelist():
         # Готовим переменные, которые понадобятся в любом случае
         filename = one_item['filename']
         cute_filename = self.make_cute_name(filename)
+        active_link = main_window.current_open_note_link
 
         if one_item['history']:
             # Это элемент истории
@@ -2691,117 +2785,6 @@ class Notelist():
 
 
 
-        active_link = main_window.current_open_note_link
-        
-        asps = []
-        notes_count = 0
-        notes_count_all = 0
-        notes_size = 0
-        notes_size_all = 0
-        i = 0
-        # print('Обновляем список файлов. Найдено:')
-
-        for root, dirs, files in os.walk(path_to_notes):
-            for file in files:
-                #if file.endswith('.txt'):
-                # Проверяем - разрешенное ли расширение у файла
-                if os.path.splitext(file)[-1] in self.allowed_note_files_extensions:
-                    # Обрабатываем файл заметки
-                    filename = os.path.join(root, file)
-                    size = os.stat(filename).st_size                    
-                    access_time = os.stat(filename).st_atime  # time of most recent access.
-                    modification_time = os.stat(filename).st_mtime  # time of most recent content modification
-
-                    # Продолжаем с найденным файловым элементом
-                    # Проверяем - нет ли этого элемента уже добавленного из истории
-                    if self.file_in_history(filename):
-                        continue # Переходим на следующий виток цикла
-
-                    cute_filename = self.make_cute_name(filename)
-
-                    # Анализ актуальности кеша, обновление базы списка заметок
-
-                    notes_count_all += 1
-                    notes_size_all += size
-                    lines = ''
-                    
-                    # Проверяем на неудовлетворение фильтру
-                    if self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower():
-                        # Если установлен фильтр имени и текущее имя не подходит, то проходим мимо и идем дальше
-                        continue
-
-                    # Проверяем на неудовлетворение фильтру по тексту содержимого заметки
-                    #if main_window.lineEdit_Filter_Note_Text.text() != '':
-                    if self.filter_text != '':
-                        # Надо загрузить заметку и провести поиск в ней на предмет содержимого
-                        fileObj = codecs.open( filename, "r", "utf-8" )
-                        lines = fileObj.read()
-                        fileObj.close()
-                        #if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
-                        if self.filter_text.lower() not in lines.lower():
-                            # Если искомого текста в заметке нет - просто идем к следующей
-                            continue
-
-                    notes_count += 1
-                    notes_size += size
-                    asps.append(file)
-
-                    # Вынимаем текстовый контент заметки и добавляем в массив
-
-                    self.file_recs.append([filename, cute_filename, lines])
-
-                    # Добавляем в список элементов
-                    rec_item = self.item.copy()  # Делаем копию образца словаря
-                    rec_item['filename'] = filename
-                    rec_item['cutename'] = self.make_cute_name(filename)
-                    rec_item['size'] = size
-                    self.items_size += rec_item['size']  # Добавляем в общий размер
-                    # Добавляем элемент во внутренний список элементов
-                    self.items.append(rec_item)
-
-
-
-                    i += 1
-
-                    # Если надо, добавляем ссылки на позиции вхождения текста в заметке
-                    #if main_window.lineEdit_Filter_Note_Text.text() != '':
-                    #    filter_note_text = main_window.lineEdit_Filter_Note_Text.text()
-                    if self.filter_text != '':
-                        filter_note_text = self.filter_text
-                        founded_i = 0
-                        # print('Ищем текст "'+filter_note_text+'" в строчках внутри заметки')
-                        line_i = 1
-                        for line in lines.split('\n'):
-                            pos = line.lower().find(filter_note_text.lower())
-                            if pos >= 0:
-                            # if filter_note_text.lower() in line.lower():
-                                # print('Нашли вхождение в строку '+str(line_i)+' - '+filter_note_text)
-                                # Нашли вхождение. Подсвечиваем и добавляем к выводу в Notelist
-
-                                # Добавляем в массив элементов
-
-                                # Добавляем в список элементов
-                                rec_item = self.item.copy()  # Делаем копию образца словаря
-                                rec_item['filename'] = filename
-                                rec_item['found_line_number'] = line_i
-                                rec_item['found_line_text'] = line
-                                # Добавляем элемент во внутренний список элементов
-                                self.items.append(rec_item)
-
-                                founded_i += 1
-
-                                #line = re.sub('('+filter_note_text+')', '<span id="highlight">'+'\\1</span>', line,
-                                #              flags=re.I)
-                                #html_string += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + \
-                                #               ':</small>&nbsp;&nbsp;<a href="note?' + \
-                                #               filename+'?'+str(founded_i)+'">'+line+'</a></p>'
-                                # <ul id=founded_text_in_note>
-                            line_i += 1  
-
-
-
-
-
 
 
 
@@ -2838,19 +2821,12 @@ class Notelist():
         # Обновляем список заметок в зависимости от фильтров
         self.get_and_display_filters()
         
-        # Как собирать список файлов:
-        # http://stackoverflow.com/questions/1274506/how-can-i-create-a-list-of-files-in-the-current-directory-and-its-
-        # subdirectories
-        # http://stackoverflow.com/questions/2225564/get-a-filtered-list-of-files-in-a-directory
 
         # rec = [ filename, cute_name, parent_id, subnotes_count, last_change, last_open, count_opens ]
         # file_recs = [ rec1, rec2, rec3, .. ]
         # При полном рескане очищаем полностью список файлов
 
-        #filter_note_name = main_window.lineNotelist_Filter.text()
-        
-        #notelist.file_recs = []
-        self.file_recs = []
+        # self.file_recs = []
         
         # Обнуляем внутренний список элементов
         self.items = []
@@ -2953,7 +2929,7 @@ class Notelist():
 
                     # Вынимаем текстовый контент заметки и добавляем в массив
 
-                    self.file_recs.append([filename, cute_filename, lines])
+                    # self.file_recs.append([filename, cute_filename, lines])
 
                     # Добавляем в список элементов
                     rec_item = self.item.copy()  # Делаем копию образца словаря
