@@ -2854,15 +2854,15 @@ class Notelist():
                     header_string = "Найдено в истории обращений к заметкам:"
                 else:
                     header_string = "История обращений к заметкам"
-                html_source += '<p id=history_date>%s</p>' % header_string
+                html_source += '<p id=head5>%s</p>' % header_string
             if not collect_history_is_done and not one_item['history']:
                 # У нас первый элемент, который не связан с историей. Надо внести новый заголовок
                 collect_history_is_done = True
                 if self.filter_name or self.filter_text:
-                    header_string = "Найдено в списке всех остальных заметок:"
+                    header_string = "Найдено в списке неоткрытых заметок:"
                 else:
-                    header_string = "Список всех остальных заметок"
-                html_source += '<p id=history_date>%s</p>' % header_string
+                    header_string = "Список неоткрытых заметок"
+                html_source += '<p id=head5>%s</p>' % header_string
                 html_source += '<div id=notelist>'
             # Увеличиваем порядковый номер элемента
             item_number += 1
