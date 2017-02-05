@@ -84,9 +84,6 @@ prog_name = 'Relanotes'
 # FIXME: . При зачеркивании (или другом выделении) текста дальнейшая печать идет в таком-же новом стиле. Надо сделать
 # чтобы шла как обычный текст. Пример - зачеркивание старого пароля и запись после него нового.
 
-notelist_selected_position = 0  # Позиция курсора в списке заметок, открываемой по Enter
-notelist_selected_url = ''  # Ссылка выбранного
-
 # Список истории
 # rec = [ 'note' / 'list', 'filename' / 'filter', datetime ]
 # history_recs = [ rec1, rec2, .. ]
@@ -138,7 +135,6 @@ profiler = Profiler()
 
 class MyEventFilter(QtCore.QObject):
     def eventFilter(self, receiver, event):
-        global notelist_selected_position
 
         # if not main_window: exit()
 
@@ -214,20 +210,20 @@ class MyEventFilter(QtCore.QObject):
                 # На клавишу вниз - увеличиваем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Down:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist_selected_position += 1
+                    notelist.selected_position += 1
                     notelist.update()
                     return True
                     
                 # На клавишу вверх - уменьшаем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Up:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist_selected_position -= 1
+                    notelist.selected_position -= 1
                     notelist.update()
                     return True
 
                 # На Esc- возвращаемся в предыдущее открытую панель (текст заметки или содержание)
                 if event.key() == QtCore.Qt.Key_Escape:
-                    if notelist_selected_url != '':
+                    if notelist.selected_url != '':
                         Note.set_visible(self, True)
                     return True
                 # FIXME: на Esc в поле ввода фильтра списка заметок должны возвращаться в предыдущую панель, а не просто
@@ -240,20 +236,20 @@ class MyEventFilter(QtCore.QObject):
                 # На клавишу вниз - увеличиваем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Down:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist_selected_position += 1
+                    notelist.selected_position += 1
                     notelist.update()
                     return True
 
                 # На клавишу вверх - уменьшаем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Up:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist_selected_position -= 1
+                    notelist.selected_position -= 1
                     notelist.update()
                     return True
 
                 # На Esc- возвращаемся в предыдущее открытую панель (текст заметки или содержание)
                 if event.key() == QtCore.Qt.Key_Escape:
-                    if notelist_selected_url != '':
+                    if notelist.selected_url != '':
                         Note.set_visible(self, True)
                     return True
                 # FIXME: на Esc в поле ввода фильтра списка заметок должны возвращаться в предыдущую панель, а не просто
@@ -559,13 +555,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.unlock_ui()
 
     def filter_note_text_changed(self, filter_text=''):
-        global notelist_selected_position
-        notelist_selected_position = 0
+        notelist.selected_position = 0
         notelist.timer_update.start(notelist.update_timeout)
 
     def notelist_filter_changed(self, filter_text):
-        global notelist_selected_position
-        notelist_selected_position = 0
+        notelist.selected_position = 0
         notelist.timer_update.start(notelist.update_timeout)
 
     def show_html_source(self):
@@ -2289,7 +2283,7 @@ Creation-Date: 2012-09-02T11:16:31+04:00
         if note.is_visible():
             self.show_note_multiaction_win(main_window.current_open_note_link)
         else:
-            self.show_note_multiaction_win(notelist_selected_url.split('?')[1])
+            self.show_note_multiaction_win(notelist.selected_url.split('?')[1])
 
     def show_note_multiaction_win(self, note_filename=''):
         # if note_filename == '':
@@ -2369,9 +2363,11 @@ class Notelist():
     """
     filter_name = '' # Фильтрация списка заметок по имени заметки
     filter_text = ''  # Фильтрация списка заметок по тексту, содержащемуся внутри заметок
-    selected_url = None # Ссылка под курсором
+
     opened_url = None # Ссылка на открытую заметку
-    selected_position = 0 # Выделенная курсором позиция в списке
+
+    selected_position = 0 # Выделенная курсором позиция в списке, которую можно открыть по нажатию Enter
+    selected_url = None # Ссылка под курсором, которая откроется при нажатии Enter
 
     allowed_note_files_extensions = ['txt']
 
@@ -2662,10 +2658,10 @@ class Notelist():
         size = one_item['size']
 
         # Устанавливаем картинку - заметка с курсором, или без него
-        if notelist_selected_position == i:
+        if self.selected_position == i:
             # Текущая позиция - должна быть с курсором
             img_src = 'resources/icons/notelist/arrow130_h11.png'
-            notelist_selected_url = 'note?'+filename
+            self.selected_url = 'note?'+filename
         else:
             if filename == active_link:
                 img_src = 'resources/icons/notelist/g3-g1.png'
@@ -2694,9 +2690,6 @@ class Notelist():
 
 
 
-
-
-        global notelist_selected_url
 
         active_link = main_window.current_open_note_link
         
@@ -2863,8 +2856,6 @@ class Notelist():
         self.items = []
         self.items_size = 0
 
-        global notelist_selected_url
-        
 
 
         html_string = '<p id=history_date>История обращений к заметкам</p>'
@@ -2976,10 +2967,10 @@ class Notelist():
 
 
                     # Устанавливаем картинку - заметка с курсором, или без него
-                    if notelist_selected_position == i:
+                    if self.selected_position == i:
                         # Текущая позиция - должна быть с курсором
                         img_src = 'resources/icons/notelist/arrow130_h11.png'
-                        notelist_selected_url = 'note?'+filename
+                        self.selected_url = 'note?'+filename
                     else:
                         if filename == active_link:
                             img_src = 'resources/icons/notelist/g3-g1.png'
@@ -3064,8 +3055,8 @@ class Notelist():
             note.show_note_multiaction_win(link_filename)
 
     def open_selected_url(self):
-        print('DEBUG: open_selected_url("notelist_selected_url=%s")' % notelist_selected_url)
-        link_type, link_filename = notelist_selected_url.split('?')
+        print('DEBUG: open_selected_url("self.selected_url=%s")' % self.selected_url)
+        link_type, link_filename = self.selected_url.split('?')
         if link_type == 'note':
             main_window.open_file_in_editor(link_filename)
         if link_type == 'multiaction':
