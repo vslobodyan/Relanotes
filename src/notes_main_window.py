@@ -2374,7 +2374,11 @@ class Notelist():
     items = []  # Элементы списка заметок
     items_cursor_position = 0  # Положение курсора в списке элементов
     items_size = 0 # Общий объём данных в заметках из списка
-        
+
+    # Информация обо всех подходящих под заметки файлах, найденных в процессе обхода, но, часть из которых может быть впоследствии может быть отфильтрована
+    all_found_files_count = 0
+    all_found_files_size = 0
+
     item = {}  # Перечень полей отдельного элемента
     item['filename'] = ''  # Путь к файлу заметки
     item['cutename'] = ''  # Красивое имя/путь заметки для отображения в списке
@@ -2397,86 +2401,88 @@ class Notelist():
     update_timeout = 350  # было 350
 
 
-    class DB():
-        """ Основной класс работы со списками заметок, историей их использования,кешем заметок
-        notelist.db          Список заметок с признаками отслеживания активности работы с ними или их изменений.
-        history.db           Полная история работы с заметками, позволяем составить точное мнение об
-                             самых используемых заметках как за последний период, так и в целом.
-                             Если заметка была удалена из списка, а затем создана (вставлена) вновь, то у неё
-                             потеряется вся история предыдущей работы с ней. При переименовании и переносе такого
-                             происходить не будет.
-        note_txt_cache.db    Кэш для быстрого поиска по содержимому.
-        note_html_cache.db   Кэш для быстрого открытия заметок.
-        
-        notelist.db
-            note_id
-            filename            text
-            size                integer
-            modification_time   integer         # last_change
-            access_time         integer         # last_open
+    # class DB():
+    #     """ Основной класс работы со списками заметок, историей их использования,кешем заметок
+    #     notelist.db          Список заметок с признаками отслеживания активности работы с ними или их изменений.
+    #     history.db           Полная история работы с заметками, позволяем составить точное мнение об
+    #                          самых используемых заметках как за последний период, так и в целом.
+    #                          Если заметка была удалена из списка, а затем создана (вставлена) вновь, то у неё
+    #                          потеряется вся история предыдущей работы с ней. При переименовании и переносе такого
+    #                          происходить не будет.
+    #     note_txt_cache.db    Кэш для быстрого поиска по содержимому.
+    #     note_html_cache.db   Кэш для быстрого открытия заметок.
+    #
+    #     notelist.db
+    #         note_id
+    #         filename            text
+    #         size                integer
+    #         modification_time   integer         # last_change
+    #         access_time         integer         # last_open
+    #
+    #         cute_name           text
+    #         parent_id           integer
+    #         subnotes_count      integer
+    #         subnotes_size       integer
+    #         current_position    integer
+    #
+    #     history.db
+    #         note_id
+    #         changed     datetime
+    #         opened      datetime
+    #
+    #     note_txt_cache.db
+    #         filename
+    #         txt_source
+    #
+    #     note_html_cache.db
+    #         filename
+    #         html_source
+    #
+    #     сравнить в скорости с объединенной базой кэша
+    #     note_cache.db
+    #         filename
+    #         txt_source
+    #         html_source
+    #
+    #     """
+    #
+    #     def purge_orphaned_cache(self):
+    #         # Удаляем кэш файлов, которых уже нет. Например, были удалены или переименованы в другой программе.
+    #         pass
+    #
+    #     def total_update_cache(self):
+    #         # Полное обновление кэша, например, при первом запуске программы с уже имеющейся базой заметок
+    #         pass
+    #
+    #     def save_note_cache_html(self, filename, html_source):
+    #         pass
+    #
+    #     def save_note_cache_txt(self, filename, txt_source):
+    #         pass
+    #
+    #     def get_note_cache_html(self, filename):
+    #         # Получаем кэш заметки. Если его нет - возвращаем None.
+    #
+    #         return None
+    #
+    #     def get_note_cache_txt(self, filename):
+    #         # Получаем кэш заметки. Если его нет - возвращаем None.
+    #
+    #         return None
+    #
+    #     #def initial_db(self):
+    #
+    #     #    # Дерево подразделов в файлах заметок
+    #
+    #     #    # Списки меток в файлах заметок
+    #
+    #     #    # Списки задач в файлах заметок
+    #
+    #
+    #     def __init__(self):   # class DB
+    #         pass
 
-            cute_name           text
-            parent_id           integer
-            subnotes_count      integer
-            subnotes_size       integer
-            current_position    integer
 
-        history.db
-            note_id
-            changed     datetime
-            opened      datetime
-            
-        note_txt_cache.db
-            filename
-            txt_source
-        
-        note_html_cache.db
-            filename
-            html_source
-        
-        сравнить в скорости с объединенной базой кэша
-        note_cache.db
-            filename
-            txt_source
-            html_source
-        
-        """
-        
-        def purge_orphaned_cache(self):
-            # Удаляем кэш файлов, которых уже нет. Например, были удалены или переименованы в другой программе.
-            pass
-        
-        def total_update_cache(self):
-            # Полное обновление кэша, например, при первом запуске программы с уже имеющейся базой заметок
-            pass
-        
-        def save_note_cache_html(self, filename, html_source):
-            pass
-        
-        def save_note_cache_txt(self, filename, txt_source):
-            pass
-        
-        def get_note_cache_html(self, filename):
-            # Получаем кэш заметки. Если его нет - возвращаем None.
-            
-            return None
-        
-        def get_note_cache_txt(self, filename):
-            # Получаем кэш заметки. Если его нет - возвращаем None.
-            
-            return None
-        
-        #def initial_db(self):
-    
-        #    # Дерево подразделов в файлах заметок
-    
-        #    # Списки меток в файлах заметок
-            
-        #    # Списки задач в файлах заметок
-    
-
-        def __init__(self):   # class DB
-            pass
 
     def set_visible(self, visible=True):
         # Переключение видимости всего что связано со списком заметок
@@ -2632,9 +2638,9 @@ class Notelist():
 
         asps = []
         notes_count = 0
-        notes_count_all = 0
+        self.all_found_files_count = 0
         notes_size = 0
-        notes_size_all = 0
+        self.all_found_files_size = 0
         i = 0
         # print('Обновляем список файлов. Найдено:')
 
@@ -2657,8 +2663,8 @@ class Notelist():
 
                     # Анализ актуальности кеша, обновление базы списка заметок
 
-                    notes_count_all += 1
-                    notes_size_all += size
+                    self.all_found_files_count += 1
+                    self.all_found_files_size += size
                     lines = ''
 
                     # Проверяем на неудовлетворение фильтру
@@ -2832,10 +2838,12 @@ class Notelist():
         self.items = []
         self.items_size = 0
 
-
-
-        html_string = '<p id=history_date>История обращений к заметкам</p>'
         self.collect_history_items_list()
+        self.collect_items_list()
+
+
+        # html_string = '<p id=history_date>История обращений к заметкам</p>'
+
 
         #file_recs_rows = state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
 
@@ -2864,156 +2872,160 @@ class Notelist():
         #    rec_last_open_str = rec_last_open.rpartition(':')[0]
         #    html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(rec_filename), rec_last_open_str )
 
-        for one_item in self.items:
-            #if one_item['history']:
-            #    # Отображение элемента истории
-            #    rec_last_open_str = one_item['last_open'].rpartition(':')[0]
-            #    html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(one_item['filename']), rec_last_open_str )
-            html_string += self.make_html_source_for_item(one_item)
+        # for one_item in self.items:
+        #     #if one_item['history']:
+        #     #    # Отображение элемента истории
+        #     #    rec_last_open_str = one_item['last_open'].rpartition(':')[0]
+        #     #    html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(one_item['filename']), rec_last_open_str )
+        #     html_string += self.make_html_source_for_item(one_item)
+        #
+        # html_string += '<p id=history_date>Список всех заметок</p>'
+        #
+        # html_string += '<div id=notelist>'
+        #
+        # active_link = main_window.current_open_note_link
+        #
+        # asps = []
+        # notes_count = 0
+        # notes_count_all = 0
+        # notes_size = 0
+        # notes_size_all = 0
+        # i = 0
+        # # print('Обновляем список файлов. Найдено:')
+        #
+        # for root, dirs, files in os.walk(path_to_notes):
+        #     for file in files:
+        #         if file.endswith('.txt'):
+        #             filename = os.path.join(root, file)
+        #             size = os.stat(filename).st_size
+        #             access_time = os.stat(filename).st_atime  # time of most recent access.
+        #             modification_time = os.stat(filename).st_mtime  # time of most recent content modification
+        #
+        #             # Продолжаем с найденным файловым элементом
+        #             # Проверяем - нет ли этого элемента уже добавленного из истории
+        #             if self.file_in_history(filename):
+        #                 continue # Переходим на следующий виток цикла
+        #
+        #             cute_filename = self.make_cute_name(filename)
+        #
+        #             # Анализ актуальности кеша, обновление базы списка заметок
+        #
+        #             notes_count_all += 1
+        #             notes_size_all += size
+        #             lines = ''
+        #
+        #             # Проверяем на неудовлетворение фильтру
+        #             if self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower():
+        #                 # Если установлен фильтр имени и текущее имя не подходит, то проходим мимо и идем дальше
+        #                 continue
+        #
+        #             # Проверяем на неудовлетворение фильтру по тексту содержимого заметки
+        #             #if main_window.lineEdit_Filter_Note_Text.text() != '':
+        #             if self.filter_text != '':
+        #                 # Надо загрузить заметку и провести поиск в ней на предмет содержимого
+        #                 fileObj = codecs.open( filename, "r", "utf-8" )
+        #                 lines = fileObj.read()
+        #                 fileObj.close()
+        #                 #if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
+        #                 if self.filter_text.lower() not in lines.lower():
+        #                     # Если искомого текста в заметке нет - просто идем к следующей
+        #                     continue
+        #
+        #             notes_count += 1
+        #             notes_size += size
+        #             asps.append(file)
+        #
+        #             # Вынимаем текстовый контент заметки и добавляем в массив
+        #
+        #             # self.file_recs.append([filename, cute_filename, lines])
+        #
+        #             # Добавляем в список элементов
+        #             rec_item = self.item.copy()  # Делаем копию образца словаря
+        #             rec_item['filename'] = filename
+        #             rec_item['cutename'] = self.make_cute_name(filename)
+        #             rec_item['size'] = size
+        #             self.items_size += rec_item['size']  # Добавляем в общий размер
+        #             # Добавляем элемент во внутренний список элементов
+        #             self.items.append(rec_item)
+        #
+        #
+        #
+        #             # Устанавливаем картинку - заметка с курсором, или без него
+        #             if self.selected_position == i:
+        #                 # Текущая позиция - должна быть с курсором
+        #                 img_src = 'resources/icons/notelist/arrow130_h11.png'
+        #                 self.selected_url = 'note?'+filename
+        #             else:
+        #                 if filename == active_link:
+        #                     img_src = 'resources/icons/notelist/g3-g1.png'
+        #                 else:
+        #                     img_src = 'resources/icons/notelist/g3.png'
+        #
+        #             if filename == active_link:
+        #                 line_style = ' id="current_note" '
+        #             else:
+        #                 line_style = ' id="notelist"'
+        #
+        #             if self.filter_name != '':
+        #                 # Делаем подсветку текста из фильтра в списке заметки
+        #                 cute_filename = re.sub('('+self.filter_name+')', '<span id="highlight">'+'\\1</span>',
+        #                                        cute_filename, flags=re.I)
+        #
+        #             # html_string += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
+        #             # Format: multiaction / note :|: note_filename
+        #             '''html_string += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
+        #                            cute_filename+'</a>' + '&nbsp;&nbsp;<a href="contents?'+filename + \
+        #                            '"><img src="resources/icons/notelist/list41-2-4.png"></a>' + \
+        #                            '&nbsp;&nbsp;<a href="multiaction?'+filename + \
+        #                            '"><img src="resources/icons/notelist/document62-3.png"></a>' + \
+        #                            '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + '</p>'
+        #                            '''
+        #             html_string += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
+        #                            cute_filename+'</a>' + '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + \
+        #                            '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?'+filename + \
+        #                            '"><img src="resources/icons/notelist/document62-3.png"></a> </p>'
+        #
+        #             i += 1
+        #
+        #             # Если надо, добавляем ссылки на позиции вхождения текста в заметке
+        #             #if main_window.lineEdit_Filter_Note_Text.text() != '':
+        #             #    filter_note_text = main_window.lineEdit_Filter_Note_Text.text()
+        #             if self.filter_text != '':
+        #                 filter_note_text = self.filter_text
+        #                 founded_i = 0
+        #                 # print('Ищем текст "'+filter_note_text+'" в строчках внутри заметки')
+        #                 line_i = 1
+        #                 for line in lines.split('\n'):
+        #                     pos = line.lower().find(filter_note_text.lower())
+        #                     if pos >= 0:
+        #                     # if filter_note_text.lower() in line.lower():
+        #                         # print('Нашли вхождение в строку '+str(line_i)+' - '+filter_note_text)
+        #                         # Нашли вхождение. Подсвечиваем и добавляем к выводу в Notelist
+        #                         founded_i += 1
+        #                         line = re.sub('('+filter_note_text+')', '<span id="highlight">'+'\\1</span>', line,
+        #                                       flags=re.I)
+        #                         html_string += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + \
+        #                                        ':</small>&nbsp;&nbsp;<a href="note?' + \
+        #                                        filename+'?'+str(founded_i)+'">'+line+'</a></p>'
+        #                         # <ul id=founded_text_in_note>
+        #                     line_i += 1
 
-        html_string += '<p id=history_date>Список всех заметок</p>'
 
-        html_string += '<div id=notelist>'
-        
-        active_link = main_window.current_open_note_link
-        
-        asps = []
-        notes_count = 0
-        notes_count_all = 0
-        notes_size = 0
-        notes_size_all = 0
-        i = 0
-        # print('Обновляем список файлов. Найдено:')
-
-        for root, dirs, files in os.walk(path_to_notes):
-            for file in files:
-                if file.endswith('.txt'):
-                    filename = os.path.join(root, file)
-                    size = os.stat(filename).st_size                    
-                    access_time = os.stat(filename).st_atime  # time of most recent access.
-                    modification_time = os.stat(filename).st_mtime  # time of most recent content modification
-
-                    # Продолжаем с найденным файловым элементом
-                    # Проверяем - нет ли этого элемента уже добавленного из истории
-                    if self.file_in_history(filename):
-                        continue # Переходим на следующий виток цикла
-
-                    cute_filename = self.make_cute_name(filename)
-
-                    # Анализ актуальности кеша, обновление базы списка заметок
-
-                    notes_count_all += 1
-                    notes_size_all += size
-                    lines = ''
-                    
-                    # Проверяем на неудовлетворение фильтру
-                    if self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower():
-                        # Если установлен фильтр имени и текущее имя не подходит, то проходим мимо и идем дальше
-                        continue
-
-                    # Проверяем на неудовлетворение фильтру по тексту содержимого заметки
-                    #if main_window.lineEdit_Filter_Note_Text.text() != '':
-                    if self.filter_text != '':
-                        # Надо загрузить заметку и провести поиск в ней на предмет содержимого
-                        fileObj = codecs.open( filename, "r", "utf-8" )
-                        lines = fileObj.read()
-                        fileObj.close()
-                        #if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
-                        if self.filter_text.lower() not in lines.lower():
-                            # Если искомого текста в заметке нет - просто идем к следующей
-                            continue
-
-                    notes_count += 1
-                    notes_size += size
-                    asps.append(file)
-
-                    # Вынимаем текстовый контент заметки и добавляем в массив
-
-                    # self.file_recs.append([filename, cute_filename, lines])
-
-                    # Добавляем в список элементов
-                    rec_item = self.item.copy()  # Делаем копию образца словаря
-                    rec_item['filename'] = filename
-                    rec_item['cutename'] = self.make_cute_name(filename)
-                    rec_item['size'] = size
-                    self.items_size += rec_item['size']  # Добавляем в общий размер
-                    # Добавляем элемент во внутренний список элементов
-                    self.items.append(rec_item)
-
-
-
-                    # Устанавливаем картинку - заметка с курсором, или без него
-                    if self.selected_position == i:
-                        # Текущая позиция - должна быть с курсором
-                        img_src = 'resources/icons/notelist/arrow130_h11.png'
-                        self.selected_url = 'note?'+filename
-                    else:
-                        if filename == active_link:
-                            img_src = 'resources/icons/notelist/g3-g1.png'
-                        else:
-                            img_src = 'resources/icons/notelist/g3.png'
-
-                    if filename == active_link:
-                        line_style = ' id="current_note" '
-                    else:
-                        line_style = ' id="notelist"'
-
-                    if self.filter_name != '':
-                        # Делаем подсветку текста из фильтра в списке заметки
-                        cute_filename = re.sub('('+self.filter_name+')', '<span id="highlight">'+'\\1</span>',
-                                               cute_filename, flags=re.I)
-
-                    # html_string += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
-                    # Format: multiaction / note :|: note_filename
-                    '''html_string += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
-                                   cute_filename+'</a>' + '&nbsp;&nbsp;<a href="contents?'+filename + \
-                                   '"><img src="resources/icons/notelist/list41-2-4.png"></a>' + \
-                                   '&nbsp;&nbsp;<a href="multiaction?'+filename + \
-                                   '"><img src="resources/icons/notelist/document62-3.png"></a>' + \
-                                   '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + '</p>'
-                                   '''
-                    html_string += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
-                                   cute_filename+'</a>' + '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + \
-                                   '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?'+filename + \
-                                   '"><img src="resources/icons/notelist/document62-3.png"></a> </p>'
-
-                    i += 1
-
-                    # Если надо, добавляем ссылки на позиции вхождения текста в заметке
-                    #if main_window.lineEdit_Filter_Note_Text.text() != '':
-                    #    filter_note_text = main_window.lineEdit_Filter_Note_Text.text()
-                    if self.filter_text != '':
-                        filter_note_text = self.filter_text
-                        founded_i = 0
-                        # print('Ищем текст "'+filter_note_text+'" в строчках внутри заметки')
-                        line_i = 1
-                        for line in lines.split('\n'):
-                            pos = line.lower().find(filter_note_text.lower())
-                            if pos >= 0:
-                            # if filter_note_text.lower() in line.lower():
-                                # print('Нашли вхождение в строку '+str(line_i)+' - '+filter_note_text)
-                                # Нашли вхождение. Подсвечиваем и добавляем к выводу в Notelist
-                                founded_i += 1
-                                line = re.sub('('+filter_note_text+')', '<span id="highlight">'+'\\1</span>', line,
-                                              flags=re.I)
-                                html_string += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + \
-                                               ':</small>&nbsp;&nbsp;<a href="note?' + \
-                                               filename+'?'+str(founded_i)+'">'+line+'</a></p>'
-                                # <ul id=founded_text_in_note>
-                            line_i += 1  
-
-        main_window.statusbar.showMessage('Found ' + str(notes_count_all)+' notes ('+hbytes(notes_size_all) + ') at ' + path_to_notes +
-                                            ', showed ' + str(notes_count)+' notes ('+hbytes(notes_size)+') in list.' )
+        # Обновляем информацию в статусной строке главного окна
+        main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count)+' notes ('+hbytes(self.all_found_files_size) + ') at ' + path_to_notes +
+                                            ', showed ' + str(self.items.count())+' notes ('+hbytes(self.items_size)+') in list.' )
 
                 
-        html_string = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_string, )
+        # html_string = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_string, )
         
-        # НОВАЯ ФУНКЦИЯ
-        # html_string = self.make_html_source_from_items_list()
+        html_string = self.make_html_source_from_items_list()
         
         main_window.notelist_source.setHtml(html_string)
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
         notelist.set_visible()
+
+
+
 
     def link_action(self, url):
         # Обрабатываем клик по линку в списке заметок
