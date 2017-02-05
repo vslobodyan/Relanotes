@@ -2600,28 +2600,47 @@ class Notelist():
         return (self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower())
     
     
-    def note_text_lines_is_allowed(self, filename):
-        # Проверяем - проходит ли фильтр на содержимое текста текущий файл заметки
-
-        fileObj = codecs.open(filename, "r", "utf-8")
-        lines = fileObj.read()
-        fileObj.close()
-        # if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
-        if self.filter_text.lower() not in lines.lower():
-            # Если искомого текста в заметке нет - просто идем к следующей
-            #print('Файл %s не подходит под фильтр текста "%s"' % (cute_filename.lower(), self.filter_text.lower()) )
-            continue
-        
-        
-        
-        return 0
+    #def note_text_lines_is_allowed(self, filename):
+        ## Проверяем - проходит ли фильтр на содержимое текста текущий файл заметки
+        #fileObj = codecs.open(filename, "r", "utf-8")
+        #lines = fileObj.read()
+        #fileObj.close()
+        ## if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
+        #if self.filter_text.lower() in lines.lower():
+            ## Если искомый текст есть в заметке - возвращаем его
+            #return lines
+        #else:
+            #return None
         
 
 
-    def add_item():
+    def add_item(self,
+                 filename = None,
+                 cutename = None,
+                 history = False,
+                 last_open = None,
+                 size = None,
+                 found_line_number = None,
+                 found_line_text = None
+                 ):
         # Добавляем элемент списка
+        rec_item = self.item.copy()  # Делаем копию образца словаря
+        rec_item['filename'] = filename
+        rec_item['cutename'] = cutename
+        rec_item['history'] = history
+        rec_item['last_open'] = last_open
+        rec_item['size'] = size
+
+        rec_item['found_line_number'] = found_line_number
+        rec_item['found_line_text'] = found_line_text
+
+        if size:
+            # Добавляем в общий размер
+            self.items_size += size
         
-        pass
+        # Добавляем элемент во внутренний список элементов
+        self.items.append(rec_item)
+        
     
     def clear_items(self):
         # Очищаем данные об элементах 
@@ -2633,8 +2652,20 @@ class Notelist():
         # Данные об отображенных (отфильтрованных) заметках
         self.items = []
         self.items_size = 0        
-        
 
+        # Данные о курсоре
+        self.selected_position = 0
+        self.selected_url = None
+        self.items_cursor_position = 0
+
+
+    def work_with_found_note(self, filename):
+        # Определяем - надо ли добавлять заметку в список.
+        # Надо ли искать в ней текст.
+        # И удовлетворяет ли она всем установленным фильтрам.
+        # Затем добавляем все необходимое в список и меняем соответствующие переменные.
+        
+        pass
 
 
     def collect_history_items_list(self):
@@ -2651,6 +2682,8 @@ class Notelist():
                 state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
                 continue  # Переходим на следующий виток цикла
 
+
+
             cute_filename = self.make_cute_name(rec_filename)
 
             # Если не подходит под фильтр имени - переходим к следующему
@@ -2658,23 +2691,11 @@ class Notelist():
                 continue
 
 
-            # Продолжаем с элементом истории, у которого есть файл
-            rec_item = self.item.copy()  # Делаем копию образца словаря
-            rec_item['filename'] = rec_filename
-            rec_item['cutename'] = cute_filename
-            rec_item['history'] = True
-            rec_item['last_open'] = rec_last_open
-            rec_item['size'] = os.stat(rec_filename).st_size
-            self.items_size += rec_item['size']  # Добавляем в общий размер
-            # Добавляем элемент во внутренний список элементов
-            self.items.append(rec_item)
-
-            # Поле времени доступа хранится почему-то в виде текста.
-            # Приходит отрезать правую часть с секундами и милисекундами
-            #rec_last_open_str = rec_last_open.rpartition(':')[0]
-            #html_string += '<p>%s <span id=history_date>%s</span></p>' % (self.make_cute_name(rec_filename), rec_last_open_str )
-
-
+            self.add_item(filename=rec_filename, 
+                          cutename=cute_filename, 
+                          history=True, 
+                          last_open=rec_last_open, 
+                          size=os.stat(rec_filename).st_size)
 
 
 
@@ -2736,15 +2757,9 @@ class Notelist():
 
                     # self.file_recs.append([filename, cute_filename, lines])
 
-                    # Добавляем в список элементов
-                    rec_item = self.item.copy()  # Делаем копию образца словаря
-                    rec_item['filename'] = filename
-                    rec_item['cutename'] = self.make_cute_name(filename)
-                    rec_item['size'] = size
-                    self.items_size += rec_item['size']  # Добавляем в общий размер
-                    # Добавляем элемент во внутренний список элементов
-                    self.items.append(rec_item)
-
+                    self.add_item(filename=filename,
+                                  cutename=self.make_cute_name(filename),
+                                  size=size)
                     i += 1
 
                     # Если надо, добавляем ссылки на позиции вхождения текста в заметке
@@ -2759,13 +2774,9 @@ class Notelist():
                                 # print('Нашли вхождение в строку '+str(line_i)+' - '+filter_note_text)
                                 # Нашли вхождение. Подсвечиваем и добавляем к выводу в Notelist
 
-                                # Добавляем в список элементов
-                                rec_item = self.item.copy()  # Делаем копию образца словаря
-                                rec_item['filename'] = filename
-                                rec_item['found_line_number'] = line_i
-                                rec_item['found_line_text'] = line
-                                # Добавляем элемент во внутренний список элементов
-                                self.items.append(rec_item)
+                                self.add_item(filename = filename,
+                                              found_line_number = line_i,
+                                              found_line_text = line)
 
                                 founded_i += 1
 
