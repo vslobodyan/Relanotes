@@ -210,20 +210,20 @@ class MyEventFilter(QtCore.QObject):
                 # На клавишу вниз - увеличиваем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Down:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist.selected_position += 1
+                    notelist.items_cursor_position += 1
                     notelist.update()
                     return True
                     
                 # На клавишу вверх - уменьшаем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Up:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist.selected_position -= 1
+                    notelist.items_cursor_position -= 1
                     notelist.update()
                     return True
 
                 # На Esc- возвращаемся в предыдущее открытую панель (текст заметки или содержание)
                 if event.key() == QtCore.Qt.Key_Escape:
-                    if notelist.selected_url != '':
+                    if notelist.items_cursor_url != '':
                         Note.set_visible(self, True)
                     return True
                 # FIXME: на Esc в поле ввода фильтра списка заметок должны возвращаться в предыдущую панель, а не просто
@@ -236,20 +236,20 @@ class MyEventFilter(QtCore.QObject):
                 # На клавишу вниз - увеличиваем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Down:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist.selected_position += 1
+                    notelist.items_cursor_position += 1
                     notelist.update()
                     return True
 
                 # На клавишу вверх - уменьшаем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Up:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist.selected_position -= 1
+                    notelist.items_cursor_position -= 1
                     notelist.update()
                     return True
 
                 # На Esc- возвращаемся в предыдущее открытую панель (текст заметки или содержание)
                 if event.key() == QtCore.Qt.Key_Escape:
-                    if notelist.selected_url != '':
+                    if notelist.items_cursor_url != '':
                         Note.set_visible(self, True)
                     return True
                 # FIXME: на Esc в поле ввода фильтра списка заметок должны возвращаться в предыдущую панель, а не просто
@@ -555,11 +555,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.unlock_ui()
 
     def filter_note_text_changed(self, filter_text=''):
-        notelist.selected_position = 0
+        notelist.items_cursor_position = 0
         notelist.timer_update.start(notelist.update_timeout)
 
     def notelist_filter_changed(self, filter_text):
-        notelist.selected_position = 0
+        notelist.items_cursor_position = 0
         notelist.timer_update.start(notelist.update_timeout)
 
     def show_html_source(self):
@@ -2283,7 +2283,7 @@ Creation-Date: 2012-09-02T11:16:31+04:00
         if note.is_visible():
             self.show_note_multiaction_win(main_window.current_open_note_link)
         else:
-            self.show_note_multiaction_win(notelist.selected_url.split('?')[1])
+            self.show_note_multiaction_win(notelist.items_cursor_url.split('?')[1])
 
     def show_note_multiaction_win(self, note_filename=''):
         # if note_filename == '':
@@ -2364,15 +2364,13 @@ class Notelist():
     filter_name = '' # Фильтрация списка заметок по имени заметки
     filter_text = ''  # Фильтрация списка заметок по тексту, содержащемуся внутри заметок
 
-    opened_url = None # Ссылка на открытую заметку
-
-    selected_position = 0 # Выделенная курсором позиция в списке, которую можно открыть по нажатию Enter
-    selected_url = None # Ссылка под курсором, которая откроется при нажатии Enter
+    #opened_url = None # Ссылка на открытую заметку
 
     allowed_note_files_extensions = ['.txt']
 
     items = []  # Элементы списка заметок
-    items_cursor_position = 0  # Положение курсора в списке элементов
+    items_cursor_position = 0  # Положение курсора в списке элементов, который можно открыть по нажатию Enter
+    items_cursor_url = None # Ссылка под курсором, которая откроется при нажатии Enter
     items_notes_size = 0 # Общий объём данных в заметках из списка
     items_notes_count = 0 # Количество отдельных заметок в списке элементов
 
@@ -2642,9 +2640,8 @@ class Notelist():
         self.items_notes_count = 0
 
         # Данные о курсоре
-        self.selected_position = 0
-        self.selected_url = None
-        self.items_cursor_position = 0
+        #self.items_cursor_url = None
+        #self.items_cursor_position = 0
 
 
 
@@ -2798,10 +2795,10 @@ class Notelist():
         size = one_item['size']
 
         # Устанавливаем картинку - заметка с курсором, или без него
-        if self.selected_position == item_number:
+        if self.items_cursor_position == item_number:
             # Текущая позиция - должна быть с курсором
             img_src = 'resources/icons/notelist/arrow130_h11.png'
-            self.selected_url = 'note?'+filename
+            self.items_cursor_url = 'note?'+filename
         else:
             if filename == active_link:
                 img_src = 'resources/icons/notelist/g3-g1.png'
@@ -2889,6 +2886,10 @@ class Notelist():
         main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count)+' notes ('+hbytes(self.all_found_files_size) + ') at ' + path_to_notes +
                                             ', showed ' + str(self.items_notes_count)+' notes ('+hbytes(self.items_notes_size)+') in list.' )
 
+        if self.items_notes_count and not self.items_cursor_position:
+            # Инициализируем положение курсора в списке
+            self.items_cursor_position = 1
+
         html_string = self.make_html_source_from_items_list()
         
         main_window.notelist_source.setHtml(html_string)
@@ -2914,8 +2915,8 @@ class Notelist():
             note.show_note_multiaction_win(link_filename)
 
     def open_selected_url(self):
-        print('DEBUG: open_selected_url("self.selected_url=%s")' % self.selected_url)
-        link_type, link_filename = self.selected_url.split('?')
+        print('DEBUG: open_selected_url("self.items_cursor_url=%s")' % self.items_cursor_url)
+        link_type, link_filename = self.items_cursor_url.split('?')
         if link_type == 'note':
             main_window.open_file_in_editor(link_filename)
         if link_type == 'multiaction':
