@@ -2600,13 +2600,41 @@ class Notelist():
         return (self.filter_name != '' and self.filter_name.lower() not in cute_filename.lower())
     
     
-    def note_text_is_allowed(self, filename):
+    def note_text_lines_is_allowed(self, filename):
         # Проверяем - проходит ли фильтр на содержимое текста текущий файл заметки
+
+        fileObj = codecs.open(filename, "r", "utf-8")
+        lines = fileObj.read()
+        fileObj.close()
+        # if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
+        if self.filter_text.lower() not in lines.lower():
+            # Если искомого текста в заметке нет - просто идем к следующей
+            #print('Файл %s не подходит под фильтр текста "%s"' % (cute_filename.lower(), self.filter_text.lower()) )
+            continue
         
         
         
         return 0
         
+
+
+    def add_item():
+        # Добавляем элемент списка
+        
+        pass
+    
+    def clear_items(self):
+        # Очищаем данные об элементах 
+        
+        # Общие данные обо всех файлах заметок
+        self.all_found_files_count = 0
+        self.all_found_files_size = 0
+        
+        # Данные об отображенных (отфильтрованных) заметках
+        self.items = []
+        self.items_size = 0        
+        
+
 
 
     def collect_history_items_list(self):
@@ -2658,11 +2686,7 @@ class Notelist():
         # subdirectories
         # http://stackoverflow.com/questions/2225564/get-a-filtered-list-of-files-in-a-directory
 
-        asps = []
-        notes_count = 0
-        self.all_found_files_count = 0
-        notes_size = 0
-        self.all_found_files_size = 0
+        #asps = []
         i = 0
         # print('Обновляем список файлов. Найдено:')
 
@@ -2706,9 +2730,7 @@ class Notelist():
                             #print('Файл %s не подходит под фильтр текста "%s"' % (cute_filename.lower(), self.filter_text.lower()) )
                             continue
 
-                    notes_count += 1
-                    notes_size += size
-                    asps.append(file)
+                    #asps.append(file)
 
                     # Вынимаем текстовый контент заметки и добавляем в массив
 
@@ -2874,10 +2896,7 @@ class Notelist():
 
         # self.file_recs = []
         
-        # Обнуляем внутренний список элементов
-        self.items = []
-        self.items_size = 0
-
+        self.clear_items()
         self.collect_history_items_list()
         self.collect_items_list()
 
