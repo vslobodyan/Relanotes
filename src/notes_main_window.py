@@ -2377,6 +2377,7 @@ class Notelist():
     items = []  # Элементы списка заметок
     items_cursor_position = 0  # Положение курсора в списке элементов, который можно открыть по нажатию Enter
     items_cursor_url = None # Ссылка под курсором, которая откроется при нажатии Enter
+    items_cursor_cutename = None # Красивое имя под курсором
     items_notes_size = 0 # Общий объём данных в заметках из списка
     items_notes_count = 0 # Количество отдельных заметок в списке элементов
 
@@ -2538,7 +2539,7 @@ class Notelist():
 
 
     def move_cursor(self, delta=0):
-        print('Перемещаем курсор по списку с дельтой %s' % delta)
+        #print('Перемещаем курсор по списку с дельтой %s' % delta)
         # Перемещаем курсор по списку заметок в заданном направлении
         new_position = self.items_cursor_position + delta
         if new_position<1:
@@ -2548,7 +2549,6 @@ class Notelist():
             # Уперлись в потолок. Надо мотать в начало.
             new_position = new_position - len(self.items)
         self.items_cursor_position = new_position
-        # Если новая позиция при перемещении вниз выходит за края экрана - надо переместить и скроллинг (курсор документа) ниже
         self.update()
 
 
@@ -2822,6 +2822,7 @@ class Notelist():
             # Текущая позиция - должна быть с курсором
             img_src = 'resources/icons/notelist/arrow130_h11.png'
             self.items_cursor_url = 'note?'+filename
+            self.items_cursor_cutename = self.make_cute_name(filename)
         else:
             if filename == active_link:
                 img_src = 'resources/icons/notelist/g3-g1.png'
@@ -2921,6 +2922,10 @@ class Notelist():
         
         main_window.notelist_source.setHtml(html_string)
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
+        # Скроллим список заметок до текущего курсора
+        print('Поиск текста "%s"' % self.items_cursor_cutename)
+        main_window.textBrowser_Listnotes.find(self.items_cursor_cutename)
+
         notelist.set_visible()
 
 
