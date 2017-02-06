@@ -2922,9 +2922,7 @@ class Notelist():
         
         main_window.notelist_source.setHtml(html_string)
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
-        # Скроллим список заметок до текущего курсора
-        print('Поиск текста "%s"' % self.items_cursor_cutename)
-        main_window.textBrowser_Listnotes.find(self.items_cursor_cutename)
+        # Тут надо скроллить список заметок до текущего курсора
 
         notelist.set_visible()
 
