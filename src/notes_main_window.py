@@ -210,15 +210,17 @@ class MyEventFilter(QtCore.QObject):
                 # На клавишу вниз - увеличиваем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Down:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist.items_cursor_position += 1
-                    notelist.update()
+                    #notelist.items_cursor_position += 1
+                    #notelist.update()
+                    notelist.move_cursor(delta=1)
                     return True
                     
                 # На клавишу вверх - уменьшаем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Up:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist.items_cursor_position -= 1
-                    notelist.update()
+                    #notelist.items_cursor_position -= 1
+                    #notelist.update()
+                    notelist.move_cursor(delta=-1)
                     return True
 
                 # На Esc- возвращаемся в предыдущее открытую панель (текст заметки или содержание)
@@ -236,15 +238,17 @@ class MyEventFilter(QtCore.QObject):
                 # На клавишу вниз - увеличиваем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Down:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist.items_cursor_position += 1
-                    notelist.update()
+                    #notelist.items_cursor_position += 1
+                    #notelist.update
+                    notelist.move_cursor(delta=1)
                     return True
 
                 # На клавишу вверх - уменьшаем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Up:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    notelist.items_cursor_position -= 1
-                    notelist.update()
+                    #notelist.items_cursor_position -= 1
+                    #notelist.update()
+                    notelist.move_cursor(delta=-1)
                     return True
 
                 # На Esc- возвращаемся в предыдущее открытую панель (текст заметки или содержание)
@@ -2531,6 +2535,23 @@ class Notelist():
     def update(self):
         # Обновляем список заметок
         self.rescan_files_in_notes_path()
+
+
+    def move_cursor(self, delta=0):
+        print('Перемещаем курсор по списку с дельтой %s' % delta)
+        # Перемещаем курсор по списку заметок в заданном направлении
+        new_position = self.items_cursor_position + delta
+        if new_position<1:
+            # Уперлись в пол. Надо мотать в конец.
+            new_position = len(self.items) + new_position
+        elif new_position>len(self.items):
+            # Уперлись в потолок. Надо мотать в начало.
+            new_position = new_position - len(self.items)
+        self.items_cursor_position = new_position
+        # Если новая позиция при перемещении вниз выходит за края экрана - надо переместить и скроллинг (курсор документа) ниже
+        self.update()
+
+
 
     def get_and_display_filters(self):
         # Получаем текущий фильтр для списка заметок
