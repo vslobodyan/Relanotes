@@ -556,10 +556,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def filter_note_text_changed(self, filter_text=''):
         notelist.items_cursor_position = 0
+        notelist.need_rescan = True
         notelist.timer_update.start(notelist.update_timeout)
 
     def notelist_filter_changed(self, filter_text):
         notelist.items_cursor_position = 0
+        notelist.need_rescan = True
         notelist.timer_update.start(notelist.update_timeout)
 
     def show_html_source(self):
@@ -2527,7 +2529,7 @@ class Notelist():
             #    main_window.lineEdit_Filter_Note_Text.selectAll()
 
     def update(self):
-        # Обновляем список заметок 
+        # Обновляем список заметок
         self.rescan_files_in_notes_path()
 
     def get_and_display_filters(self):
@@ -2878,9 +2880,13 @@ class Notelist():
         # Обновляем список заметок в зависимости от фильтров
         self.get_and_display_filters()
 
-        self.clear_items()
-        self.collect_history_items_list()
-        self.collect_other_items_list()
+        if self.need_rescan:
+            # Если требуется рескан файлов - проводим его
+            #print('Требуется рескан файлов')
+            self.clear_items()
+            self.collect_history_items_list()
+            self.collect_other_items_list()
+            self.need_rescan = False
 
         # Обновляем информацию в статусной строке главного окна
         main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count)+' notes ('+hbytes(self.all_found_files_size) + ') at ' + path_to_notes +
