@@ -2376,6 +2376,7 @@ class Notelist():
 
     items = []  # Элементы списка заметок
     items_cursor_position = 0  # Положение курсора в списке элементов, который можно открыть по нажатию Enter
+    move_cursor_direction = None # Признак того - куда надо передвинуть реальный курсор в QTextBrowser вслед за виртуальным
     items_cursor_url = None # Ссылка под курсором, которая откроется при нажатии Enter
     items_cursor_cutename = None # Красивое имя под курсором
     items_notes_size = 0 # Общий объём данных в заметках из списка
@@ -2489,6 +2490,35 @@ class Notelist():
     #         pass
 
 
+    def move_textbrowser_cursor(self):
+        # Двигаем курсор в списке заметок вслед за перемещением виртуального курсора, чтобы он всегда был в поле видимости
+        #cursor = main_window.textBrowser_Listnotes.textCursor()
+        print('self.move_cursor_direction=%s' % self.move_cursor_direction)
+        #if self.move_cursor_direction == 'up':
+        #    cursor.movePosition(QtGui.QTextCursor.Up)
+        #if self.move_cursor_direction == 'down':
+        #    cursor.movePosition(QtGui.QTextCursor.Down)
+        #if self.move_cursor_direction == 'end':
+        #    cursor.movePosition(QtGui.QTextCursor.End)
+        #if self.move_cursor_direction == 'start':
+        #    cursor.movePosition(QtGui.QTextCursor.Start)
+        #main_window.textBrowser_Listnotes.ensureCursorVisible()
+        #self.move_cursor_direction = None
+
+        scrollbar_maximum = main_window.textBrowser_Listnotes.verticalScrollBar().maximum()
+        percent_of_position = self.items_cursor_position / len(self.items)
+        scrollbar_set_pos = scrollbar_maximum * percent_of_position
+        listnotes_height = main_window.textBrowser_Listnotes.height()
+        print('scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, listnotes_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, listnotes_height) )
+
+        if scrollbar_set_pos < listnotes_height/2:
+            scrollbar_set_pos = 0
+        if scrollbar_set_pos > scrollbar_maximum - listnotes_height/2:
+            scrollbar_set_pos = scrollbar_maximum
+        main_window.textBrowser_Listnotes.verticalScrollBar().setValue(scrollbar_set_pos)
+
+
+
 
     def set_visible(self, visible=True):
         # Переключение видимости всего что связано со списком заметок
@@ -2545,9 +2575,15 @@ class Notelist():
         if new_position<1:
             # Уперлись в пол. Надо мотать в конец.
             new_position = len(self.items) + new_position
+            self.move_cursor_direction = 'end'
         elif new_position>len(self.items):
             # Уперлись в потолок. Надо мотать в начало.
             new_position = new_position - len(self.items)
+            self.move_cursor_direction = 'start'
+        elif delta>0:
+            self.move_cursor_direction = 'up'
+        elif delta<0:
+            self.move_cursor_direction = 'down'
         self.items_cursor_position = new_position
         self.update()
 
@@ -2922,8 +2958,7 @@ class Notelist():
         
         main_window.notelist_source.setHtml(html_string)
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
-        # Тут надо скроллить список заметок до текущего курсора
-
+        self.move_textbrowser_cursor()
         notelist.set_visible()
 
 
