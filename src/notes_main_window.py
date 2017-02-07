@@ -2911,7 +2911,7 @@ class Notelist():
                     header_string = "Найдено в истории обращений к заметкам:"
                 else:
                     header_string = "История обращений к заметкам"
-                html_source += '<p id=head5>%s</p>' % header_string
+                html_source += '<span id=head5>%s</span>' % header_string
             if not collect_history_is_done and not one_item['history']:
                 # У нас первый элемент, который не связан с историей. Надо внести новый заголовок
                 collect_history_is_done = True
