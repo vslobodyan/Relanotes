@@ -2376,7 +2376,7 @@ class Notelist():
 
     items = []  # Элементы списка заметок
     items_cursor_position = 0  # Положение курсора в списке элементов, который можно открыть по нажатию Enter
-    move_cursor_direction = None # Признак того - куда надо передвинуть реальный курсор в QTextBrowser вслед за виртуальным
+    #move_cursor_direction = None # Признак того - куда надо передвинуть реальный курсор в QTextBrowser вслед за виртуальным
     items_cursor_url = None # Ссылка под курсором, которая откроется при нажатии Enter
     items_cursor_cutename = None # Красивое имя под курсором
     items_notes_size = 0 # Общий объём данных в заметках из списка
@@ -2493,7 +2493,7 @@ class Notelist():
     def move_textbrowser_cursor(self):
         # Двигаем курсор в списке заметок вслед за перемещением виртуального курсора, чтобы он всегда был в поле видимости
         #cursor = main_window.textBrowser_Listnotes.textCursor()
-        print('self.move_cursor_direction=%s' % self.move_cursor_direction)
+        #print('self.move_cursor_direction=%s' % self.move_cursor_direction)
         #if self.move_cursor_direction == 'up':
         #    cursor.movePosition(QtGui.QTextCursor.Up)
         #if self.move_cursor_direction == 'down':
@@ -2511,7 +2511,7 @@ class Notelist():
         listnotes_height = main_window.textBrowser_Listnotes.height()
         print('scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, listnotes_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, listnotes_height) )
 
-        if scrollbar_set_pos < listnotes_height/2:
+        if scrollbar_set_pos < listnotes_height * 0.8:
             scrollbar_set_pos = 0
         if scrollbar_set_pos > scrollbar_maximum - listnotes_height/2:
             scrollbar_set_pos = scrollbar_maximum
@@ -2575,15 +2575,15 @@ class Notelist():
         if new_position<1:
             # Уперлись в пол. Надо мотать в конец.
             new_position = len(self.items) + new_position
-            self.move_cursor_direction = 'end'
+            #self.move_cursor_direction = 'end'
         elif new_position>len(self.items):
             # Уперлись в потолок. Надо мотать в начало.
             new_position = new_position - len(self.items)
-            self.move_cursor_direction = 'start'
-        elif delta>0:
-            self.move_cursor_direction = 'up'
-        elif delta<0:
-            self.move_cursor_direction = 'down'
+            #self.move_cursor_direction = 'start'
+        #elif delta>0:
+        #    self.move_cursor_direction = 'up'
+        #elif delta<0:
+        #    self.move_cursor_direction = 'down'
         self.items_cursor_position = new_position
         self.update()
 
