@@ -2509,7 +2509,7 @@ class Notelist():
         percent_of_position = self.items_cursor_position / len(self.items)
         scrollbar_set_pos = scrollbar_maximum * percent_of_position
         listnotes_height = main_window.textBrowser_Listnotes.height()
-        print('scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, listnotes_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, listnotes_height) )
+        #print('scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, listnotes_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, listnotes_height) )
 
         if scrollbar_set_pos < listnotes_height * 0.8:
             scrollbar_set_pos = 0
