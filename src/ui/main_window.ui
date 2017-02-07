@@ -614,7 +614,7 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>History</string>
     </property>
-    <addaction name="actionClear"/>
+    <addaction name="actionHistoryClear"/>
     <addaction name="actionHistory_preferences"/>
    </widget>
    <widget class="QMenu" name="menuFormat">
@@ -1239,7 +1239,7 @@ p, li { white-space: pre-wrap; }
     <string>Ctrl+Shift+Z</string>
    </property>
   </action>
-  <action name="actionClear">
+  <action name="actionHistoryClear">
    <property name="text">
     <string>&amp;Clear</string>
    </property>

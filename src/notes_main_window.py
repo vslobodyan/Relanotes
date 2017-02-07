@@ -329,7 +329,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.actionHeading_3, self.actionHeading_4,
             self.actionHeading_5, self.actionHeading_6,
             self.actionUndo, self.actionRedo,
-            self.actionClear, self.actionFind_in_current_note,
+            self.actionFind_in_current_note,
             self.actionFind_next_in_cur_note,
             self.actionShow_content_collapse_all_H,
             self.actionCollapse_all_H_exclude_cur,
