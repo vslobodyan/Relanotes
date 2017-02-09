@@ -465,6 +465,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionCalculator.triggered.connect(self.show_calculator)
         self.actionPreferences.triggered.connect(self.show_preferences)
         
+        self.actionHistoryClear.triggered.connect(self.history_clear)
+
+
         self.actionPrevious_note.triggered.connect(self.previous_note)
         self.actionNext_note.triggered.connect(self.next_note)
         self.actionNext_note.setDisabled(True)
@@ -739,7 +742,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             # except OSError:
                 # print('Please open a browser on: '+url)
     
-    
+
+    def history_clear(self):
+        # Очистка истории последних открытых заметок
+        pass
+
+
     def previous_note(self):
         self.statusbar.showMessage('Open previous note in history')
         
@@ -2504,6 +2512,10 @@ class Notelist():
         #    cursor.movePosition(QtGui.QTextCursor.Start)
         #main_window.textBrowser_Listnotes.ensureCursorVisible()
         #self.move_cursor_direction = None
+
+        # Если нет элементов в списке - выходим
+        if len(self.items)<1:
+            return 0
 
         scrollbar_maximum = main_window.textBrowser_Listnotes.verticalScrollBar().maximum()
         percent_of_position = self.items_cursor_position / len(self.items)
