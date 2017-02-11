@@ -12,7 +12,7 @@ pyrcc5 resources/resources.qrc -o resources/resources_rc.py
 # find -type f -path ui -name \*.py -exec sed -i -r 's/import resources_rc/import resources.resources_rc/g' {} \;
 #sed 's/<что_ищем>/<на_что_меняем>/' <входной файл> > <выходной файл>
 
-ui_files=("src/ui/main_window.py" "src/ui/preferences_window.py" "src/ui/calculator_window.py" "src/ui/note_multiaction.py") 
+ui_files=("src/ui/main_window.py" "src/ui/preferences_window.py" "src/ui/calculator_window.py" "src/ui/note_multiaction.py" "src/ui/clear_history_dialog.py") 
 
 for afile in ${ui_files[@]} 
 do

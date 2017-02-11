@@ -13,7 +13,7 @@ from datetime import datetime  # , date  #, time
 import codecs
 
 #from src.ui import calculator_window, preferences_window, note_multiaction
-from src.ui import preferences_window, note_multiaction
+from src.ui import preferences_window, note_multiaction, clear_history_dialog
 from src.ui.main_window import *
 from src import calculator
 
@@ -744,8 +744,47 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     
 
     def history_clear(self):
-        # Очистка истории последних открытых заметок
-        pass
+        # Подготовка и отображение диалога очистки истории последних открытых заметок
+
+        #note_filename = get_correct_filename_from_url(note_filename)
+
+        #notemultiaction_win.labelNoteFileName.setText(note_filename)
+        #notemultiaction_win.lineEdit.setText('')
+        #notemultiaction_win.lineEdit.setFocus()
+        #clear_history_win.show()
+        
+        history_items = [111, 222, 333, 444 ]
+        checkboxes = []
+        
+        history_rec = {}
+        history_rec['checkbox'] = None
+        history_rec['label'] = None
+        history_rec['last_open'] = None
+
+        history_array=[]
+        layout = QtWidgets.QVBoxLayout(clear_history_win.scrollArea)
+        layout.setAlignment(QtCore.Qt.AlignTop)
+        #clear_history_win.scrollArea.setWidgetResizable(True)
+
+        # Перечисляем историю в списке
+        for history_item in history_items:
+            # Добавляем с список
+            item = QtWidgets.QListWidgetItem()
+            item.setData(QtCore.Qt.DisplayRole, str(history_item) );
+            item.setData(QtCore.Qt.UserRole + 1, "This is description");
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            item.setCheckState(QtCore.Qt.Unchecked)
+            clear_history_win.listWidget.addItem(item)
+
+            # Добавляем в scrollarea
+            #checkboxes.append(QtWidgets.QCheckBox( str(history_item) , clear_history_win.scrollArea))
+            layout.addWidget( QtWidgets.QCheckBox( str(history_item)+'<b>qwe</b>' ) )
+
+        # Запускаем диалог и получаем ответ пользователя
+        if clear_history_win.exec():
+            print('Удаляем историю: ..')
+
+
 
 
     def previous_note(self):
@@ -2413,7 +2452,7 @@ class Notelist():
     # file_recs = []
 
     timer_update = QtCore.QTimer()
-    update_timeout = 350  # было 350
+    update_timeout = 420  # было 350
 
 
     # class DB():
@@ -3131,6 +3170,30 @@ class PreferencesWindow(QtWidgets.QDialog, preferences_window.Ui_DialogPreferenc
         # self.lineEdit.setFocus()
 
 
+class ClearHistoryDialog(QtWidgets.QDialog, clear_history_dialog.Ui_ClearHistoryDialog):
+
+    def ok_pressed(self):
+        pass
+    def cancel_pressed(self):
+        pass
+
+
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+        self.setupUi(self)
+        # self.connect(self.lineEdit, SIGNAL("textEdited ( const QString& )"), self.updateUi)
+        # self.connect(self.lineEdit, SIGNAL("returnPressed()"), self.addToHistory)
+        # self.connect(self.labelClearHistory, SIGNAL("	linkActivated( const QString& )"), self.clearHistory)
+        # self.labelResult.setText('-')
+        # self.lineEdit.setFocus()
+
+        #self.searchAutoEDCEChk.stateChanged.connect(self.onSearchAutoEDCEChanged)
+        #self.testEdceBtn.clicked.connect(self.onTestEdceConnectionClicked)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).clicked.connect(self.accept)
+        self.buttonBox.button(QtWidgets.QDialogButtonBox.Cancel).clicked.connect(self.reject)
+
+
+
 class NoteMultiactionWindow(QtWidgets.QDialog, note_multiaction.Ui_DialogNoteMultiaction):  # src.ui.
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
@@ -3257,6 +3320,7 @@ calculator_win = calculator.CalculatorWindow()
 
 preferences_win = PreferencesWindow()
 notemultiaction_win = NoteMultiactionWindow()
+clear_history_win = ClearHistoryDialog()
 
 app.installEventFilter(myFilter)
 

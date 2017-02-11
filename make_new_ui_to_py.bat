@@ -29,5 +29,7 @@ pyuic5 "src/ui/%UI_FILE%.ui" --import-from "resources" -o "src/ui/%UI_FILE%.py"
 set UI_FILE="note_multiaction"
 pyuic5 "src/ui/%UI_FILE%.ui" --import-from "resources" -o "src/ui/%UI_FILE%.py"
 
+set UI_FILE="clear_history_dialog"
+pyuic5 "src/ui/%UI_FILE%.ui" --import-from "resources" -o "src/ui/%UI_FILE%.py"
 
 pause
