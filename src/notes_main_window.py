@@ -746,43 +746,60 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def history_clear(self):
         # Подготовка и отображение диалога очистки истории последних открытых заметок
 
-        #note_filename = get_correct_filename_from_url(note_filename)
-
-        #notemultiaction_win.labelNoteFileName.setText(note_filename)
-        #notemultiaction_win.lineEdit.setText('')
-        #notemultiaction_win.lineEdit.setFocus()
-        #clear_history_win.show()
-        
-        history_items = [111, 222, 333, 444 ]
-        checkboxes = []
+        history_items = []
+        #checkboxes = []
         
         history_rec = {}
         history_rec['checkbox'] = None
         history_rec['label'] = None
         history_rec['last_open'] = None
 
-        history_array=[]
         layout = QtWidgets.QVBoxLayout(clear_history_win.scrollArea)
         layout.setAlignment(QtCore.Qt.AlignTop)
-        #clear_history_win.scrollArea.setWidgetResizable(True)
 
-        # Перечисляем историю в списке
-        for history_item in history_items:
-            # Добавляем с список
-            item = QtWidgets.QListWidgetItem()
-            item.setData(QtCore.Qt.DisplayRole, str(history_item) );
-            item.setData(QtCore.Qt.UserRole + 1, "This is description");
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-            item.setCheckState(QtCore.Qt.Unchecked)
-            clear_history_win.listWidget.addItem(item)
+        # Ставим переключатели в позицию по-умолчанию
+        clear_history_win.chbAll.setChecked(False)
+        clear_history_win.chbTwoWeeks.setChecked(False)
+        clear_history_win.chbNone.setChecked(False)
+
+        # Собираем все элементы истории
+        file_recs_rows = state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
+
+        for row in file_recs_rows:
+            rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
+
+            ## Проверка файла из истории на существование 
+            #if not os.path.isfile(rec_filename):
+            #    # Файл не существует или это каталог, а не файл.
+            #    # Удаляем из истории
+            #    state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
+            #    continue  # Переходим на следующий виток цикла
+
+            history_item = history_rec.copy()
+            new_checkbox = QtWidgets.QCheckBox( str(rec_filename) ) 
+            layout.addWidget(new_checkbox)
+            history_item['checkbox'] = new_checkbox
+            history_item['label'] = rec_filename
+            history_item['last_open'] = rec_last_open
+
+            history_items.append(history_item)
+
+            #self.work_with_found_note(filename=rec_filename, 
+            #                          history=True, 
+            #                          size=os.stat(rec_filename).st_size, 
+            #                          last_open=rec_last_open)
 
             # Добавляем в scrollarea
             #checkboxes.append(QtWidgets.QCheckBox( str(history_item) , clear_history_win.scrollArea))
-            layout.addWidget( QtWidgets.QCheckBox( str(history_item)+'<b>qwe</b>' ) )
+            #layout.addWidget( QtWidgets.QCheckBox( str(history_item)+'<b>qwe</b>' ) )
+        
 
         # Запускаем диалог и получаем ответ пользователя
         if clear_history_win.exec():
-            print('Удаляем историю: ..')
+            print('Надо удалить из истории:')
+            for one_item in history_items:
+                if one_item['checkbox'].isChecked():
+                    print(' - %s' % one_item['label'] )
 
 
 

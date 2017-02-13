@@ -93,14 +93,11 @@
         <x>0</x>
         <y>0</y>
         <width>606</width>
-        <height>187</height>
+        <height>385</height>
        </rect>
       </property>
      </widget>
     </widget>
-   </item>
-   <item>
-    <widget class="QListWidget" name="listWidget"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
