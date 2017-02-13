@@ -9,7 +9,7 @@ import os
 import re
 import time
 import sqlite3
-from datetime import datetime  # , date  #, time
+from datetime import datetime, timedelta  # , date  #, time
 import codecs
 
 #from src.ui import calculator_window, preferences_window, note_multiaction
@@ -745,23 +745,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def history_clear(self):
         # Подготовка и отображение диалога очистки истории последних открытых заметок
-
-        history_items = []
-        #checkboxes = []
+        clear_history_win.history_items = []
         
-        history_rec = {}
-        history_rec['checkbox'] = None
-        history_rec['label'] = None
-        history_rec['last_open'] = None
-
-        #clear_history_win.scrollArea.layout()
         layout = QtWidgets.QVBoxLayout(clear_history_win.scrollArea)
         layout.setAlignment(QtCore.Qt.AlignTop)
-
-        # Ставим переключатели в позицию по-умолчанию
-        clear_history_win.chbAll.setChecked(False)
-        clear_history_win.chbTwoWeeks.setChecked(False)
-        clear_history_win.chbNone.setChecked(False)
 
         # Собираем все элементы истории
         file_recs_rows = state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
@@ -776,22 +763,23 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             #    state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
             #    continue  # Переходим на следующий виток цикла
 
-            history_item = history_rec.copy()
-            new_checkbox = QtWidgets.QCheckBox( str(rec_filename) ) 
+            history_item = clear_history_win.history_rec.copy()
+            chb_label = rec_last_open.rpartition(':')[0] + ' - ' + str(rec_filename)
+            new_checkbox = QtWidgets.QCheckBox(chb_label)
             layout.addWidget(new_checkbox)
             history_item['checkbox'] = new_checkbox
-            history_item['label'] = rec_filename
+            history_item['filename'] = rec_filename
             history_item['last_open'] = rec_last_open
 
-            history_items.append(history_item)
+            clear_history_win.history_items.append(history_item)
 
         # Запускаем диалог и получаем ответ пользователя
         if clear_history_win.exec():
             print('Надо удалить из истории:')
-            for one_item in history_items:
+            for one_item in clear_history_win.history_items:
                 if one_item['checkbox'].isChecked():
-                    print(' - %s' % one_item['label'] )
-                    state_db_connection.execute("UPDATE file_recs SET last_open=NULL, count_opens=0 WHERE filename=?", (one_item['label'],) )
+                    print(' - %s' % one_item['filename'] )
+                    state_db_connection.execute("UPDATE file_recs SET last_open=NULL, count_opens=0 WHERE filename=?", (one_item['filename'],) )
 
         # Удаляем все виджеты и компоновщик
         while layout.count():
@@ -3187,6 +3175,29 @@ class PreferencesWindow(QtWidgets.QDialog, preferences_window.Ui_DialogPreferenc
 
 class ClearHistoryDialog(QtWidgets.QDialog, clear_history_dialog.Ui_ClearHistoryDialog):
 
+    history_items = []
+
+    history_rec = {}
+    history_rec['checkbox'] = None
+    history_rec['filename'] = None
+    history_rec['last_open'] = None
+
+    def select_all(self):
+        for one_item in self.history_items:
+            one_item['checkbox'].setChecked(True)
+
+    def select_none(self):
+        for one_item in self.history_items:
+            one_item['checkbox'].setChecked(False)
+
+    def select_older_than_two_weeks(self):
+        today = datetime.now()
+        two_weeks = timedelta(days=14)
+        for one_item in self.history_items:
+            last_open = datetime.strptime(one_item['last_open'], '%Y-%m-%d %H:%M:%S.%f')
+            if last_open + two_weeks < today:
+                one_item['checkbox'].setChecked(True)
+
     def ok_pressed(self):
         pass
     def cancel_pressed(self):
@@ -3196,18 +3207,13 @@ class ClearHistoryDialog(QtWidgets.QDialog, clear_history_dialog.Ui_ClearHistory
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
-        # self.connect(self.lineEdit, SIGNAL("textEdited ( const QString& )"), self.updateUi)
-        # self.connect(self.lineEdit, SIGNAL("returnPressed()"), self.addToHistory)
-        # self.connect(self.labelClearHistory, SIGNAL("	linkActivated( const QString& )"), self.clearHistory)
-        # self.labelResult.setText('-')
-        # self.lineEdit.setFocus()
 
-        #self.searchAutoEDCEChk.stateChanged.connect(self.onSearchAutoEDCEChanged)
-        #self.testEdceBtn.clicked.connect(self.onTestEdceConnectionClicked)
         self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).clicked.connect(self.accept)
         self.buttonBox.button(QtWidgets.QDialogButtonBox.Cancel).clicked.connect(self.reject)
 
-
+        self.pbutSelectAll.clicked.connect(self.select_all)
+        self.pbutSelectOlderThanTwoWeeks.clicked.connect(self.select_older_than_two_weeks)
+        self.pbutSelectNone.clicked.connect(self.select_none)
 
 
 class NoteMultiactionWindow(QtWidgets.QDialog, note_multiaction.Ui_DialogNoteMultiaction):  # src.ui.

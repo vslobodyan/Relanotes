@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>626</width>
+    <width>741</width>
     <height>540</height>
    </rect>
   </property>
@@ -41,52 +41,43 @@
        <string>Select items for deleting:</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="chbAll">
+     <widget class="QPushButton" name="pbutSelectAll">
       <property name="geometry">
        <rect>
-        <x>290</x>
+        <x>360</x>
         <y>10</y>
-        <width>70</width>
-        <height>17</height>
+        <width>80</width>
+        <height>23</height>
        </rect>
       </property>
       <property name="text">
        <string>All</string>
       </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
-      </property>
      </widget>
-     <widget class="QCheckBox" name="chbTwoWeeks">
+     <widget class="QPushButton" name="pbutSelectOlderThanTwoWeeks">
       <property name="geometry">
        <rect>
-        <x>290</x>
+        <x>360</x>
         <y>40</y>
-        <width>120</width>
-        <height>17</height>
+        <width>136</width>
+        <height>23</height>
        </rect>
       </property>
       <property name="text">
        <string>Older then 2 weeks</string>
       </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
-      </property>
      </widget>
-     <widget class="QCheckBox" name="chbNone">
+     <widget class="QPushButton" name="pbutSelectNone">
       <property name="geometry">
        <rect>
-        <x>290</x>
+        <x>360</x>
         <y>70</y>
-        <width>70</width>
-        <height>17</height>
+        <width>80</width>
+        <height>23</height>
        </rect>
       </property>
       <property name="text">
        <string>None</string>
-      </property>
-      <property name="autoExclusive">
-       <bool>true</bool>
       </property>
      </widget>
     </widget>
@@ -101,7 +92,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>606</width>
+        <width>721</width>
         <height>385</height>
        </rect>
       </property>
