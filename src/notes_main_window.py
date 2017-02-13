@@ -754,6 +754,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         history_rec['label'] = None
         history_rec['last_open'] = None
 
+        #clear_history_win.scrollArea.layout()
         layout = QtWidgets.QVBoxLayout(clear_history_win.scrollArea)
         layout.setAlignment(QtCore.Qt.AlignTop)
 
@@ -784,22 +785,19 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             history_items.append(history_item)
 
-            #self.work_with_found_note(filename=rec_filename, 
-            #                          history=True, 
-            #                          size=os.stat(rec_filename).st_size, 
-            #                          last_open=rec_last_open)
-
-            # Добавляем в scrollarea
-            #checkboxes.append(QtWidgets.QCheckBox( str(history_item) , clear_history_win.scrollArea))
-            #layout.addWidget( QtWidgets.QCheckBox( str(history_item)+'<b>qwe</b>' ) )
-        
-
         # Запускаем диалог и получаем ответ пользователя
         if clear_history_win.exec():
             print('Надо удалить из истории:')
             for one_item in history_items:
                 if one_item['checkbox'].isChecked():
                     print(' - %s' % one_item['label'] )
+                    state_db_connection.execute("UPDATE file_recs SET last_open=NULL, count_opens=0 WHERE filename=?", (one_item['label'],) )
+
+        # Удаляем все виджеты и компоновщик
+        while layout.count():
+            item = layout.takeAt(0)
+            item.widget().deleteLater()
+        layout.deleteLater()
 
 
 
@@ -3208,6 +3206,7 @@ class ClearHistoryDialog(QtWidgets.QDialog, clear_history_dialog.Ui_ClearHistory
         #self.testEdceBtn.clicked.connect(self.onTestEdceConnectionClicked)
         self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).clicked.connect(self.accept)
         self.buttonBox.button(QtWidgets.QDialogButtonBox.Cancel).clicked.connect(self.reject)
+
 
 
 

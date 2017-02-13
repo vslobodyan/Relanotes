@@ -53,6 +53,9 @@
       <property name="text">
        <string>All</string>
       </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
      </widget>
      <widget class="QCheckBox" name="chbTwoWeeks">
       <property name="geometry">
@@ -66,6 +69,9 @@
       <property name="text">
        <string>Older then 2 weeks</string>
       </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
+      </property>
      </widget>
      <widget class="QCheckBox" name="chbNone">
       <property name="geometry">
@@ -78,6 +84,9 @@
       </property>
       <property name="text">
        <string>None</string>
+      </property>
+      <property name="autoExclusive">
+       <bool>true</bool>
       </property>
      </widget>
     </widget>
