@@ -2202,17 +2202,18 @@ Creation-Date: 2012-09-02T11:16:31+04:00
                                     (datetime.now(), filename) )
         state_db.commit()                        
         
-        # Сохраняем текущую заметку
-        tmp_str = main_window.current_open_note_link[:-len('.txt')]
-        # print ('tmp_str: '+tmp_str)
-        rt_suffix = '-rt'
-        if tmp_str[-len(rt_suffix):] == rt_suffix:
-            filename = main_window.current_open_note_link
-        else:
-            filename = tmp_str+rt_suffix+'.txt'
-        # print ('filename: '+filename)
-        # return 0
-        # filename = main_window.current_open_note_link+'2'
+        ## Сохраняем текущую заметку с суффиксом -rt
+        #tmp_str = main_window.current_open_note_link[:-len('.txt')]
+        ## print ('tmp_str: '+tmp_str)
+        #rt_suffix = '-rt'
+        #if tmp_str[-len(rt_suffix):] == rt_suffix:
+        #    filename = main_window.current_open_note_link
+        #else:
+        #    filename = tmp_str+rt_suffix+'.txt'
+        ## print ('filename: '+filename)
+        ## return 0
+        ## filename = main_window.current_open_note_link+'2'
+    
         note_source = main_window.textBrowser_Note.toHtml()
         
         begin_of_zim_note = '''Content-Type: text/x-zim-wiki
