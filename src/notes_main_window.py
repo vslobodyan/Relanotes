@@ -1980,21 +1980,21 @@ class Note():
         # 3. Удаляем строки, в которых обнаружены служебные слова
         if first_part1 in zim_wiki_tags and first_part2 in zim_wiki_tags and first_part3 in zim_wiki_tags:
             # Удаляем первые 3 строчки
-            print('Найдены 3 строки метаданных Zim')
+            #print('Найдены 3 строки метаданных Zim')
             #print(text_source_lines[0:3])
             self.metadata_lines_before_note = text_source_lines[0:3]
             del text_source_lines[0:3]
         
         if first_part1 in zim_wiki_tags and first_part2 in zim_wiki_tags and first_part3 not in zim_wiki_tags:
             # Удаляем первые 2 строчки
-            print('Найденые 2 строки метаданных Zim')
+            #print('Найденые 2 строки метаданных Zim')
             #print(text_source_lines[0:2])
             self.metadata_lines_before_note = text_source_lines[0:2]
             del text_source_lines[0:2]
 
         if first_part1 in zim_wiki_tags and first_part2 not in zim_wiki_tags and first_part3 not in zim_wiki_tags:
             # Удаляем первую строчку
-            print('Найдена 1 строка метаданных Zim')
+            #print('Найдена 1 строка метаданных Zim')
             #print(text_source_lines[0:1])
             self.metadata_lines_before_note = text_source_lines[0:1]
             del text_source_lines[0:1]
@@ -2002,8 +2002,8 @@ class Note():
         # 4. Если осталась первая пустая строка - удаляем и её (она обычно остается после служебных)
         if not text_source_lines[0].strip():
             # Удаляем первую строчку
-            print('А ещё найдена пустая строка после метаданных Zim.')
-            self.metadata_lines_before_note.append('')
+            #print('А ещё найдена пустая строка после метаданных Zim.')
+            self.metadata_lines_before_note.append(text_source_lines[0])
             del text_source_lines[0:1]
 
 
