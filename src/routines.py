@@ -12,8 +12,7 @@ def give_correct_path_under_win_and_other(path_to_check):
     # Важная функция исправления внутреннего представления путей под Win
 
     correct_path = path_to_check
-    # print ('DEBUG: os.path.sep: %s ' % os.path.sep )
-    print ('DEBUG: path_to_check: %s' % path_to_check )
+    #print ('DEBUG: path_to_check: %s' % path_to_check )
 
     # Рекомендуемый в некоторых местах путь решения:
     # path = QDir::fromNativeSeparators( path );

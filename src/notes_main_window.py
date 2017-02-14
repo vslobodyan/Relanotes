@@ -11,6 +11,7 @@ import time
 import sqlite3
 from datetime import datetime, timedelta  # , date  #, time
 import codecs
+import html
 
 #from src.ui import calculator_window, preferences_window, note_multiaction
 from src.ui import preferences_window, note_multiaction, clear_history_dialog
@@ -2011,8 +2012,16 @@ class Note():
         #print(self.metadata_lines_before_note)
 
         # x. Собираем контент заметки обратно в строки
-        html_source = '\n'.join(text_source_lines)
         
+        new_text_source_lines = []
+        for one_line in text_source_lines:
+            new_text_source_lines.append(html.escape(one_line))
+
+        html_source = '\n'.join(new_text_source_lines)
+        
+
+        #html_source = urllib.request.quote(html_source)
+
         #print()
         #print('После удаления служебных полей Zim:')
         #print(html_source)
@@ -2109,7 +2118,7 @@ class Note():
     def convert_html_source_to_zim_text(self, html_text):
         # Конвертируем текст из редактора заметки в формат zim
         text = html_text
-        
+            
         # Оригинальный код был из функции save_note
 
 #        begin_of_zim_note = '''Content-Type: text/x-zim-wiki
@@ -2201,7 +2210,10 @@ class Note():
         text = re.sub('<a name="(.*?)"></a>', '', text)
 
         # profiler.stop()
-        
+
+        #text = urllib.request.unquote(text)
+        text = html.unescape(text)
+
         # Добавляем начало файла как у Zim        
         text = begin_of_zim_note+text
 
