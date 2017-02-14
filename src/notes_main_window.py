@@ -3198,6 +3198,8 @@ class ClearHistoryDialog(QtWidgets.QDialog, clear_history_dialog.Ui_ClearHistory
             last_open = datetime.strptime(one_item['last_open'], '%Y-%m-%d %H:%M:%S.%f')
             if last_open + two_weeks < today:
                 one_item['checkbox'].setChecked(True)
+            else:
+                one_item['checkbox'].setChecked(False)
 
     def ok_pressed(self):
         pass
