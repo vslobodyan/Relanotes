@@ -1178,7 +1178,7 @@ class Note():
 
     filename = ''
     format_type = 'zim'   # zim, md, ...
-    metadata_of_note = ''  # Специальные поля заметки, например, от Zim, которые надо сохранить и записать при сохранении
+    metadata_lines_before_note = ''  # Специальные поля заметки, например, от Zim, которые надо сохранить и записать при сохранении
 
 
     class Format():
@@ -1967,7 +1967,8 @@ class Note():
         # Wiki-Format:
         # Creation-Date:
         zim_wiki_tags = ['Content-Type', 'Wiki-Format', 'Creation-Date']
-        
+        self.metadata_lines_before_note = []
+
         # 1. Режем контент заметки на строки
         text_source_lines = html_source.splitlines() #('\n')
         
@@ -1979,21 +1980,35 @@ class Note():
         # 3. Удаляем строки, в которых обнаружены служебные слова
         if first_part1 in zim_wiki_tags and first_part2 in zim_wiki_tags and first_part3 in zim_wiki_tags:
             # Удаляем первые 3 строчки
+            print('Найдены 3 строки метаданных Zim')
+            #print(text_source_lines[0:3])
+            self.metadata_lines_before_note = text_source_lines[0:3]
             del text_source_lines[0:3]
         
         if first_part1 in zim_wiki_tags and first_part2 in zim_wiki_tags and first_part3 not in zim_wiki_tags:
             # Удаляем первые 2 строчки
+            print('Найденые 2 строки метаданных Zim')
+            #print(text_source_lines[0:2])
+            self.metadata_lines_before_note = text_source_lines[0:2]
             del text_source_lines[0:2]
 
         if first_part1 in zim_wiki_tags and first_part2 not in zim_wiki_tags and first_part3 not in zim_wiki_tags:
             # Удаляем первую строчку
+            print('Найдена 1 строка метаданных Zim')
+            #print(text_source_lines[0:1])
+            self.metadata_lines_before_note = text_source_lines[0:1]
             del text_source_lines[0:1]
 
         # 4. Если осталась первая пустая строка - удаляем и её (она обычно остается после служебных)
         if not text_source_lines[0].strip():
             # Удаляем первую строчку
+            print('А ещё найдена пустая строка после метаданных Zim.')
+            self.metadata_lines_before_note.append('')
             del text_source_lines[0:1]
 
+
+        #print('self.metadata_lines_before_note:')
+        #print(self.metadata_lines_before_note)
 
         # x. Собираем контент заметки обратно в строки
         html_source = '\n'.join(text_source_lines)
@@ -2097,11 +2112,12 @@ class Note():
         
         # Оригинальный код был из функции save_note
 
-        begin_of_zim_note = '''Content-Type: text/x-zim-wiki
-Wiki-Format: zim 0.4
-Creation-Date: 2012-09-02T11:16:31+04:00
+#        begin_of_zim_note = '''Content-Type: text/x-zim-wiki
+#Wiki-Format: zim 0.4
+#Creation-Date: 2012-09-02T11:16:31+04:00
 
-'''
+#'''
+        begin_of_zim_note = '\n'.join(self.metadata_lines_before_note)
 
         text = self.clear_note_html_cover(text)
         
