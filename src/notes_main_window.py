@@ -1071,9 +1071,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.textBrowser_Note.setFocus()
         
         #file_cute_name = filename.rpartition('/')[2]
-        file_cute_name = filename.rpartition(os.path.sep)[2]
-        file_cute_name = file_cute_name.replace('_', ' ')
-        file_cute_name = file_cute_name.rpartition('.txt')[0]
+        #file_cute_name = filename.rpartition(os.path.sep)[2]
+        #file_cute_name = file_cute_name.replace('_', ' ')
+        #file_cute_name = file_cute_name.rpartition('.txt')[0]
+        file_cute_name = notelist.make_cute_name(filename)
+
         self.setWindowTitle(prog_name + ' - ' + file_cute_name)
         self.renew_history_list(filename)
         self.statusbar.showMessage('Заметка загружена')
@@ -1175,8 +1177,8 @@ class Note():
     paste_as_text_once = False
 
     filename = ''
-    format_type= 'zim'
-    zim_intext_header = ''
+    format_type = 'zim'   # zim, md, ...
+    metadata_of_note = ''  # Специальные поля заметки, например, от Zim, которые надо сохранить и записать при сохранении
 
 
     class Format():
