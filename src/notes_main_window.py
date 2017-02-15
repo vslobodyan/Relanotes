@@ -1006,13 +1006,26 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         lines = fileObj.read()        
         fileObj.close()
 
-        # В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
-        lines += '====== T ======\n' \
+        self.textBrowser_TestNote = QtWidgets.QTextBrowser()
+        self.test_doc_source = QtGui.QTextDocument()
+        testnote = 'empty text\n' \
+                 '====== T ======\n' \
                  '===== T =====\n' \
                  '==== T ====\n' \
                  '=== T ===\n' \
                  '== T ==\n' \
                  '= T =\n'
+        test_note_source = note.convert_zim_text_to_html_source(testnote)
+        self.test_doc_source.setHtml(test_note_source)
+        self.textBrowser_TestNote.setDocument(self.test_doc_source)
+
+        # В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
+        #lines += '====== T ======\n' \
+        #         '===== T =====\n' \
+        #         '==== T ====\n' \
+        #         '=== T ===\n' \
+        #         '== T ==\n' \
+        #         '= T =\n'
 
         # Translate plain text to html and set as doc source
         note_source = note.convert_zim_text_to_html_source(lines)
@@ -1020,9 +1033,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.textBrowser_Note.setDocument(self.doc_source)
 
         # Получаем реальные стили заголовков. И удаляем их из документа
-        tmp_html_source = self.textBrowser_Note.toHtml()
+        #tmp_html_source = self.textBrowser_Note.toHtml()
+        tmp_html_source = self.textBrowser_TestNote.toHtml()
 
-        # print(tmp_html_source, '=============')
+        #print('=== tmp_html_source ===: %s' % tmp_html_source)
 
         l_a_name = len('<a name="head1"></a>')
         pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1')-1
@@ -1045,14 +1059,22 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # print('str:', tmp_str)
 
-        note.format.editor_h_span = ['0-empty', note.format.editor_h1_span, note.format.editor_h2_span,
-                                      note.format.editor_h3_span, note.format.editor_h4_span,
-                                      note.format.editor_h5_span, note.format.editor_h6_span]
+        note.format.editor_h_span = ['0-empty', note.format.editor_h1_span,
+                                    note.format.editor_h2_span,
+                                    note.format.editor_h3_span,
+                                    note.format.editor_h4_span,
+                                    note.format.editor_h5_span,
+                                    note.format.editor_h6_span]
 
-        tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
-        self.textBrowser_Note.setHtml(tmp_html_source)
+        print('Найденные стили заголовков: %s' % note.format.editor_h_span)
+        #tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
+        
+        #self.textBrowser_Note.setHtml(tmp_html_source)
+
 
         # self.textBrowser_Note.setHtml(tmp_html_source)
+
+
 
         # Передвигаем курсор на нужную позицию методом поиска, по номеру
         # вхождения искомой фразы, несколько раз выполняя встроенный в редактор поиск
@@ -1972,11 +1994,23 @@ class Note():
 
         # 1. Режем контент заметки на строки
         text_source_lines = html_source.splitlines() #('\n')
-        
+        # Проверяем на наличие двух линукс-переносов строк вида \n подряд в конце файла заметки. Из таких переносов один теряется при использовании splitlines. Надо исправить этот баг вручную.
+        #if text.endswith(os.linesep+os.linesep):
+        #if text.endswith('\n\n'):
+        #    # У нас именно такой случай. Добавляем к массиву строк ещё одну пустую
+        #    #print('Обнаружили, что текст оканчивается на 2 переноса строк')
+        #    text_source_lines.append('')
+        #print('### text_source_lines: %s' % text_source_lines)
+
+
+        first_part1 = first_part2 = first_part3 = ''
         # 2. Проверяем наличие ключевых слов в первых 3 строчках
-        first_part1 = text_source_lines[0].split(':')[0]
-        first_part2 = text_source_lines[1].split(':')[0]
-        first_part3 = text_source_lines[2].split(':')[0]
+        if len(text_source_lines)>0:
+            first_part1 = text_source_lines[0].split(':')[0]
+        if len(text_source_lines)>1:
+            first_part2 = text_source_lines[1].split(':')[0]
+        if len(text_source_lines)>2:
+            first_part3 = text_source_lines[2].split(':')[0]
         
         # 3. Удаляем строки, в которых обнаружены служебные слова
         if first_part1 in zim_wiki_tags and first_part2 in zim_wiki_tags and first_part3 in zim_wiki_tags:
@@ -2001,7 +2035,7 @@ class Note():
             del text_source_lines[0:1]
 
         # 4. Если осталась первая пустая строка - удаляем и её (она обычно остается после служебных)
-        if not text_source_lines[0].strip():
+        if len(text_source_lines)>0 and not text_source_lines[0].strip():
             # Удаляем первую строчку
             #print('А ещё найдена пустая строка после метаданных Zim.')
             self.metadata_lines_before_note.append(text_source_lines[0])
@@ -2020,11 +2054,18 @@ class Note():
         new_text_source_lines = []
         for one_line in text_source_lines:
             new_text_source_lines.append(html.escape(one_line).replace(' ', '&nbsp;'))
-        html_source = '\n'.join(new_text_source_lines)
+
+        #html_source = '\n'.join(new_text_source_lines)
+        html_source = ''
+        for one_line in new_text_source_lines:
+            html_source += one_line + '\n'
+
+        # А тут надо использовать системный перенос строк: os.linesep
+
         #html_source = '\n'.join(text_source_lines)
         
-        print('3 ### convert_zim_text_to_html_source:')
-        print('###'+html_source+'###')
+        #print('3 ### convert_zim_text_to_html_source:')
+        #print('###'+html_source+'###')
 
         #html_source = urllib.request.quote(html_source)
 
@@ -2158,7 +2199,10 @@ class Note():
 #Creation-Date: 2012-09-02T11:16:31+04:00
 
 #'''
-        begin_of_zim_note = '\n'.join(self.metadata_lines_before_note)
+        #begin_of_zim_note = '\n'.join(self.metadata_lines_before_note)
+        begin_of_zim_note = ''
+        for one_data_line in self.metadata_lines_before_note:
+            begin_of_zim_note += one_data_line + '\n'
 
         text = self.clear_note_html_cover(text)
         
@@ -2281,103 +2325,109 @@ class Note():
         ## filename = main_window.current_open_note_link+'2'
     
         note_source = main_window.textBrowser_Note.toHtml()
-        
-        begin_of_zim_note = '''Content-Type: text/x-zim-wiki
-Wiki-Format: zim 0.4
-Creation-Date: 2012-09-02T11:16:31+04:00
+        note_source = self.convert_html_source_to_zim_text(note_source)
 
-'''
+        print('self.metadata_lines_before_note:')
+        print(self.metadata_lines_before_note)
+
+        #begin_of_zim_note = '\n'.join(self.metadata_lines_before_note)
+        ## Проверка бага с Линукс-переносом строки, когда последняя строка не сохраняется при конвертации из html
+        #if self.metadata_lines_before_note[len(self.metadata_lines_before_note)-1]=='\n':
+        #    begin_of_zim_note += '\n'
+        #print('begin_of_zim_note: ###%s###' % begin_of_zim_note)
+
+
         if main_window.actionSave_also_note_HTML_source.isChecked():
             filename_html = main_window.current_open_note_link.replace('.txt', '.html')
             f = open(filename_html, "w")
             f.writelines(note_source)
             f.close()
         
-        note_source = self.clear_note_html_cover(note_source)
+        #note_source = self.clear_note_html_cover(note_source)
         
-        # Удаляем виртуальные начала строк
-        note_source = re.sub('<p .*?>', '', note_source)
-        # Удаляем последнее закрытие </p>
+        ## Удаляем виртуальные начала строк
+        #note_source = re.sub('<p .*?>', '', note_source)
+        ## Удаляем последнее закрытие </p>
         
-        # profiler.checkpoint('Проводим склейку соседних span')
+        ## profiler.checkpoint('Проводим склейку соседних span')
 
-        # Склеиваем одинаковые соседние span
-        note_source = self.union_concat_ident_span(note_source)
+        ## Склеиваем одинаковые соседние span
+        #note_source = self.union_concat_ident_span(note_source)
 
-        # Применяем вики-форматирование
+        ## Применяем вики-форматирование
         
-        # profiler.checkpoint('Заменяем html-теги заголовков на вики-форматирование')
+        ## profiler.checkpoint('Заменяем html-теги заголовков на вики-форматирование')
                 
-        # Заголовок    
-        note_source = re.sub(self.format.editor_h1_span+'(.*?)</span>', '====== \\1 ======', note_source)
-        note_source = re.sub(self.format.editor_h2_span+'(.*?)</span>', '===== \\1 =====', note_source)
-        note_source = re.sub(self.format.editor_h3_span+'(.*?)</span>', '==== \\1 ====', note_source)         
-        note_source = re.sub(self.format.editor_h4_span+'(.*?)</span>', '=== \\1 ===', note_source)
-        note_source = re.sub(self.format.editor_h5_span+'(.*?)</span>', '== \\1 ==', note_source)
-        note_source = re.sub(self.format.editor_h6_span+'(.*?)</span>', '= \\1 =', note_source)         
+        ## Заголовок    
+        #note_source = re.sub(self.format.editor_h1_span+'(.*?)</span>', '====== \\1 ======', note_source)
+        #note_source = re.sub(self.format.editor_h2_span+'(.*?)</span>', '===== \\1 =====', note_source)
+        #note_source = re.sub(self.format.editor_h3_span+'(.*?)</span>', '==== \\1 ====', note_source)         
+        #note_source = re.sub(self.format.editor_h4_span+'(.*?)</span>', '=== \\1 ===', note_source)
+        #note_source = re.sub(self.format.editor_h5_span+'(.*?)</span>', '== \\1 ==', note_source)
+        #note_source = re.sub(self.format.editor_h6_span+'(.*?)</span>', '= \\1 =', note_source)         
 
-        # Подчеркнутый (выделенный)
-        note_source = re.sub(self.format.editor_mark_span+'(.*?)</span>', '__\\1__', note_source)         
+        ## Подчеркнутый (выделенный)
+        #note_source = re.sub(self.format.editor_mark_span+'(.*?)</span>', '__\\1__', note_source)         
         
-        # Код
-        note_source = re.sub(self.format.editor_code_span+'(.*?)</span>', '\'\'\\1\'\'', note_source)         
+        ## Код
+        #note_source = re.sub(self.format.editor_code_span+'(.*?)</span>', '\'\'\\1\'\'', note_source)         
 
-        # profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
+        ## profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
 
-        # Ссылка
-        # <a href="...">
-        note_source = self.make_all_links_to_wiki_format(note_source)
+        ## Ссылка
+        ## <a href="...">
+        #note_source = self.make_all_links_to_wiki_format(note_source)
 
-        # profiler.checkpoint('Заменяем html-теги основной разметки на вики-форматирование')
+        ## profiler.checkpoint('Заменяем html-теги основной разметки на вики-форматирование')
         
-        # Нумерованный список
-        # 
+        ## Нумерованный список
+        ## 
         
-        # Зачеркнутый текст
-        # <span style=" font-family:'Sans'; font-size:15px; text-decoration: line-through; color:#aaaaaa;">
-        # editor_strikethrough_span
-        note_source = re.sub('<span [^>]*text-decoration: line-through;.*?>(.*?)</span>', '~~\\1~~', note_source)
-        # Жирный
-        # <span style=" font-family:'Sans'; font-size:15px; font-weight:600;">
-        note_source = re.sub('<span [^>]*font-weight:600;.*?>(.*?)</span>', '**\\1**', note_source)
-        # Наклонный
-        # <span style=" font-family:'Sans'; font-size:15px; font-style:italic;">
-        note_source = re.sub('<span [^>]*font-style:italic;.*?>(.*?)</span>', '//\\1//', note_source)
+        ## Зачеркнутый текст
+        ## <span style=" font-family:'Sans'; font-size:15px; text-decoration: line-through; color:#aaaaaa;">
+        ## editor_strikethrough_span
+        #note_source = re.sub('<span [^>]*text-decoration: line-through;.*?>(.*?)</span>', '~~\\1~~', note_source)
+        ## Жирный
+        ## <span style=" font-family:'Sans'; font-size:15px; font-weight:600;">
+        #note_source = re.sub('<span [^>]*font-weight:600;.*?>(.*?)</span>', '**\\1**', note_source)
+        ## Наклонный
+        ## <span style=" font-family:'Sans'; font-size:15px; font-style:italic;">
+        #note_source = re.sub('<span [^>]*font-style:italic;.*?>(.*?)</span>', '//\\1//', note_source)
         
-        # Картинка
-        # <img src="/home/vyacheslav//Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png" />
-        # -->
-        # {{~/Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png}}
-        # Закомментировал, не работает сейчас, выдает ошибку про незакрытый \U. Наверное, это в пути к картинке.
-        # note_source = re.sub('<img src="'+path_to_home+'(.*?)" />', '{{~\\1}}', note_source)
-        note_source = re.sub('<img src="(.*?)" />', '{{\\1}}', note_source)
+        ## Картинка
+        ## <img src="/home/vyacheslav//Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png" />
+        ## -->
+        ## {{~/Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png}}
+        ## Закомментировал, не работает сейчас, выдает ошибку про незакрытый \U. Наверное, это в пути к картинке.
+        ## note_source = re.sub('<img src="'+path_to_home+'(.*?)" />', '{{~\\1}}', note_source)
+        #note_source = re.sub('<img src="(.*?)" />', '{{\\1}}', note_source)
 
         
-        # Ненумерованный список
-        # <ul style="..."><li style="..."><span style="..">Пункт 1</span></li></ul> 
-        # note_source = re.sub('<ul .*?><li .*?>(.*?)</li></ul>', '* \\1<br />', note_source)
-        note_source = re.sub('<li .*?>(.*?)</li>', '* \\1<br />', note_source)
-        note_source = re.sub('<ul .*?>(.*?)</ul>', '\\1', note_source)
+        ## Ненумерованный список
+        ## <ul style="..."><li style="..."><span style="..">Пункт 1</span></li></ul> 
+        ## note_source = re.sub('<ul .*?><li .*?>(.*?)</li></ul>', '* \\1<br />', note_source)
+        #note_source = re.sub('<li .*?>(.*?)</li>', '* \\1<br />', note_source)
+        #note_source = re.sub('<ul .*?>(.*?)</ul>', '\\1', note_source)
 
-        # Чистим остатки
-        # profiler.checkpoint('Чистим остатки html разметки')
+        ## Чистим остатки
+        ## profiler.checkpoint('Чистим остатки html разметки')
         
-        # Удаление оставшихся span
-        note_source = re.sub('<span .*?>', '', note_source)
-        note_source = note_source.replace('</span>', '')
+        ## Удаление оставшихся span
+        #note_source = re.sub('<span .*?>', '', note_source)
+        #note_source = note_source.replace('</span>', '')
         
-        # Заменяем окончания на перенос строки
-        note_source = note_source.replace('</p>', '\n')
-        # Заменяем html переносы строк на обычные
-        note_source = note_source.replace('<br />', '\n')
+        ## Заменяем окончания на перенос строки
+        #note_source = note_source.replace('</p>', '\n')
+        ## Заменяем html переносы строк на обычные
+        #note_source = note_source.replace('<br />', '\n')
         
-        # note_source = note_source.replace('<a name="created"></a>','')
-        note_source = re.sub('<a name="(.*?)"></a>', '', note_source)
+        ## note_source = note_source.replace('<a name="created"></a>','')
+        #note_source = re.sub('<a name="(.*?)"></a>', '', note_source)
 
-        # profiler.stop()
+        ## profiler.stop()
         
-        # Добавляем начало файла как у Zim        
-        note_source = begin_of_zim_note+note_source
+        ## Добавляем начало файла как у Zim        
+        #note_source = begin_of_zim_note+note_source
         
         # Записываем результат преобразования исходника заметки в файл
 
