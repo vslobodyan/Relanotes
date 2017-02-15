@@ -1066,7 +1066,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                     note.format.editor_h5_span,
                                     note.format.editor_h6_span]
 
-        print('Найденные стили заголовков: %s' % note.format.editor_h_span)
+        #print('Найденные стили заголовков: %s' % note.format.editor_h_span)
         #tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
         
         #self.textBrowser_Note.setHtml(tmp_html_source)
@@ -2194,11 +2194,6 @@ class Note():
             
         # Оригинальный код был из функции save_note
 
-#        begin_of_zim_note = '''Content-Type: text/x-zim-wiki
-#Wiki-Format: zim 0.4
-#Creation-Date: 2012-09-02T11:16:31+04:00
-
-#'''
         #begin_of_zim_note = '\n'.join(self.metadata_lines_before_note)
         begin_of_zim_note = ''
         for one_data_line in self.metadata_lines_before_note:
