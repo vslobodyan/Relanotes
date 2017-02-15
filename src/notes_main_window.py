@@ -1945,7 +1945,7 @@ class Note():
         # Оригинальный код был из функции open_file_in_editor        
 
         #print()
-        #print('convert_zim_text_to_html_source:')
+        #print('1 ### convert_zim_text_to_html_source:')
         #print(text)
         # make_initiative_html
 
@@ -2011,14 +2011,20 @@ class Note():
         #print('self.metadata_lines_before_note:')
         #print(self.metadata_lines_before_note)
 
+        #print('2 ### convert_zim_text_to_html_source:')
+        #print(text)
+
+
         # x. Собираем контент заметки обратно в строки
         
         new_text_source_lines = []
         for one_line in text_source_lines:
-            new_text_source_lines.append(html.escape(one_line))
-
+            new_text_source_lines.append(html.escape(one_line).replace(' ', '&nbsp;'))
         html_source = '\n'.join(new_text_source_lines)
+        #html_source = '\n'.join(text_source_lines)
         
+        print('3 ### convert_zim_text_to_html_source:')
+        print('###'+html_source+'###')
 
         #html_source = urllib.request.quote(html_source)
 
@@ -2038,12 +2044,23 @@ class Note():
         
         # FIXME: скрытие служебных полей начала контента вики сделано неправильно, рассчитано только на 1 H1
         # html_source = re.sub('====== (.*?) ======', '--><font id=head1>\\1</font>', html_source)
-        html_source = re.sub('====== (.*?) ======', '<font id=head1>\\1</font>', html_source)
-        html_source = re.sub('===== (.*?) =====', '<font id=head2>\\1</font>', html_source)
-        html_source = re.sub('==== (.*?) ====', '<font id=head3>\\1</font>', html_source)
-        html_source = re.sub('=== (.*?) ===', '<font id=head4>\\1</font>', html_source)
-        html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
-        html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
+
+
+
+        #html_source = re.sub('====== (.*?) ======', '<font id=head1>\\1</font>', html_source)
+        #html_source = re.sub('===== (.*?) =====', '<font id=head2>\\1</font>', html_source)
+        #html_source = re.sub('==== (.*?) ====', '<font id=head3>\\1</font>', html_source)
+        #html_source = re.sub('=== (.*?) ===', '<font id=head4>\\1</font>', html_source)
+        #html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
+        #html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
+
+        html_source = re.sub('======&nbsp;(.*?)&nbsp;======', '<font id=head1>\\1</font>', html_source)
+        html_source = re.sub('=====&nbsp;(.*?)&nbsp;=====', '<font id=head2>\\1</font>', html_source)
+        html_source = re.sub('====&nbsp;(.*?)&nbsp;====', '<font id=head3>\\1</font>', html_source)
+        html_source = re.sub('===&nbsp;(.*?)&nbsp;===', '<font id=head4>\\1</font>', html_source)
+        html_source = re.sub('==&nbsp;(.*?)&nbsp;==', '<font id=head5>\\1</font>', html_source)
+        html_source = re.sub('=&nbsp;(.*?)&nbsp;=', '<font id=head6>\\1</font>', html_source)
+
         
         # html_source = re.sub('====== (.*?) ======', '--><p id=head1>\\1</p>', html_source)
         # html_source = re.sub('===== (.*?) =====', '<p id=head2>\\1</p>', html_source)
@@ -2067,13 +2084,22 @@ class Note():
         html_source = re.sub('~~(.*?)~~', '<s>\\1</s>', html_source)
 
         # 'emphasis': Re('//(?!/)(.+?)//'),
-        html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
+
+        #html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
+        html_source = re.sub('\n\*&nbsp;([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
+
+
         html_source = re.sub('</ul>\n', '</ul>', html_source)
 
-        html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
+        #html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
+        html_source = re.sub('(Created&nbsp;[^\n]*)', '<font id="created">\\1</font>', html_source)
+
 
         # 'code':     Re("''(?!')(.+?)''"),
-        html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
+        #html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
+        #html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
+        html_source = re.sub("&#x27;&#x27;(?!')(.+?)&#x27;&#x27;", '<font id="code">\\1</font>', html_source)
+
 
         # 'mark':     Re('__(?!_)(.+?)__'),
         html_source = re.sub('__(?!_)(.+?)__', '<font id="mark">\\1</font>', html_source)
@@ -2105,6 +2131,12 @@ class Note():
         # html_source = html_source.replace('\n', '</p><p>')
         
         html_source = '<html>%s<body>%s</body></html>' % (Theme.html_theme_head, html_source, )
+        
+        #html_source = html_source.replace(' ', '&nbsp;')
+
+        #print('Итоговый вид html:')
+        #print(html_source)
+
         return html_source
 
 
@@ -2212,6 +2244,7 @@ class Note():
         # profiler.stop()
 
         #text = urllib.request.unquote(text)
+        text = text.replace('&nbsp;', ' ')
         text = html.unescape(text)
 
         # Добавляем начало файла как у Zim        
@@ -2232,6 +2265,9 @@ class Note():
                                     (datetime.now(), filename) )
         state_db.commit()                        
         
+
+        filename = filename+'-saved'
+
         ## Сохраняем текущую заметку с суффиксом -rt
         #tmp_str = main_window.current_open_note_link[:-len('.txt')]
         ## print ('tmp_str: '+tmp_str)
