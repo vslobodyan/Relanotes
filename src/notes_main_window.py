@@ -604,57 +604,58 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     fileObj.close()
 
                     # Загружаем файл в окно редактора
-
-                    tmp_text = original_text
-
-
-                    # В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
-                    tmp_text += '====== T ======\n' \
-                            '===== T =====\n' \
-                            '==== T ====\n' \
-                            '=== T ===\n' \
-                            '== T ==\n' \
-                            '= T =\n'
-                
-                    # Translate plain text to html and set as doc source
-                    self.doc_source.setHtml(note.convert_zim_text_to_html_source(tmp_text))                    
-                    self.textBrowser_Note.setDocument(self.doc_source)
-                
-                    # Получаем реальные стили заголовков. И удаляем их из документа
-                    tmp_html_source = self.textBrowser_Note.toHtml()
-                
-                    # print(tmp_html_source, '=============')
-                
-                    l_a_name = len('<a name="head1"></a>')
-                    pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1')-1
-                    for i in range(1,7):
-                        pos_font_begin = tmp_html_source.find('<a name="head', pos_font_end)
-                        pos_font_end = tmp_html_source.find('>T<', pos_font_begin)+1
-                        tmp_str = tmp_html_source[pos_font_begin+l_a_name:pos_font_end]
-                        if i == 1:
-                            note.format.editor_h1_span = tmp_str
-                        if i == 2:
-                            note.format.editor_h2_span = tmp_str
-                        if i == 3:
-                            note.format.editor_h3_span = tmp_str
-                        if i == 4:
-                            note.format.editor_h4_span = tmp_str
-                        if i == 5:
-                            note.format.editor_h5_span = tmp_str
-                        if i == 6:
-                            note.format.editor_h6_span = tmp_str
-                
-                       # print('str:', tmp_str)
-                
-                    note.format.editor_h_span = ['0-empty', note.format.editor_h1_span, note.format.editor_h2_span,
-                                                 note.format.editor_h3_span, note.format.editor_h4_span,
-                                                 note.format.editor_h5_span, note.format.editor_h6_span]
-                
-                    tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
-                    self.textBrowser_Note.setHtml(tmp_html_source)
-                
+                    self.open_file_in_editor(filename)
 
 
+                    #tmp_text = original_text
+                    ## Решаем проблему с разными символами переноса строки - заменяем все на Linux-формат
+                    ##original_text = original_text.replace('\r\n', '\n')
+
+                    ## В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
+                    #tmp_text += '====== T ======\n' \
+                    #        '===== T =====\n' \
+                    #        '==== T ====\n' \
+                    #        '=== T ===\n' \
+                    #        '== T ==\n' \
+                    #        '= T =\n'
+                
+                    ## Translate plain text to html and set as doc source
+                    #self.doc_source.setHtml(note.convert_zim_text_to_html_source(tmp_text))                    
+                    #self.textBrowser_Note.setDocument(self.doc_source)
+                
+                    ## Получаем реальные стили заголовков. И удаляем их из документа
+                    #tmp_html_source = self.textBrowser_Note.toHtml()
+                
+                    ## print(tmp_html_source, '=============')
+                
+                    #l_a_name = len('<a name="head1"></a>')
+                    #pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1')-1
+                    #for i in range(1,7):
+                    #    pos_font_begin = tmp_html_source.find('<a name="head', pos_font_end)
+                    #    pos_font_end = tmp_html_source.find('>T<', pos_font_begin)+1
+                    #    tmp_str = tmp_html_source[pos_font_begin+l_a_name:pos_font_end]
+                    #    if i == 1:
+                    #        note.format.editor_h1_span = tmp_str
+                    #    if i == 2:
+                    #        note.format.editor_h2_span = tmp_str
+                    #    if i == 3:
+                    #        note.format.editor_h3_span = tmp_str
+                    #    if i == 4:
+                    #        note.format.editor_h4_span = tmp_str
+                    #    if i == 5:
+                    #        note.format.editor_h5_span = tmp_str
+                    #    if i == 6:
+                    #        note.format.editor_h6_span = tmp_str
+                
+                    #   # print('str:', tmp_str)
+                
+                    #note.format.editor_h_span = ['0-empty', note.format.editor_h1_span, note.format.editor_h2_span,
+                    #                             note.format.editor_h3_span, note.format.editor_h4_span,
+                    #                             note.format.editor_h5_span, note.format.editor_h6_span]
+                
+                    #tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
+                    #self.textBrowser_Note.setHtml(tmp_html_source)
+                
 
 
                     # Конвертируем zim text в html для редактора
@@ -933,6 +934,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # print('link_note_pos: '+str(link_note_pos))
         # TODO: .. Профилировать скорость загрузки файла и отображения его текста
         
+        rec_current_position = None
         # Проверяем на переход из списка файлов
         if notelist.is_visible():
             # rec = [ 'note' / 'list', 'filename' / 'filter', datetime ]
@@ -2322,8 +2324,8 @@ class Note():
         note_source = main_window.textBrowser_Note.toHtml()
         note_source = self.convert_html_source_to_zim_text(note_source)
 
-        print('self.metadata_lines_before_note:')
-        print(self.metadata_lines_before_note)
+        #print('self.metadata_lines_before_note:')
+        #print(self.metadata_lines_before_note)
 
         #begin_of_zim_note = '\n'.join(self.metadata_lines_before_note)
         ## Проверка бага с Линукс-переносом строки, когда последняя строка не сохраняется при конвертации из html
