@@ -2812,7 +2812,7 @@ class Notelist():
 
     def file_in_history(self, filename):
         # Проверяем - есть ли файл в списке истории
-        state_db_connection.execute("SELECT * FROM file_recs WHERE filename=?", (filename,) )
+        state_db_connection.execute("SELECT * FROM file_recs WHERE filename=? AND last_open NOT NULL", (filename,) )
         existed_rec = state_db_connection.fetchall()
         if len(existed_rec) > 0:
             #print('Файл обнаружен в истории: ', filename)
@@ -2878,6 +2878,7 @@ class Notelist():
         # И удовлетворяет ли она всем установленным фильтрам.
         # Затем добавляем все необходимое в список и меняем соответствующие переменные.
 
+        #print('Работаем с файлом %s' % filename)
         #if self.file_in_history(filename):
             #print('Файл из истории: %s' % filename)
 
@@ -2966,6 +2967,7 @@ class Notelist():
 
         for root, dirs, files in os.walk(path_to_notes):
             for file in files:
+                #print('Найдено во время обхода: %s' % os.path.join(root, file))
                 # Проверяем - разрешенное ли расширение у файла
                 if os.path.splitext(file)[-1] in self.allowed_note_files_extensions:
                 #if file.endswith('.txt'):
@@ -2978,11 +2980,12 @@ class Notelist():
                     # Добавляем инфу о найденных файлах в общий счетчик всех доступных файлов заметок
                     self.all_found_files_count += 1
                     self.all_found_files_size += size
-
+                    #print('Файл с разрешенным расширением')
 
                     # Продолжаем с найденным файловым элементом
                     # Проверяем - нет ли этого элемента уже добавленного из истории
                     if self.file_in_history(filename):
+                        #print('Файл есть в истории: %s' % filename)
                         continue  # Переходим на следующий виток цикла
 
                     self.work_with_found_note(filename=filename, 
