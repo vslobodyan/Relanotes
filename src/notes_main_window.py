@@ -13,13 +13,13 @@ from datetime import datetime, timedelta  # , date  #, time
 import codecs
 import html
 
-#from src.ui import calculator_window, preferences_window, note_multiaction
+# from src.ui import calculator_window, preferences_window, note_multiaction
 from src.ui import preferences_window, note_multiaction, clear_history_dialog
 from src.ui.main_window import *
 from src import calculator
 
-#from PyQt4.QtCore import *
-#from PyQt4.QtGui import *
+# from PyQt4.QtCore import *
+# from PyQt4.QtGui import *
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -38,8 +38,8 @@ QtCore.QCoreApplication.setApplicationName(settingsNameGlobal)
 # Получаем путь к каталогу с настройками программы по данным QStandardPaths
 app_config_path = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppDataLocation);
 # Подробнее о выборе пути: http://doc.qt.io/qt-5/qstandardpaths.html
-#config_homePath = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppConfigLocation);
-#config_homePath = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppLocalDataLocation);
+# config_homePath = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppConfigLocation);
+# config_homePath = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppLocalDataLocation);
 
 app_config_path = give_correct_path_under_win_and_other(app_config_path)
 
@@ -80,7 +80,7 @@ prog_name = 'Relanotes'
 
 # path_to_notes = '/home/rat/Dropbox/Data/s_zim/Notes/'
 # path_to_notes = path_to_me+'Notes/'
-#print("path_to_notes:", path_to_notes)
+# print("path_to_notes:", path_to_notes)
 
 # FIXME: . При зачеркивании (или другом выделении) текста дальнейшая печать идет в таком-же новом стиле. Надо сделать
 # чтобы шла как обычный текст. Пример - зачеркивание старого пароля и запись после него нового.
@@ -182,7 +182,7 @@ class MyEventFilter(QtCore.QObject):
         
         # Обрабатываем клавиатурные события в разных виджетах
         if event.type() == QtCore.QEvent.KeyPress:
-            #print('keypress to '+receiver.objectName())
+            # print('keypress to '+receiver.objectName())
             # Отслеживаем нажатия клавиатуры при редактировании заметки 
             if receiver.objectName() == 'MyTextBrowser':
 
@@ -198,7 +198,7 @@ class MyEventFilter(QtCore.QObject):
                         # print(tmp_string.rpartition('StartFragment-->')[2])
                         
                         # cursor.setCharFormat(note.format.editor_default_format)
-                        cursor.insertHtml(note.format.editor_default_font_span+'<br>')
+                        cursor.insertHtml(note.format.editor_default_font_span + '<br>')
                         # note.format.clear_format()
                         # return super(MyEventFilter,self).eventFilter(receiver, event)
                         return True
@@ -211,16 +211,16 @@ class MyEventFilter(QtCore.QObject):
                 # На клавишу вниз - увеличиваем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Down:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    #notelist.items_cursor_position += 1
-                    #notelist.update()
+                    # notelist.items_cursor_position += 1
+                    # notelist.update()
                     notelist.move_cursor(delta=1)
                     return True
                     
                 # На клавишу вверх - уменьшаем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Up:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    #notelist.items_cursor_position -= 1
-                    #notelist.update()
+                    # notelist.items_cursor_position -= 1
+                    # notelist.update()
                     notelist.move_cursor(delta=-1)
                     return True
 
@@ -239,16 +239,16 @@ class MyEventFilter(QtCore.QObject):
                 # На клавишу вниз - увеличиваем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Down:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    #notelist.items_cursor_position += 1
-                    #notelist.update
+                    # notelist.items_cursor_position += 1
+                    # notelist.update
                     notelist.move_cursor(delta=1)
                     return True
 
                 # На клавишу вверх - уменьшаем индекс выбранного
                 if event.key() == QtCore.Qt.Key_Up:
                     # QMessageBox.information(None,"Filtered Key Press Event!!", "Key Down")
-                    #notelist.items_cursor_position -= 1
-                    #notelist.update()
+                    # notelist.items_cursor_position -= 1
+                    # notelist.update()
                     notelist.move_cursor(delta=-1)
                     return True
 
@@ -311,9 +311,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # settings.setValue('int_value', 42)
         try:
-            #self.layoutSettings = QtCore.QSettings(os.path.join(path_to_me, "./layout.ini"), QtCore.QSettings.IniFormat)
-            #self.restoreGeometry(self.layoutSettings.value("mainWindow/geometry"))
-            #self.restoreState(self.layoutSettings.value("mainWindow/windowState"))
+            # self.layoutSettings = QtCore.QSettings(os.path.join(path_to_me, "./layout.ini"), QtCore.QSettings.IniFormat)
+            # self.restoreGeometry(self.layoutSettings.value("mainWindow/geometry"))
+            # self.restoreState(self.layoutSettings.value("mainWindow/windowState"))
 
             self.restoreGeometry(settings.value("mainWindow/geometry"))
             self.restoreState(settings.value("mainWindow/windowState"))
@@ -340,7 +340,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         ]
 
         self.note_editor_toolbar_actions = [
-            self.actionUndo, 
+            self.actionUndo,
             self.actionRedo,
             self.actionBold,
             self.actionItalic,
@@ -349,11 +349,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.actionCode,
             self.actionBullet_List,
             self.actionNumber_List,
-            self.actionHeading_1, 
+            self.actionHeading_1,
             self.actionHeading_2,
-            self.actionHeading_3, 
+            self.actionHeading_3,
             self.actionHeading_4,
-            self.actionHeading_5, 
+            self.actionHeading_5,
             self.actionHeading_6,
             self.action_ClearFormat,
             self.actionAdd_Link,
@@ -379,7 +379,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionLock_UI.triggered.connect(self.lock_ui_timer_start)
     
         self.timer_window_minimize.setSingleShot(True)
-        #QtCore.QObject.connect(self.timer_window_minimize, QtCore.SIGNAL("timeout ()"), self.minimize)
+        # QtCore.QObject.connect(self.timer_window_minimize, QtCore.SIGNAL("timeout ()"), self.minimize)
         self.timer_window_minimize.timeout.connect(self.minimize)
     
         # self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
@@ -387,7 +387,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.connect(self.ui.webView, QtCore.SIGNAL("linkClicked (const QUrl&)"), self.loadfile2)
         # QtCore.QObject.connect(self.webView, QtCore.SIGNAL("linkClicked (const QUrl&)"), self.loadfile2)
         
-        #QtCore.QObject.connect(self.textBrowser_History, QtCore.SIGNAL("anchorClicked (const QUrl&)"), self.loadfile_from_history)
+        # QtCore.QObject.connect(self.textBrowser_History, QtCore.SIGNAL("anchorClicked (const QUrl&)"), self.loadfile_from_history)
         self.textBrowser_History.anchorClicked.connect(self.loadfile_from_history)
 
         self.textBrowser_Note.anchorClicked.connect(self.open_url_from_current_note)
@@ -493,14 +493,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             reply = QtWidgets.QMessageBox.question(self, "Ваши заметки были перемещены?",
                                          "Каталог " + str(path_to_notes) + " с Вашими заметками не существует.\n"
                                                                       "Открыть другой каталог с заметками?",
-                                         QtWidgets.QMessageBox.Yes|QtWidgets.QMessageBox.No|QtWidgets.QMessageBox.Cancel)
+                                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel)
             if reply == QtWidgets.QMessageBox.Cancel:
                 # print("Заметки по указанному пути отсутствуют. Пользователь не хочет продолжать работу.")
                 exit()
             elif reply == QtWidgets.QMessageBox.Yes:
                 # print("Выбираем новый путь к заметкам")
-                #path_to_notes = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes") )
-                #raw_path_to_notes = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly)
+                # path_to_notes = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes") )
+                # raw_path_to_notes = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly)
                 path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly))
                 settings.setValue('path_to_notes', path_to_notes)
                 settings.sync()
@@ -584,14 +584,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         print('Запускаем функцию тестирования конвертации форматирования при открытии и сохранении заметок')
 
         # Диалог выбора пути для сканирования
-        #path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
-        #if not path_to_notes:
+        # path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
+        # if not path_to_notes:
         #    print('Каталог не выбран.')
         #    return 0
-        #path_to_notes = "D:\Test\\Notes-test\Linux\Debian"
+        # path_to_notes = "D:\Test\\Notes-test\Linux\Debian"
         path_to_notes = "D:\Test\\Notes-test\Linux"
-        #path_to_notes = "C:\Test\Test_Notes\компьютерное\Python"
-        #path_to_notes = "C:\Test\Test_Notes\компьютерное\Linux\Debian"
+        # path_to_notes = "C:\Test\Test_Notes\компьютерное\Python"
+        # path_to_notes = "C:\Test\Test_Notes\компьютерное\Linux\Debian"
         print('Пользователь выбрал для теста каталог %s' % path_to_notes)
 
         for root, dirs, files in os.walk(path_to_notes):
@@ -599,7 +599,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 if file.endswith('.txt'):
                     filename = os.path.join(root, file)
                     # Читаем файл в память
-                    fileObj = codecs.open( filename, "r", "utf-8" )
+                    fileObj = codecs.open(filename, "r", "utf-8")
                     original_text = fileObj.read()
                     fileObj.close()
 
@@ -607,30 +607,30 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     self.open_file_in_editor(filename)
 
 
-                    #tmp_text = original_text
-                    ## Решаем проблему с разными символами переноса строки - заменяем все на Linux-формат
-                    ##original_text = original_text.replace('\r\n', '\n')
+                    # tmp_text = original_text
+                    # # Решаем проблему с разными символами переноса строки - заменяем все на Linux-формат
+                    # #original_text = original_text.replace('\r\n', '\n')
 
-                    ## В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
-                    #tmp_text += '====== T ======\n' \
+                    # # В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
+                    # tmp_text += '====== T ======\n' \
                     #        '===== T =====\n' \
                     #        '==== T ====\n' \
                     #        '=== T ===\n' \
                     #        '== T ==\n' \
                     #        '= T =\n'
                 
-                    ## Translate plain text to html and set as doc source
-                    #self.doc_source.setHtml(note.convert_zim_text_to_html_source(tmp_text))                    
-                    #self.textBrowser_Note.setDocument(self.doc_source)
+                    # # Translate plain text to html and set as doc source
+                    # self.doc_source.setHtml(note.convert_zim_text_to_html_source(tmp_text))                    
+                    # self.textBrowser_Note.setDocument(self.doc_source)
                 
-                    ## Получаем реальные стили заголовков. И удаляем их из документа
-                    #tmp_html_source = self.textBrowser_Note.toHtml()
+                    # # Получаем реальные стили заголовков. И удаляем их из документа
+                    # tmp_html_source = self.textBrowser_Note.toHtml()
                 
-                    ## print(tmp_html_source, '=============')
+                    # # print(tmp_html_source, '=============')
                 
-                    #l_a_name = len('<a name="head1"></a>')
-                    #pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1')-1
-                    #for i in range(1,7):
+                    # l_a_name = len('<a name="head1"></a>')
+                    # pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1')-1
+                    # for i in range(1,7):
                     #    pos_font_begin = tmp_html_source.find('<a name="head', pos_font_end)
                     #    pos_font_end = tmp_html_source.find('>T<', pos_font_begin)+1
                     #    tmp_str = tmp_html_source[pos_font_begin+l_a_name:pos_font_end]
@@ -649,12 +649,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 
                     #   # print('str:', tmp_str)
                 
-                    #note.format.editor_h_span = ['0-empty', note.format.editor_h1_span, note.format.editor_h2_span,
+                    # note.format.editor_h_span = ['0-empty', note.format.editor_h1_span, note.format.editor_h2_span,
                     #                             note.format.editor_h3_span, note.format.editor_h4_span,
                     #                             note.format.editor_h5_span, note.format.editor_h6_span]
                 
-                    #tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
-                    #self.textBrowser_Note.setHtml(tmp_html_source)
+                    # tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
+                    # self.textBrowser_Note.setHtml(tmp_html_source)
                 
 
 
@@ -670,12 +670,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     saved_text = note.convert_html_source_to_zim_text(note_source)
 
                     # Сравниваем оригинал и "сохраненный" вариант
-                    diff_result = get_diff_text(original_text, saved_text, filename, filename+'-saved')
+                    diff_result = get_diff_text(original_text, saved_text, filename, filename + '-saved')
                     if diff_result:
                         print()
-                        #print('Результат сравнения:')
+                        # print('Результат сравнения:')
                         print(diff_result)
-                        #for line in diff_result:
+                        # for line in diff_result:
                         #    print(line)
                     else:
                         print('.', end="", flush=True)
@@ -690,21 +690,21 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         filename = main_window.current_open_note_link
         if filename:
             current_position = main_window.textBrowser_Note.textCursor().position()
-            print('Файл открытой заметки %s и позиция курсора %s' % (filename, current_position) )
+            print('Файл открытой заметки %s и позиция курсора %s' % (filename, current_position))
             # Если есть - сохраняем для неё последнюю позицию курсора
 
             # Обновляем запись в базе
             state_db_connection.execute("UPDATE file_recs SET current_position=?  WHERE filename=?",
-                                        (current_position, filename) )
+                                        (current_position, filename))
             state_db.commit()                        
         else:
             print('Открытой заметки нет.')
 
 
     def closeEvent(self, e):
-        #self.layoutSettings.setValue("mainWindow/geometry", self.saveGeometry())
-        #self.layoutSettings.setValue("mainWindow/windowState", self.saveState())
-        #self.layoutSettings.sync()
+        # self.layoutSettings.setValue("mainWindow/geometry", self.saveGeometry())
+        # self.layoutSettings.setValue("mainWindow/windowState", self.saveState())
+        # self.layoutSettings.sync()
 
         # Сохраняем позицию заметки, если она была открыта
         self.save_note_cursor_position()
@@ -758,8 +758,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         for row in file_recs_rows:
             rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
 
-            ## Проверка файла из истории на существование 
-            #if not os.path.isfile(rec_filename):
+            # # Проверка файла из истории на существование 
+            # if not os.path.isfile(rec_filename):
             #    # Файл не существует или это каталог, а не файл.
             #    # Удаляем из истории
             #    state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
@@ -780,8 +780,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             print('Надо удалить из истории:')
             for one_item in clear_history_win.history_items:
                 if one_item['checkbox'].isChecked():
-                    print(' - %s' % one_item['filename'] )
-                    state_db_connection.execute("UPDATE file_recs SET last_open=NULL, count_opens=0 WHERE filename=?", (one_item['filename'],) )
+                    print(' - %s' % one_item['filename'])
+                    state_db_connection.execute("UPDATE file_recs SET last_open=NULL, count_opens=0 WHERE filename=?", (one_item['filename'],))
 
         # Удаляем все виджеты и компоновщик
         while layout.count():
@@ -881,16 +881,16 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
             file_rec = give_correct_path_under_win_and_other(file_rec)
             
-            #if file_rec.rpartition('/')[0]+'/' == path_to_notes:
-            if file_rec.rpartition(os.path.sep)[0]+os.path.sep == path_to_notes:
+            # if file_rec.rpartition('/')[0]+'/' == path_to_notes:
+            if file_rec.rpartition(os.path.sep)[0] + os.path.sep == path_to_notes:
                 # У нас корневая заметка
                 file_parent = ''
             else:
-                #file_parent = file_rec.split('/')[-2] + ': '
+                # file_parent = file_rec.split('/')[-2] + ': '
                 # print('DEBUG: file_rec.split= %s' % file_rec.split(os.path.sep) )
                 file_parent = file_rec.split(os.path.sep)[-2] + ': '
             
-            #file_cute_name = file_rec.rpartition('/')[2]
+            # file_cute_name = file_rec.rpartition('/')[2]
             file_cute_name = file_rec.rpartition(os.path.sep)[2]
             file_cute_name = file_cute_name.rpartition('.txt')[0]
             file_cute_name = file_cute_name.replace('_', ' ')
@@ -906,12 +906,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # html_string += '<p'+line_style+'><a href="'+file_rec+'"><img src="'
             # +img_src+'">&nbsp;'+file_parent+file_cute_name+'</a></p>'
-            html_string += '<p'+line_style+'><a href="'+file_rec+'" title="'\
+            html_string += '<p' + line_style + '><a href="' + file_rec + '" title="'\
                            + file_parent + file_cute_name + '">' + file_parent + file_cute_name + '</a></p>'
             # state_db.commit()
 
         html_string += '<p id=history_date>Вчера</p> .....'
-        html_string = '<html>%s<body><div id=sidebar>%s</div></body></html>' % (Theme.html_theme_head, html_string, )
+        html_string = '<html>%s<body><div id=sidebar>%s</div></body></html>' % (Theme.html_theme_head, html_string,)
         self.sidebar_source.setHtml(html_string)
         self.textBrowser_History.setDocument(self.sidebar_source)
         # self.textBrowser_History.setHtml(html_string)
@@ -923,7 +923,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         pass
    
     def open_file_in_editor(self, filename, founded_i=0):
-        self.statusbar.showMessage('Загружается файл '+filename)
+        self.statusbar.showMessage('Загружается файл ' + filename)
         print('DEBUG: open_file_in_editor("filename=%s")' % filename)
         filename = get_correct_filename_from_url(filename)
         print('DEBUG: open_file_in_editor(" after unquote =%s")' % filename)
@@ -949,16 +949,16 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 if self.lineNotelist_Filter.text() != '':
                     # Фильтр есть, записываем его в историю
                     # new_recs = [ ( 'list', self.lineNotelist_Filter.text(), datetime.now() ),]
-                    new_recs_sel = [('list', self.lineNotelist_Filter.text(), ), ]
+                    new_recs_sel = [('list', self.lineNotelist_Filter.text(),), ]
                 # Пишем открытие заметки
                 # new_recs += [ ( 'note', filename, datetime.now() ), ]
-                new_recs_sel += [('note', filename, ), ]
+                new_recs_sel += [('note', filename,), ]
                 
                 ######### history_recs
                 # Перед добавлением новой записи проверяем - нет-ли записи с такими-же значениями уже в списке
                 for rec in new_recs_sel:
                     # print ( 'rec: '+str(rec) + ' len:' + str(len(rec)) )
-                    state_db_connection.execute("SELECT * FROM history_recs WHERE type=? AND value=?", rec )
+                    state_db_connection.execute("SELECT * FROM history_recs WHERE type=? AND value=?", rec)
                     existed_rec = state_db_connection.fetchall()
                     if len(existed_rec) > 0:
                         # print (existed_rec)
@@ -981,12 +981,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     print('FILE_RECS: для файла %s запись есть. Обновляем.' % filename)
                     # Запись уже есть. Прописываем ей новое время открытия и увеличиваем счетчик открытий
                     # Получаем количество открытий данного файла
-                    state_db_connection.execute("SELECT count_opens, current_position FROM file_recs WHERE filename=?", (filename,) )
+                    state_db_connection.execute("SELECT count_opens, current_position FROM file_recs WHERE filename=?", (filename,))
                     rec_count_opens, rec_current_position = state_db_connection.fetchone()
-                    print('Количество открытий заметки: %s, последняя позиция курсора: %s' % ( rec_count_opens, rec_current_position ) )
+                    print('Количество открытий заметки: %s, последняя позиция курсора: %s' % (rec_count_opens, rec_current_position))
                     # Обновляем запись в базе
                     state_db_connection.execute("UPDATE file_recs SET last_open=?, count_opens=?  WHERE filename=?",
-                                                (datetime.now(), rec_count_opens+1, filename) )
+                                                (datetime.now(), rec_count_opens + 1, filename))
                     state_db.commit()                        
                 else:
                     # Записи нет. Создаем новую.
@@ -996,15 +996,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     print('FILE_RECS: для файла %s записи нет. Создаем новую.' % filename)
                     # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
                     state_db_connection.execute("INSERT INTO file_recs (filename, last_open, count_opens) VALUES (?,?,?)",
-                                                    (filename, datetime.now(), 1) )
+                                                    (filename, datetime.now(), 1))
                     state_db.commit()
 
 
-        #f = open(filename, "r")
-        #lines = f.read()
-        #f.close()
+        # f = open(filename, "r")
+        # lines = f.read()
+        # f.close()
 
-        fileObj = codecs.open( filename, "r", "utf-8" )
+        fileObj = codecs.open(filename, "r", "utf-8")
         lines = fileObj.read()        
         fileObj.close()
 
@@ -1022,7 +1022,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.textBrowser_TestNote.setDocument(self.test_doc_source)
 
         # В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
-        #lines += '====== T ======\n' \
+        # lines += '====== T ======\n' \
         #         '===== T =====\n' \
         #         '==== T ====\n' \
         #         '=== T ===\n' \
@@ -1035,17 +1035,17 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.textBrowser_Note.setDocument(self.doc_source)
 
         # Получаем реальные стили заголовков. И удаляем их из документа
-        #tmp_html_source = self.textBrowser_Note.toHtml()
+        # tmp_html_source = self.textBrowser_Note.toHtml()
         tmp_html_source = self.textBrowser_TestNote.toHtml()
 
-        #print('=== tmp_html_source ===: %s' % tmp_html_source)
+        # print('=== tmp_html_source ===: %s' % tmp_html_source)
 
         l_a_name = len('<a name="head1"></a>')
-        pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1')-1
-        for i in range(1,7):
+        pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1') - 1
+        for i in range(1, 7):
             pos_font_begin = tmp_html_source.find('<a name="head', pos_font_end)
-            pos_font_end = tmp_html_source.find('>T<', pos_font_begin)+1
-            tmp_str = tmp_html_source[pos_font_begin+l_a_name:pos_font_end]
+            pos_font_end = tmp_html_source.find('>T<', pos_font_begin) + 1
+            tmp_str = tmp_html_source[pos_font_begin + l_a_name:pos_font_end]
             if i == 1:
                 note.format.editor_h1_span = tmp_str
             if i == 2:
@@ -1068,10 +1068,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                     note.format.editor_h5_span,
                                     note.format.editor_h6_span]
 
-        #print('Найденные стили заголовков: %s' % note.format.editor_h_span)
-        #tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
+        # print('Найденные стили заголовков: %s' % note.format.editor_h_span)
+        # tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
         
-        #self.textBrowser_Note.setHtml(tmp_html_source)
+        # self.textBrowser_Note.setHtml(tmp_html_source)
 
 
         # self.textBrowser_Note.setHtml(tmp_html_source)
@@ -1083,7 +1083,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         i = 0
         self.textBrowser_Note.moveCursor(QtGui.QTextCursor.Start)
         while i < int(founded_i):
-            #text_to_find = self.lineEdit_Filter_Note_Text.text()
+            # text_to_find = self.lineEdit_Filter_Note_Text.text()
             text_to_find = notelist.filter_text
             self.textBrowser_Note.find(text_to_find)
             # print ('Выполняем поиск')
@@ -1095,10 +1095,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         note.set_visible()
         self.textBrowser_Note.setFocus()
         
-        #file_cute_name = filename.rpartition('/')[2]
-        #file_cute_name = filename.rpartition(os.path.sep)[2]
-        #file_cute_name = file_cute_name.replace('_', ' ')
-        #file_cute_name = file_cute_name.rpartition('.txt')[0]
+        # file_cute_name = filename.rpartition('/')[2]
+        # file_cute_name = filename.rpartition(os.path.sep)[2]
+        # file_cute_name = file_cute_name.replace('_', ' ')
+        # file_cute_name = file_cute_name.rpartition('.txt')[0]
         file_cute_name = notelist.make_cute_name(filename)
 
         self.setWindowTitle(prog_name + ' - ' + file_cute_name)
@@ -1202,7 +1202,7 @@ class Note():
     paste_as_text_once = False
 
     filename = ''
-    format_type = 'zim'   # zim, md, ...
+    format_type = 'zim'  # zim, md, ...
     metadata_lines_before_note = ''  # Специальные поля заметки, например, от Zim, которые надо сохранить и записать при сохранении
 
 
@@ -1220,7 +1220,7 @@ class Note():
 
         # FIXME: Цвет текста подходит для светлой темы. Не подходит для темной.
         editor_default_font_span = '<span style=" font-family:\'Sans\'; font-size:15px; font-weight:0; color:#1a1a1a;">'
-        #editor_default_font_span = '<span>'
+        # editor_default_font_span = '<span>'
         
         # editor_italic_span =
         editor_strikethrough_span = \
@@ -1280,7 +1280,7 @@ class Note():
 
         def adaptate_alien_html_styles(self, html_source):
             # Адаптируем чужие стили html к стилям текущей темы span
-            print('Получили для адаптации при вставке следующий html:\n'+html_source+'\n')
+            print('Получили для адаптации при вставке следующий html:\n' + html_source + '\n')
 
             # TODO: ... записать в преимущества функцию умного преобразования инородного html и вставки простого текста
             #  в свой html/wiki
@@ -1336,12 +1336,12 @@ class Note():
                     pos1 = html_source.find('<a', pos)
                     pos_href_1 = html_source.find('href=', pos1)
                     pos_href_1 = html_source.find('"', pos_href_1)
-                    pos_href_2 = html_source.find('"', pos_href_1+1)
+                    pos_href_2 = html_source.find('"', pos_href_1 + 1)
                     pos2 = html_source.find('>', pos_href_2)
-                    href = html_source[pos_href_1+1:pos_href_2]
-                    new_link = ' <a '+self.editor_link_external_style+' href="'+href+'">'+href+'</a> '
+                    href = html_source[pos_href_1 + 1:pos_href_2]
+                    new_link = ' <a ' + self.editor_link_external_style + ' href="' + href + '">' + href + '</a> '
                     
-                    html_source = html_source[:pos1]+new_link+html_source[pos2+1:]
+                    html_source = html_source[:pos1] + new_link + html_source[pos2 + 1:]
                     pos = pos2 
                 
                 # print('\n С заменой A:\n'+html_source)
@@ -1354,15 +1354,15 @@ class Note():
                     pos2 = html_source.find('>', pos1)
                     pos_src_1 = html_source.find('src=', pos1)
                     pos_src_1 = html_source.find('"', pos_src_1)
-                    pos_src_2 = html_source.find('"', pos_src_1+1)
+                    pos_src_2 = html_source.find('"', pos_src_1 + 1)
                     
                     pos = pos1 
                     # print('\n Оригинал с IMG, pos='+str(pos)+':\n'+html_source)
 
-                    href = html_source[pos_src_1+1:pos_src_2]
-                    new_link = '<br><a '+self.editor_link_external_style+' href="'+href+'">'+href+'</a><br>'
+                    href = html_source[pos_src_1 + 1:pos_src_2]
+                    new_link = '<br><a ' + self.editor_link_external_style + ' href="' + href + '">' + href + '</a><br>'
  
-                    html_source = html_source[:pos1]+' '+new_link+' '+html_source[pos2+1:]
+                    html_source = html_source[:pos1] + ' ' + new_link + ' ' + html_source[pos2 + 1:]
                     # print('\n С заменой IMG:\n'+html_source)
 
             # Корректируем заголовки
@@ -1382,7 +1382,7 @@ class Note():
                     while html_source.find(h_begin[i], pos) >= 0:
                         pos = html_source.find(h_begin[i], pos)
                         pos2 = html_source.find('>', pos)
-                        html_source = html_source[:pos]+'<p>'+h_span[i]+html_source[pos2+1:]
+                        html_source = html_source[:pos] + '<p>' + h_span[i] + html_source[pos2 + 1:]
 
                     # pos = 0
                     html_source = html_source.replace(h_end[i], '</span></p>')            
@@ -1398,7 +1398,7 @@ class Note():
             html_source = note.format.editor_default_font_span.replace('<span ', '<div ') + html_source + '</div>'
             if need_insert_p_at_end:
                 html_source += '</p><p>'
-            print('\nИтоговый результат:\n'+html_source+'\n')
+            print('\nИтоговый результат:\n' + html_source + '\n')
             return html_source
 
         def switch_format_span(self, format_span, action):
@@ -1413,15 +1413,15 @@ class Note():
                 selection_begin = cursor.selectionStart()
             # selection_end = cursor.selectionEnd()
 
-            if format_span in line_html[:len(format_span)+1]:                 
+            if format_span in line_html[:len(format_span) + 1]:                 
                 # print('Форматирование уже стоит. Убираем  его..')
                 # cursor.removeSelectedText()
-                cursor.insertHtml(self.editor_default_font_span+text+'</span>')
+                cursor.insertHtml(self.editor_default_font_span + text + '</span>')
                 action.setChecked(False)
             else:
                 # print('Форматирования нет или есть другое. Очищаем стиль выделение и ставим наш.')
                 # cursor.removeSelectedText()
-                cursor.insertHtml(format_span+text+'</span>')
+                cursor.insertHtml(format_span + text + '</span>')
                 action.setChecked(True)
             # Восстанавливаем выделение пользователя
             cursor.setPosition(selection_begin)
@@ -1441,8 +1441,8 @@ class Note():
             # FIXME: .. Если курсор до выделения - не отображается ни сложное форматирование, ни жирн/италик
             # FIXME: .. Нажатие на форматирование без выделения не сбрасывает оформление набираемого затем текста
             
-            actions = [main_window.actionStrikethrough,    main_window.actionCode, main_window.actionMark]
-            format_spans = [self.editor_strikethrough_span, self.editor_code_span,  self.editor_mark_span]
+            actions = [main_window.actionStrikethrough, main_window.actionCode, main_window.actionMark]
+            format_spans = [self.editor_strikethrough_span, self.editor_code_span, self.editor_mark_span]
             
             if result:
                 # i = 0  # Снимаем выделение со всех действий
@@ -1467,9 +1467,9 @@ class Note():
                 return result
             
             if pos_cur > pos_begin_line:
-                new_pos_cur = pos_cur-1
+                new_pos_cur = pos_cur - 1
             else:
-                new_pos_cur = pos_begin_line+1
+                new_pos_cur = pos_begin_line + 1
                             
             cursor.setPosition(new_pos_cur, QtGui.QTextCursor.KeepAnchor)  # Делаем временное виртуальное выделение
             # if cursor.selection().isEmpty():
@@ -1514,13 +1514,13 @@ class Note():
                 # print('Заголовок уже стоит. Убираем форматирование заголовка.')
                 text = cursor.selectedText()
                 # cursor.removeSelectedText()
-                cursor.insertHtml(self.editor_default_font_span+text+'</span>')
+                cursor.insertHtml(self.editor_default_font_span + text + '</span>')
                 editor_h_action[h].setChecked(False)
             else:
                 # print('Заголовка нет или есть другой. Удаляем форматирование и ставим новый.')
                 text = cursor.selectedText()
                 # cursor.removeSelectedText()
-                cursor.insertHtml(self.editor_h_span[h]+text+'</span>')
+                cursor.insertHtml(self.editor_h_span[h] + text + '</span>')
                 editor_h_action[h].setChecked(True)
             
             cursor.movePosition(pos_cur)
@@ -1548,7 +1548,7 @@ class Note():
             pos_cur = cursor.position()
             if pos_cur == cursor.selectionStart():
                 # Исправляем ситуацию, когда курсор, стоя в начале, не видит выделенного текста после него
-                cursor.setPosition(pos_cur+1, QtGui.QTextCursor.KeepAnchor)
+                cursor.setPosition(pos_cur + 1, QtGui.QTextCursor.KeepAnchor)
                 fmt = cursor.charFormat()
                 cursor.setPosition(pos_cur, QtGui.QTextCursor.KeepAnchor)
             else:
@@ -1561,14 +1561,14 @@ class Note():
                 # print ('Need set bold.')
                 fmt.setFontWeight(75)
                 
-            cursor.setCharFormat(fmt)   # Устанавливаем стиль "с нуля", удаляя предыдущий
+            cursor.setCharFormat(fmt)  # Устанавливаем стиль "с нуля", удаляя предыдущий
 
         def italic(self):
             cursor = main_window.textBrowser_Note.textCursor()
             pos_cur = cursor.position()
             if pos_cur == cursor.selectionStart():
                 # Исправляем ситуацию, когда курсор, стоя в начале, не видит выделенного текста после него
-                cursor.setPosition(pos_cur+1, QtGui.QTextCursor.KeepAnchor)
+                cursor.setPosition(pos_cur + 1, QtGui.QTextCursor.KeepAnchor)
                 fmt = cursor.charFormat()
                 cursor.setPosition(pos_cur, QtGui.QTextCursor.KeepAnchor)
             else:
@@ -1578,7 +1578,7 @@ class Note():
                 fmt.setFontItalic(False)
             else:
                 fmt.setFontItalic(True)
-            cursor.setCharFormat(fmt)   # Устанавливаем стиль "с нуля", удаляя предыдущий
+            cursor.setCharFormat(fmt)  # Устанавливаем стиль "с нуля", удаляя предыдущий
 
         def strikethrough(self):
             self.switch_format_span(self.editor_strikethrough_span, main_window.actionStrikethrough)            
@@ -1853,17 +1853,17 @@ class Note():
         pos = 0
         span_end = '</span>'
         span_begin = '<span '
-        str_sign_concat = span_end+span_begin
+        str_sign_concat = span_end + span_begin
          
         while note_source.find(str_sign_concat, pos) >= 0:
             # Позиция обнаруженного сочленения двух span
             pos_concat = note_source.find(str_sign_concat, pos)
             # Ищем конец правого span
-            pos_rspan_begin = pos_concat+len(span_end)
-            pos_rspan_end = note_source.find('>', pos_rspan_begin+len(span_begin))+1
+            pos_rspan_begin = pos_concat + len(span_end)
+            pos_rspan_end = note_source.find('>', pos_rspan_begin + len(span_begin)) + 1
             # Ищем начало левого span
             pos_lspan_begin = note_source.rfind(span_begin, 0, pos_concat)
-            pos_lspan_end = note_source.find('>', pos_lspan_begin)+1
+            pos_lspan_end = note_source.find('>', pos_lspan_begin) + 1
             
             lspan = note_source[pos_lspan_begin: pos_lspan_end]
             rspan = note_source[pos_rspan_begin: pos_rspan_end]
@@ -1875,7 +1875,7 @@ class Note():
             
             if lspan == rspan:
                 # Делаем склейку двух одинаковых span
-                note_source_result = note_source[:pos_concat]+note_source[pos_rspan_end:]
+                note_source_result = note_source[:pos_concat] + note_source[pos_rspan_end:]
                 note_source = note_source_result
                 pos = pos_concat
             else:
@@ -1915,16 +1915,16 @@ class Note():
                 if '://' in a_href and ' ' not in a_href: 
                     # Внешний линк
                     # print ('Внешний линк: '+a_href)
-                    note_source = note_source[: pos_a_begin] + a_href + note_source[pos_a_end+len(str_a_end):]
+                    note_source = note_source[: pos_a_begin] + a_href + note_source[pos_a_end + len(str_a_end):]
                 else:
                     # Внутренний или на местные файлы линк
-                    note_source = note_source[: pos_a_begin] + '[['+a_href+']]' + note_source[pos_a_end+len(str_a_end):]
+                    note_source = note_source[: pos_a_begin] + '[[' + a_href + ']]' + note_source[pos_a_end + len(str_a_end):]
             else:
                 # print ('У нас ссылка с подмененным текстом!')
                 # У нас ссылка с подмененным текстом
                 # [[1234|text]]
                 # Обрабатывается нормально на сохранение в блоке выше, но открытие пока не обрабатывается. 
-                note_source = note_source[: pos_a_begin] + '[['+a_href+'|'+a_text+']]' + note_source[pos_a_end +
+                note_source = note_source[: pos_a_begin] + '[[' + a_href + '|' + a_text + ']]' + note_source[pos_a_end + 
                                                                                                      len(str_a_end):]
             
             pos = pos_a_begin
@@ -1956,7 +1956,7 @@ class Note():
         pos_cut2 = note_source.rfind('</p>')
         # print ('Конец html после удаления конца обертки: \n'+note_source[pos_cut2-40:pos_cut2-1]+'\n')
 
-        note_source = note_source[pos_cut1+1:pos_cut2]
+        note_source = note_source[pos_cut1 + 1:pos_cut2]
         return note_source
     
 
@@ -1968,9 +1968,9 @@ class Note():
 
         # Оригинальный код был из функции open_file_in_editor        
 
-        #print()
-        #print('1 ### convert_zim_text_to_html_source:')
-        #print(text)
+        # print()
+        # print('1 ### convert_zim_text_to_html_source:')
+        # print(text)
         # make_initiative_html
 
         html_source = text
@@ -1995,60 +1995,60 @@ class Note():
         self.metadata_lines_before_note = []
 
         # 1. Режем контент заметки на строки
-        text_source_lines = html_source.splitlines() #('\n')
+        text_source_lines = html_source.splitlines()  # ('\n')
         # Проверяем на наличие двух линукс-переносов строк вида \n подряд в конце файла заметки. Из таких переносов один теряется при использовании splitlines. Надо исправить этот баг вручную.
-        #if text.endswith(os.linesep+os.linesep):
-        #if text.endswith('\n\n'):
+        # if text.endswith(os.linesep+os.linesep):
+        # if text.endswith('\n\n'):
         #    # У нас именно такой случай. Добавляем к массиву строк ещё одну пустую
         #    #print('Обнаружили, что текст оканчивается на 2 переноса строк')
         #    text_source_lines.append('')
-        #print('### text_source_lines: %s' % text_source_lines)
+        # print('### text_source_lines: %s' % text_source_lines)
 
 
         first_part1 = first_part2 = first_part3 = ''
         # 2. Проверяем наличие ключевых слов в первых 3 строчках
-        if len(text_source_lines)>0:
+        if len(text_source_lines) > 0:
             first_part1 = text_source_lines[0].split(':')[0]
-        if len(text_source_lines)>1:
+        if len(text_source_lines) > 1:
             first_part2 = text_source_lines[1].split(':')[0]
-        if len(text_source_lines)>2:
+        if len(text_source_lines) > 2:
             first_part3 = text_source_lines[2].split(':')[0]
         
         # 3. Удаляем строки, в которых обнаружены служебные слова
         if first_part1 in zim_wiki_tags and first_part2 in zim_wiki_tags and first_part3 in zim_wiki_tags:
             # Удаляем первые 3 строчки
-            #print('Найдены 3 строки метаданных Zim')
-            #print(text_source_lines[0:3])
+            # print('Найдены 3 строки метаданных Zim')
+            # print(text_source_lines[0:3])
             self.metadata_lines_before_note = text_source_lines[0:3]
             del text_source_lines[0:3]
         
         if first_part1 in zim_wiki_tags and first_part2 in zim_wiki_tags and first_part3 not in zim_wiki_tags:
             # Удаляем первые 2 строчки
-            #print('Найденые 2 строки метаданных Zim')
-            #print(text_source_lines[0:2])
+            # print('Найденые 2 строки метаданных Zim')
+            # print(text_source_lines[0:2])
             self.metadata_lines_before_note = text_source_lines[0:2]
             del text_source_lines[0:2]
 
         if first_part1 in zim_wiki_tags and first_part2 not in zim_wiki_tags and first_part3 not in zim_wiki_tags:
             # Удаляем первую строчку
-            #print('Найдена 1 строка метаданных Zim')
-            #print(text_source_lines[0:1])
+            # print('Найдена 1 строка метаданных Zim')
+            # print(text_source_lines[0:1])
             self.metadata_lines_before_note = text_source_lines[0:1]
             del text_source_lines[0:1]
 
         # 4. Если осталась первая пустая строка - удаляем и её (она обычно остается после служебных)
-        if len(text_source_lines)>0 and not text_source_lines[0].strip():
+        if len(text_source_lines) > 0 and not text_source_lines[0].strip():
             # Удаляем первую строчку
-            #print('А ещё найдена пустая строка после метаданных Zim.')
+            # print('А ещё найдена пустая строка после метаданных Zim.')
             self.metadata_lines_before_note.append(text_source_lines[0])
             del text_source_lines[0:1]
 
 
-        #print('self.metadata_lines_before_note:')
-        #print(self.metadata_lines_before_note)
+        # print('self.metadata_lines_before_note:')
+        # print(self.metadata_lines_before_note)
 
-        #print('2 ### convert_zim_text_to_html_source:')
-        #print(text)
+        # print('2 ### convert_zim_text_to_html_source:')
+        # print(text)
 
 
         # x. Собираем контент заметки обратно в строки
@@ -2057,25 +2057,25 @@ class Note():
         for one_line in text_source_lines:
             new_text_source_lines.append(html.escape(one_line).replace(' ', '&nbsp;'))
 
-        #html_source = '\n'.join(new_text_source_lines)
+        # html_source = '\n'.join(new_text_source_lines)
         html_source = ''
         for one_line in new_text_source_lines:
             html_source += one_line + '\n'
 
         # А тут надо использовать системный перенос строк: os.linesep
 
-        #html_source = '\n'.join(text_source_lines)
+        # html_source = '\n'.join(text_source_lines)
         
-        #print('3 ### convert_zim_text_to_html_source:')
-        #print('###'+html_source+'###')
+        # print('3 ### convert_zim_text_to_html_source:')
+        # print('###'+html_source+'###')
 
-        #html_source = urllib.request.quote(html_source)
+        # html_source = urllib.request.quote(html_source)
 
-        #print()
-        #print('После удаления служебных полей Zim:')
-        #print(html_source)
+        # print()
+        # print('После удаления служебных полей Zim:')
+        # print(html_source)
 
-        #html_source = re.sub('(Content-Type: text/x-zim-wiki)', '<!--', html_source)
+        # html_source = re.sub('(Content-Type: text/x-zim-wiki)', '<!--', html_source)
         # html_source = re.sub('(======) (.*?) (======)\n', '--><font id=hide>\\1</font> <font id=head1>\\2</font>
         #  <font id=hide>\\3</font><br>', html_source)
         # html_source = re.sub('====== (.*?) ======\n', '--><h1>\\1</h1>', html_source)
@@ -2090,12 +2090,12 @@ class Note():
 
 
 
-        #html_source = re.sub('====== (.*?) ======', '<font id=head1>\\1</font>', html_source)
-        #html_source = re.sub('===== (.*?) =====', '<font id=head2>\\1</font>', html_source)
-        #html_source = re.sub('==== (.*?) ====', '<font id=head3>\\1</font>', html_source)
-        #html_source = re.sub('=== (.*?) ===', '<font id=head4>\\1</font>', html_source)
-        #html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
-        #html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
+        # html_source = re.sub('====== (.*?) ======', '<font id=head1>\\1</font>', html_source)
+        # html_source = re.sub('===== (.*?) =====', '<font id=head2>\\1</font>', html_source)
+        # html_source = re.sub('==== (.*?) ====', '<font id=head3>\\1</font>', html_source)
+        # html_source = re.sub('=== (.*?) ===', '<font id=head4>\\1</font>', html_source)
+        # html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
+        # html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
 
         html_source = re.sub('======&nbsp;(.*?)&nbsp;======', '<font id=head1>\\1</font>', html_source)
         html_source = re.sub('=====&nbsp;(.*?)&nbsp;=====', '<font id=head2>\\1</font>', html_source)
@@ -2112,9 +2112,9 @@ class Note():
         # html_source = re.sub('== (.*?) ==', '<p id=head5>\\1</p>', html_source)
         # html_source = re.sub('= (.*?) =', '<p id=head6>\\1</p>', html_source)
         
-        #print()
-        #print('После замены заголовков:')
-        #print(html_source)
+        # print()
+        # print('После замены заголовков:')
+        # print(html_source)
 
         # TODO: re.search, groups - обнаружение и сохранение позиций вики-форматирования
         
@@ -2128,19 +2128,19 @@ class Note():
 
         # 'emphasis': Re('//(?!/)(.+?)//'),
 
-        #html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
+        # html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
         html_source = re.sub('\n\*&nbsp;([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
 
 
         html_source = re.sub('</ul>\n', '</ul>', html_source)
 
-        #html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
+        # html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
         html_source = re.sub('(Created&nbsp;[^\n]*)', '<font id="created">\\1</font>', html_source)
 
 
         # 'code':     Re("''(?!')(.+?)''"),
-        #html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
-        #html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
+        # html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
+        # html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
         html_source = re.sub("&#x27;&#x27;(?!')(.+?)&#x27;&#x27;", '<font id="code">\\1</font>', html_source)
 
 
@@ -2157,11 +2157,11 @@ class Note():
 
         # 'img':      Re('\{\{(?!\{)(.+?)\}\}'),
         html_source = re.sub('\{\{(?!\{)(.+?)\}\}', '<img src="\\1">', html_source)
-        html_source = re.sub('<img src="~', '<img src="'+path_to_home, html_source)
+        html_source = re.sub('<img src="~', '<img src="' + path_to_home, html_source)
         
-        #print()
-        #print('После остальной замены:')
-        #print(html_source)
+        # print()
+        # print('После остальной замены:')
+        # print(html_source)
 
         # TODO: . Сделать превращение в линк электронной почты и её сохранение
 
@@ -2173,12 +2173,12 @@ class Note():
         html_source = html_source.replace('\n', '<br>')
         # html_source = html_source.replace('\n', '</p><p>')
         
-        html_source = '<html>%s<body>%s</body></html>' % (Theme.html_theme_head, html_source, )
+        html_source = '<html>%s<body>%s</body></html>' % (Theme.html_theme_head, html_source,)
         
-        #html_source = html_source.replace(' ', '&nbsp;')
+        # html_source = html_source.replace(' ', '&nbsp;')
 
-        #print('Итоговый вид html:')
-        #print(html_source)
+        # print('Итоговый вид html:')
+        # print(html_source)
 
         return html_source
 
@@ -2196,7 +2196,7 @@ class Note():
             
         # Оригинальный код был из функции save_note
 
-        #begin_of_zim_note = '\n'.join(self.metadata_lines_before_note)
+        # begin_of_zim_note = '\n'.join(self.metadata_lines_before_note)
         begin_of_zim_note = ''
         for one_data_line in self.metadata_lines_before_note:
             begin_of_zim_note += one_data_line + '\n'
@@ -2217,18 +2217,18 @@ class Note():
         # profiler.checkpoint('Заменяем html-теги заголовков на вики-форматирование')
                 
         # Заголовок    
-        text = re.sub(self.format.editor_h1_span+'(.*?)</span>', '====== \\1 ======', text)
-        text = re.sub(self.format.editor_h2_span+'(.*?)</span>', '===== \\1 =====', text)
-        text = re.sub(self.format.editor_h3_span+'(.*?)</span>', '==== \\1 ====', text)         
-        text = re.sub(self.format.editor_h4_span+'(.*?)</span>', '=== \\1 ===', text)
-        text = re.sub(self.format.editor_h5_span+'(.*?)</span>', '== \\1 ==', text)
-        text = re.sub(self.format.editor_h6_span+'(.*?)</span>', '= \\1 =', text)         
+        text = re.sub(self.format.editor_h1_span + '(.*?)</span>', '====== \\1 ======', text)
+        text = re.sub(self.format.editor_h2_span + '(.*?)</span>', '===== \\1 =====', text)
+        text = re.sub(self.format.editor_h3_span + '(.*?)</span>', '==== \\1 ====', text)         
+        text = re.sub(self.format.editor_h4_span + '(.*?)</span>', '=== \\1 ===', text)
+        text = re.sub(self.format.editor_h5_span + '(.*?)</span>', '== \\1 ==', text)
+        text = re.sub(self.format.editor_h6_span + '(.*?)</span>', '= \\1 =', text)         
 
         # Подчеркнутый (выделенный)
-        text = re.sub(self.format.editor_mark_span+'(.*?)</span>', '__\\1__', text)         
+        text = re.sub(self.format.editor_mark_span + '(.*?)</span>', '__\\1__', text)         
         
         # Код
-        text = re.sub(self.format.editor_code_span+'(.*?)</span>', '\'\'\\1\'\'', text)         
+        text = re.sub(self.format.editor_code_span + '(.*?)</span>', '\'\'\\1\'\'', text)         
 
         # profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
 
@@ -2284,12 +2284,12 @@ class Note():
 
         # profiler.stop()
 
-        #text = urllib.request.unquote(text)
+        # text = urllib.request.unquote(text)
         text = text.replace('&nbsp;', ' ')
         text = html.unescape(text)
 
         # Добавляем начало файла как у Zim        
-        text = begin_of_zim_note+text
+        text = begin_of_zim_note + text
 
         return text
 
@@ -2303,35 +2303,35 @@ class Note():
         
         # Обновляем запись в базе
         state_db_connection.execute("UPDATE file_recs SET last_change=?  WHERE filename=?",
-                                    (datetime.now(), filename) )
+                                    (datetime.now(), filename))
         state_db.commit()                        
         
 
-        filename = filename+'-saved'
+        filename = filename + '-saved'
 
-        ## Сохраняем текущую заметку с суффиксом -rt
-        #tmp_str = main_window.current_open_note_link[:-len('.txt')]
-        ## print ('tmp_str: '+tmp_str)
-        #rt_suffix = '-rt'
-        #if tmp_str[-len(rt_suffix):] == rt_suffix:
+        # # Сохраняем текущую заметку с суффиксом -rt
+        # tmp_str = main_window.current_open_note_link[:-len('.txt')]
+        # # print ('tmp_str: '+tmp_str)
+        # rt_suffix = '-rt'
+        # if tmp_str[-len(rt_suffix):] == rt_suffix:
         #    filename = main_window.current_open_note_link
-        #else:
+        # else:
         #    filename = tmp_str+rt_suffix+'.txt'
-        ## print ('filename: '+filename)
-        ## return 0
-        ## filename = main_window.current_open_note_link+'2'
+        # # print ('filename: '+filename)
+        # # return 0
+        # # filename = main_window.current_open_note_link+'2'
     
         note_source = main_window.textBrowser_Note.toHtml()
         note_source = self.convert_html_source_to_zim_text(note_source)
 
-        #print('self.metadata_lines_before_note:')
-        #print(self.metadata_lines_before_note)
+        # print('self.metadata_lines_before_note:')
+        # print(self.metadata_lines_before_note)
 
-        #begin_of_zim_note = '\n'.join(self.metadata_lines_before_note)
-        ## Проверка бага с Линукс-переносом строки, когда последняя строка не сохраняется при конвертации из html
-        #if self.metadata_lines_before_note[len(self.metadata_lines_before_note)-1]=='\n':
+        # begin_of_zim_note = '\n'.join(self.metadata_lines_before_note)
+        # # Проверка бага с Линукс-переносом строки, когда последняя строка не сохраняется при конвертации из html
+        # if self.metadata_lines_before_note[len(self.metadata_lines_before_note)-1]=='\n':
         #    begin_of_zim_note += '\n'
-        #print('begin_of_zim_note: ###%s###' % begin_of_zim_note)
+        # print('begin_of_zim_note: ###%s###' % begin_of_zim_note)
 
 
         if main_window.actionSave_also_note_HTML_source.isChecked():
@@ -2340,91 +2340,91 @@ class Note():
             f.writelines(note_source)
             f.close()
         
-        #note_source = self.clear_note_html_cover(note_source)
+        # note_source = self.clear_note_html_cover(note_source)
         
-        ## Удаляем виртуальные начала строк
-        #note_source = re.sub('<p .*?>', '', note_source)
-        ## Удаляем последнее закрытие </p>
+        # # Удаляем виртуальные начала строк
+        # note_source = re.sub('<p .*?>', '', note_source)
+        # # Удаляем последнее закрытие </p>
         
-        ## profiler.checkpoint('Проводим склейку соседних span')
+        # # profiler.checkpoint('Проводим склейку соседних span')
 
-        ## Склеиваем одинаковые соседние span
-        #note_source = self.union_concat_ident_span(note_source)
+        # # Склеиваем одинаковые соседние span
+        # note_source = self.union_concat_ident_span(note_source)
 
-        ## Применяем вики-форматирование
+        # # Применяем вики-форматирование
         
-        ## profiler.checkpoint('Заменяем html-теги заголовков на вики-форматирование')
+        # # profiler.checkpoint('Заменяем html-теги заголовков на вики-форматирование')
                 
-        ## Заголовок    
-        #note_source = re.sub(self.format.editor_h1_span+'(.*?)</span>', '====== \\1 ======', note_source)
-        #note_source = re.sub(self.format.editor_h2_span+'(.*?)</span>', '===== \\1 =====', note_source)
-        #note_source = re.sub(self.format.editor_h3_span+'(.*?)</span>', '==== \\1 ====', note_source)         
-        #note_source = re.sub(self.format.editor_h4_span+'(.*?)</span>', '=== \\1 ===', note_source)
-        #note_source = re.sub(self.format.editor_h5_span+'(.*?)</span>', '== \\1 ==', note_source)
-        #note_source = re.sub(self.format.editor_h6_span+'(.*?)</span>', '= \\1 =', note_source)         
+        # # Заголовок    
+        # note_source = re.sub(self.format.editor_h1_span+'(.*?)</span>', '====== \\1 ======', note_source)
+        # note_source = re.sub(self.format.editor_h2_span+'(.*?)</span>', '===== \\1 =====', note_source)
+        # note_source = re.sub(self.format.editor_h3_span+'(.*?)</span>', '==== \\1 ====', note_source)         
+        # note_source = re.sub(self.format.editor_h4_span+'(.*?)</span>', '=== \\1 ===', note_source)
+        # note_source = re.sub(self.format.editor_h5_span+'(.*?)</span>', '== \\1 ==', note_source)
+        # note_source = re.sub(self.format.editor_h6_span+'(.*?)</span>', '= \\1 =', note_source)         
 
-        ## Подчеркнутый (выделенный)
-        #note_source = re.sub(self.format.editor_mark_span+'(.*?)</span>', '__\\1__', note_source)         
+        # # Подчеркнутый (выделенный)
+        # note_source = re.sub(self.format.editor_mark_span+'(.*?)</span>', '__\\1__', note_source)         
         
-        ## Код
-        #note_source = re.sub(self.format.editor_code_span+'(.*?)</span>', '\'\'\\1\'\'', note_source)         
+        # # Код
+        # note_source = re.sub(self.format.editor_code_span+'(.*?)</span>', '\'\'\\1\'\'', note_source)         
 
-        ## profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
+        # # profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
 
-        ## Ссылка
-        ## <a href="...">
-        #note_source = self.make_all_links_to_wiki_format(note_source)
+        # # Ссылка
+        # # <a href="...">
+        # note_source = self.make_all_links_to_wiki_format(note_source)
 
-        ## profiler.checkpoint('Заменяем html-теги основной разметки на вики-форматирование')
+        # # profiler.checkpoint('Заменяем html-теги основной разметки на вики-форматирование')
         
-        ## Нумерованный список
-        ## 
+        # # Нумерованный список
+        # # 
         
-        ## Зачеркнутый текст
-        ## <span style=" font-family:'Sans'; font-size:15px; text-decoration: line-through; color:#aaaaaa;">
-        ## editor_strikethrough_span
-        #note_source = re.sub('<span [^>]*text-decoration: line-through;.*?>(.*?)</span>', '~~\\1~~', note_source)
-        ## Жирный
-        ## <span style=" font-family:'Sans'; font-size:15px; font-weight:600;">
-        #note_source = re.sub('<span [^>]*font-weight:600;.*?>(.*?)</span>', '**\\1**', note_source)
-        ## Наклонный
-        ## <span style=" font-family:'Sans'; font-size:15px; font-style:italic;">
-        #note_source = re.sub('<span [^>]*font-style:italic;.*?>(.*?)</span>', '//\\1//', note_source)
+        # # Зачеркнутый текст
+        # # <span style=" font-family:'Sans'; font-size:15px; text-decoration: line-through; color:#aaaaaa;">
+        # # editor_strikethrough_span
+        # note_source = re.sub('<span [^>]*text-decoration: line-through;.*?>(.*?)</span>', '~~\\1~~', note_source)
+        # # Жирный
+        # # <span style=" font-family:'Sans'; font-size:15px; font-weight:600;">
+        # note_source = re.sub('<span [^>]*font-weight:600;.*?>(.*?)</span>', '**\\1**', note_source)
+        # # Наклонный
+        # # <span style=" font-family:'Sans'; font-size:15px; font-style:italic;">
+        # note_source = re.sub('<span [^>]*font-style:italic;.*?>(.*?)</span>', '//\\1//', note_source)
         
-        ## Картинка
-        ## <img src="/home/vyacheslav//Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png" />
-        ## -->
-        ## {{~/Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png}}
-        ## Закомментировал, не работает сейчас, выдает ошибку про незакрытый \U. Наверное, это в пути к картинке.
-        ## note_source = re.sub('<img src="'+path_to_home+'(.*?)" />', '{{~\\1}}', note_source)
-        #note_source = re.sub('<img src="(.*?)" />', '{{\\1}}', note_source)
+        # # Картинка
+        # # <img src="/home/vyacheslav//Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png" />
+        # # -->
+        # # {{~/Dropbox/Projects/Relanotes/relanotes-0.02/mclaren.png}}
+        # # Закомментировал, не работает сейчас, выдает ошибку про незакрытый \U. Наверное, это в пути к картинке.
+        # # note_source = re.sub('<img src="'+path_to_home+'(.*?)" />', '{{~\\1}}', note_source)
+        # note_source = re.sub('<img src="(.*?)" />', '{{\\1}}', note_source)
 
         
-        ## Ненумерованный список
-        ## <ul style="..."><li style="..."><span style="..">Пункт 1</span></li></ul> 
-        ## note_source = re.sub('<ul .*?><li .*?>(.*?)</li></ul>', '* \\1<br />', note_source)
-        #note_source = re.sub('<li .*?>(.*?)</li>', '* \\1<br />', note_source)
-        #note_source = re.sub('<ul .*?>(.*?)</ul>', '\\1', note_source)
+        # # Ненумерованный список
+        # # <ul style="..."><li style="..."><span style="..">Пункт 1</span></li></ul> 
+        # # note_source = re.sub('<ul .*?><li .*?>(.*?)</li></ul>', '* \\1<br />', note_source)
+        # note_source = re.sub('<li .*?>(.*?)</li>', '* \\1<br />', note_source)
+        # note_source = re.sub('<ul .*?>(.*?)</ul>', '\\1', note_source)
 
-        ## Чистим остатки
-        ## profiler.checkpoint('Чистим остатки html разметки')
+        # # Чистим остатки
+        # # profiler.checkpoint('Чистим остатки html разметки')
         
-        ## Удаление оставшихся span
-        #note_source = re.sub('<span .*?>', '', note_source)
-        #note_source = note_source.replace('</span>', '')
+        # # Удаление оставшихся span
+        # note_source = re.sub('<span .*?>', '', note_source)
+        # note_source = note_source.replace('</span>', '')
         
-        ## Заменяем окончания на перенос строки
-        #note_source = note_source.replace('</p>', '\n')
-        ## Заменяем html переносы строк на обычные
-        #note_source = note_source.replace('<br />', '\n')
+        # # Заменяем окончания на перенос строки
+        # note_source = note_source.replace('</p>', '\n')
+        # # Заменяем html переносы строк на обычные
+        # note_source = note_source.replace('<br />', '\n')
         
-        ## note_source = note_source.replace('<a name="created"></a>','')
-        #note_source = re.sub('<a name="(.*?)"></a>', '', note_source)
+        # # note_source = note_source.replace('<a name="created"></a>','')
+        # note_source = re.sub('<a name="(.*?)"></a>', '', note_source)
 
-        ## profiler.stop()
+        # # profiler.stop()
         
-        ## Добавляем начало файла как у Zim        
-        #note_source = begin_of_zim_note+note_source
+        # # Добавляем начало файла как у Zim        
+        # note_source = begin_of_zim_note+note_source
         
         # Записываем результат преобразования исходника заметки в файл
 
@@ -2435,13 +2435,13 @@ class Note():
         print("We will save notes to %s" % filename)
 
         # Новое сохранение с использование кодировки UTF8
-        fileObj = codecs.open( filename, "w", "utf-8" )
+        fileObj = codecs.open(filename, "w", "utf-8")
         for one_line in note_source:
             fileObj.write(one_line)
         fileObj.close()
 
 
-        main_window.statusbar.showMessage('Note saved as '+filename)
+        main_window.statusbar.showMessage('Note saved as ' + filename)
         
         # TODO: Запуск перебора всех заметок и сохранения их в альтернативный каталог
         # TODO: Diff всех файлов заметок - оригиналов и сохраненных, и коррекция сохранения.
@@ -2471,7 +2471,7 @@ class Note():
         self.paste_as_text_once = True
         main_window.textBrowser_Note.paste()
 
-    def __init__(self):    # Note class
+    def __init__(self):  # Note class
         self.format = self.Format()
         # Прописываем реакцию на сигналы
         # QtCore.QObject.connect(main_window.textBrowser_Note, QtCore.SIGNAL("textChanged()"), self.format.update_ui)
@@ -2502,7 +2502,7 @@ class Note():
         
         main_window.actionPaste_as_text.triggered.connect(self.paste_as_text)
     
-        #Скрываем дополнительные фреймы
+        # Скрываем дополнительные фреймы
         main_window.frameSearchInNote.setVisible(False)
 
 
@@ -2531,20 +2531,20 @@ class Notelist():
     sidebar_source    (исходник сайдбара)
     notelist_source    (исходник списка заметок)
     """
-    filter_name = '' # Фильтрация списка заметок по имени заметки
+    filter_name = ''  # Фильтрация списка заметок по имени заметки
     filter_text = ''  # Фильтрация списка заметок по тексту, содержащемуся внутри заметок
 
-    #opened_url = None # Ссылка на открытую заметку
+    # opened_url = None # Ссылка на открытую заметку
 
     allowed_note_files_extensions = ['.txt']
 
     items = []  # Элементы списка заметок
     items_cursor_position = 0  # Положение курсора в списке элементов, который можно открыть по нажатию Enter
-    #move_cursor_direction = None # Признак того - куда надо передвинуть реальный курсор в QTextBrowser вслед за виртуальным
-    items_cursor_url = None # Ссылка под курсором, которая откроется при нажатии Enter
-    items_cursor_cutename = None # Красивое имя под курсором
-    items_notes_size = 0 # Общий объём данных в заметках из списка
-    items_notes_count = 0 # Количество отдельных заметок в списке элементов
+    # move_cursor_direction = None # Признак того - куда надо передвинуть реальный курсор в QTextBrowser вслед за виртуальным
+    items_cursor_url = None  # Ссылка под курсором, которая откроется при нажатии Enter
+    items_cursor_cutename = None  # Красивое имя под курсором
+    items_notes_size = 0  # Общий объём данных в заметках из списка
+    items_notes_count = 0  # Количество отдельных заметок в списке элементов
 
     # Информация обо всех подходящих под заметки файлах, найденных в процессе обхода, но, часть из которых может быть впоследствии может быть отфильтрована
     all_found_files_count = 0
@@ -2557,8 +2557,8 @@ class Notelist():
     item['last_open'] = None  # Когда открывали последний раз. Больше относится к истории.
     item['size'] = None  # Размер файла заметки
     # Поля для найденного текста внутри заметки
-    item['found_line_number'] = None   # Номер строчки, в которой найдено
-    item['found_line_text'] = None   # Текст строчки, в которой найдено
+    item['found_line_number'] = None  # Номер строчки, в которой найдено
+    item['found_line_text'] = None  # Текст строчки, в которой найдено
 
     need_rescan = True  # Признак необходимости рескана списка заметок/файлов
 
@@ -2656,32 +2656,32 @@ class Notelist():
 
     def move_textbrowser_cursor(self):
         # Двигаем курсор в списке заметок вслед за перемещением виртуального курсора, чтобы он всегда был в поле видимости
-        #cursor = main_window.textBrowser_Listnotes.textCursor()
-        #print('self.move_cursor_direction=%s' % self.move_cursor_direction)
-        #if self.move_cursor_direction == 'up':
+        # cursor = main_window.textBrowser_Listnotes.textCursor()
+        # print('self.move_cursor_direction=%s' % self.move_cursor_direction)
+        # if self.move_cursor_direction == 'up':
         #    cursor.movePosition(QtGui.QTextCursor.Up)
-        #if self.move_cursor_direction == 'down':
+        # if self.move_cursor_direction == 'down':
         #    cursor.movePosition(QtGui.QTextCursor.Down)
-        #if self.move_cursor_direction == 'end':
+        # if self.move_cursor_direction == 'end':
         #    cursor.movePosition(QtGui.QTextCursor.End)
-        #if self.move_cursor_direction == 'start':
+        # if self.move_cursor_direction == 'start':
         #    cursor.movePosition(QtGui.QTextCursor.Start)
-        #main_window.textBrowser_Listnotes.ensureCursorVisible()
-        #self.move_cursor_direction = None
+        # main_window.textBrowser_Listnotes.ensureCursorVisible()
+        # self.move_cursor_direction = None
 
         # Если нет элементов в списке - выходим
-        if len(self.items)<1:
+        if len(self.items) < 1:
             return 0
 
         scrollbar_maximum = main_window.textBrowser_Listnotes.verticalScrollBar().maximum()
         percent_of_position = self.items_cursor_position / len(self.items)
         scrollbar_set_pos = scrollbar_maximum * percent_of_position
         listnotes_height = main_window.textBrowser_Listnotes.height()
-        #print('scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, listnotes_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, listnotes_height) )
+        # print('scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, listnotes_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, listnotes_height) )
 
         if scrollbar_set_pos < listnotes_height * 0.8:
             scrollbar_set_pos = 0
-        if scrollbar_set_pos > scrollbar_maximum - listnotes_height/2:
+        if scrollbar_set_pos > scrollbar_maximum - listnotes_height / 2:
             scrollbar_set_pos = scrollbar_maximum
         main_window.textBrowser_Listnotes.verticalScrollBar().setValue(scrollbar_set_pos)
 
@@ -2726,8 +2726,8 @@ class Notelist():
             main_window.lineNotelist_Filter.setFocus()
             main_window.lineNotelist_Filter.selectAll()
             
-            ## Если обнаружен текст в поле поиска по содержимому - переставляем фокус в него
-            #if main_window.lineEdit_Filter_Note_Text.text() != '':
+            # # Если обнаружен текст в поле поиска по содержимому - переставляем фокус в него
+            # if main_window.lineEdit_Filter_Note_Text.text() != '':
             #    main_window.lineEdit_Filter_Note_Text.setFocus()
             #    main_window.lineEdit_Filter_Note_Text.selectAll()
 
@@ -2737,20 +2737,20 @@ class Notelist():
 
 
     def move_cursor(self, delta=0):
-        #print('Перемещаем курсор по списку с дельтой %s' % delta)
+        # print('Перемещаем курсор по списку с дельтой %s' % delta)
         # Перемещаем курсор по списку заметок в заданном направлении
         new_position = self.items_cursor_position + delta
-        if new_position<1:
+        if new_position < 1:
             # Уперлись в пол. Надо мотать в конец.
             new_position = len(self.items) + new_position
-            #self.move_cursor_direction = 'end'
-        elif new_position>len(self.items):
+            # self.move_cursor_direction = 'end'
+        elif new_position > len(self.items):
             # Уперлись в потолок. Надо мотать в начало.
             new_position = new_position - len(self.items)
-            #self.move_cursor_direction = 'start'
-        #elif delta>0:
+            # self.move_cursor_direction = 'start'
+        # elif delta>0:
         #    self.move_cursor_direction = 'up'
-        #elif delta<0:
+        # elif delta<0:
         #    self.move_cursor_direction = 'down'
         self.items_cursor_position = new_position
         self.update()
@@ -2778,13 +2778,13 @@ class Notelist():
             else:
                 description_filter_name = 'Any name'
             if self.filter_text:
-                description_filter_text = ('text contains <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;') )
+                description_filter_text = ('text contains <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;'))
             else:
                 description_filter_text = 'any text contains'
 
-            main_window.label_DisplayFilters.setText(description_filter_name + ' and '+ description_filter_text)
+            main_window.label_DisplayFilters.setText(description_filter_name + ' and ' + description_filter_text)
         else:
-            #main_window.label_DisplayFilters.setText('Example: "proj ninja"')
+            # main_window.label_DisplayFilters.setText('Example: "proj ninja"')
             main_window.label_DisplayFilters.setText('<html><head></head><body>Example: <b>proj ninja</b></body></html>')
                 
         # print('Filters: notelist.filter_name=%s, notelist.filter_text=%s' % (self.filter_name, self.filter_text) )
@@ -2801,10 +2801,10 @@ class Notelist():
         # 2.2 В последнем слове отрезаем все после точки, если она есть
         if '.' in list_of_words[-1]:
             list_of_words[-1] = list_of_words[-1].rpartition('.')[0]
-        #cute_filename = cute_filename.rpartition('.txt')[0]
+        # cute_filename = cute_filename.rpartition('.txt')[0]
         # 3. Соединяем обратно, вместо разделителя пути используя двоеточие с пробелом после
         cute_filename = ': '.join(list_of_words)
-        #cute_filename = cute_filename.replace(os.path.sep, ': ')         
+        # cute_filename = cute_filename.replace(os.path.sep, ': ')         
         # 4. Меняем нижнее подчеркивание на пробелы
         cute_filename = cute_filename.replace('_', ' ')            
         return cute_filename
@@ -2812,10 +2812,10 @@ class Notelist():
 
     def file_in_history(self, filename):
         # Проверяем - есть ли файл в списке истории
-        state_db_connection.execute("SELECT * FROM file_recs WHERE filename=? AND last_open NOT NULL", (filename,) )
+        state_db_connection.execute("SELECT * FROM file_recs WHERE filename=? AND last_open NOT NULL", (filename,))
         existed_rec = state_db_connection.fetchall()
         if len(existed_rec) > 0:
-            #print('Файл обнаружен в истории: ', filename)
+            # print('Файл обнаружен в истории: ', filename)
             return True
         else:
             return False
@@ -2827,13 +2827,13 @@ class Notelist():
 
 
     def add_item(self,
-                 filename = None,
-                 cutename = None,
-                 history = False,
-                 last_open = None,
-                 size = None,
-                 found_line_number = None,
-                 found_line_text = None
+                 filename=None,
+                 cutename=None,
+                 history=False,
+                 last_open=None,
+                 size=None,
+                 found_line_number=None,
+                 found_line_text=None
                  ):
         # Добавляем элемент списка
         rec_item = self.item.copy()  # Делаем копию образца словаря
@@ -2867,8 +2867,8 @@ class Notelist():
         self.items_notes_count = 0
 
         # Данные о курсоре
-        #self.items_cursor_url = None
-        #self.items_cursor_position = 0
+        # self.items_cursor_url = None
+        # self.items_cursor_position = 0
 
 
 
@@ -2878,9 +2878,9 @@ class Notelist():
         # И удовлетворяет ли она всем установленным фильтрам.
         # Затем добавляем все необходимое в список и меняем соответствующие переменные.
 
-        #print('Работаем с файлом %s' % filename)
-        #if self.file_in_history(filename):
-            #print('Файл из истории: %s' % filename)
+        # print('Работаем с файлом %s' % filename)
+        # if self.file_in_history(filename):
+            # print('Файл из истории: %s' % filename)
 
         cutename = self.make_cute_name(filename)
         
@@ -2900,13 +2900,13 @@ class Notelist():
             # if main_window.lineEdit_Filter_Note_Text.text().lower() not in lines.lower():
             if self.filter_text.lower() not in lines.lower():
                 # Если искомого текста в заметке нет - просто идем к следующей
-                #print('Файл %s не подходит под фильтр текста "%s"' % (cute_filename.lower(), self.filter_text.lower()) )
+                # print('Файл %s не подходит под фильтр текста "%s"' % (cute_filename.lower(), self.filter_text.lower()) )
                 return 0
 
-        self.add_item(filename=filename, 
-                      cutename=cutename, 
-                      history=history, 
-                      last_open=last_open, 
+        self.add_item(filename=filename,
+                      cutename=cutename,
+                      history=history,
+                      last_open=last_open,
                       size=size)
         # Увеличиваем счетчик количества заметок в списке
         self.items_notes_count += 1
@@ -2923,10 +2923,10 @@ class Notelist():
                     # print('Нашли вхождение в строку '+str(line_i)+' - '+filter_note_text)
                     # Нашли вхождение. Подсвечиваем и добавляем к выводу в Notelist
 
-                    self.add_item(filename = filename,
-                                  history = history,
-                                  found_line_number = line_i,
-                                  found_line_text = line)
+                    self.add_item(filename=filename,
+                                  history=history,
+                                  found_line_number=line_i,
+                                  found_line_text=line)
 
                     founded_i += 1
 
@@ -2948,12 +2948,12 @@ class Notelist():
             if not os.path.isfile(rec_filename):
                 # Файл не существует или это каталог, а не файл.
                 # Удаляем из истории
-                state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
+                state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,))
                 continue  # Переходим на следующий виток цикла
 
-            self.work_with_found_note(filename=rec_filename, 
-                                      history=True, 
-                                      size=os.stat(rec_filename).st_size, 
+            self.work_with_found_note(filename=rec_filename,
+                                      history=True,
+                                      size=os.stat(rec_filename).st_size,
                                       last_open=rec_last_open)
 
 
@@ -2967,28 +2967,28 @@ class Notelist():
 
         for root, dirs, files in os.walk(path_to_notes):
             for file in files:
-                #print('Найдено во время обхода: %s' % os.path.join(root, file))
+                # print('Найдено во время обхода: %s' % os.path.join(root, file))
                 # Проверяем - разрешенное ли расширение у файла
                 if os.path.splitext(file)[-1] in self.allowed_note_files_extensions:
-                #if file.endswith('.txt'):
+                # if file.endswith('.txt'):
                     # Обрабатываем файл заметки
                     filename = os.path.join(root, file)
                     size = os.stat(filename).st_size
-                    #access_time = os.stat(filename).st_atime  # time of most recent access.
-                    #modification_time = os.stat(filename).st_mtime  # time of most recent content modification
+                    # access_time = os.stat(filename).st_atime  # time of most recent access.
+                    # modification_time = os.stat(filename).st_mtime  # time of most recent content modification
 
                     # Добавляем инфу о найденных файлах в общий счетчик всех доступных файлов заметок
                     self.all_found_files_count += 1
                     self.all_found_files_size += size
-                    #print('Файл с разрешенным расширением')
+                    # print('Файл с разрешенным расширением')
 
                     # Продолжаем с найденным файловым элементом
                     # Проверяем - нет ли этого элемента уже добавленного из истории
                     if self.file_in_history(filename):
-                        #print('Файл есть в истории: %s' % filename)
+                        # print('Файл есть в истории: %s' % filename)
                         continue  # Переходим на следующий виток цикла
 
-                    self.work_with_found_note(filename=filename, 
+                    self.work_with_found_note(filename=filename,
                                               size=size)
 
 
@@ -3008,8 +3008,9 @@ class Notelist():
             line = one_item['found_line_text']
             line_i = one_item['found_line_number']
 
-            line = re.sub('('+self.filter_text+')', '<span id="highlight">'+'\\1</span>', line, flags=re.I)
-            html_source += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename+'?'+str(line_i)+'">'+line+'</a></p>'
+            # line = re.sub('(' + self.filter_text + ')', '<span id="highlight">' + '\\1</span>', line, flags=re.I)
+            line = line.replace(self.filter_text, '<span id="highlight">' + self.filter_text + '</span>')
+            html_source += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename + '?' + str(line_i) + '">' + line + '</a></p>'
             return html_source
 
 
@@ -3017,7 +3018,7 @@ class Notelist():
             # Это элемент истории. Заполняем признак last_open
             last_open = one_item['last_open'].rpartition(':')[0]
             # Переопределяем в ячейку для элемента истории
-            last_open = '&nbsp;'*4 + '<span id=history_date>%s</span>' % last_open
+            last_open = '&nbsp;' * 4 + '<span id=history_date>%s</span>' % last_open
             
                         
 
@@ -3028,7 +3029,7 @@ class Notelist():
         if self.items_cursor_position == item_number:
             # Текущая позиция - должна быть с курсором
             img_src = 'resources/icons/notelist/arrow130_h11.png'
-            self.items_cursor_url = 'note?'+filename
+            self.items_cursor_url = 'note?' + filename
             self.items_cursor_cutename = self.make_cute_name(filename)
         else:
             if filename == active_link:
@@ -3043,19 +3044,19 @@ class Notelist():
 
         if self.filter_name != '':
             # Делаем подсветку текста из фильтра в списке заметки
-            cute_filename = re.sub('('+self.filter_name+')', '<span id="highlight">'+'\\1</span>', cute_filename, flags=re.I)
-
+            # cute_filename = re.sub('(' + self.filter_name + ')', '<span id="highlight">' + '\\1</span>', cute_filename, flags=re.I)
+            cute_filename = cute_filename.replace(self.filter_name, '<span id="highlight">' + self.filter_name + '</span>')
          # html_source += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
          # Format: multiaction / note :|: note_filename
 
-        html_source += '<p'+line_style+'><a href="note?'+filename+'"><img src="'+img_src+'">&nbsp;' + \
-            cute_filename+'</a>' + '&nbsp;&nbsp;<font id=filesize>'+hbytes(size)+'</font>' + \
-            '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?'+filename + \
+        html_source += '<p' + line_style + '><a href="note?' + filename + '"><img src="' + img_src + '">&nbsp;' + \
+            cute_filename + '</a>' + '&nbsp;&nbsp;<font id=filesize>' + hbytes(size) + '</font>' + \
+            '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?' + filename + \
             '"><img src="resources/icons/notelist/document62-3.png"></a> ' + \
             last_open + '</p>'
-        #print('Сделали html для элемента %s:' % filename)
-        #print(html_source)
-        #print()
+        # print('Сделали html для элемента %s:' % filename)
+        # print(html_source)
+        # print()
         return html_source
 
 
@@ -3067,10 +3068,10 @@ class Notelist():
 
     def make_html_source_from_items_list(self):
         # Собираем html-исходник для окна со списком заметок, используя внутриклассовый список найденных элементов
-        html_source=''
+        html_source = ''
         collect_history_is_done = False  # Признак завершения обработки всех элементов истории
         first_history_item_done = False  # Признак завершения обработки первого элемента истории
-        item_number = 0     # Порядковый номер элемента в списке
+        item_number = 0  # Порядковый номер элемента в списке
         for one_item in self.items:
             if not first_history_item_done and not one_item['history']:
                 # У нас отсутствует история - ещё не обработали первый элемент истории, а уже обычная заметка
@@ -3094,13 +3095,13 @@ class Notelist():
                 html_source += '<div id=notelist>'
             # Увеличиваем порядковый номер элемента
             item_number += 1
-            #print('Создаем html-код для элемента %s' % item_number)
+            # print('Создаем html-код для элемента %s' % item_number)
 
             # Добавляем собственно сам элемент в html-обертке
             html_source += self.make_html_source_for_item(one_item, item_number)
 
         # Используем настройки темы для оформления списка элементов
-        html_source = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_source, )
+        html_source = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_source,)
         return html_source
 
 
@@ -3111,15 +3112,15 @@ class Notelist():
 
         if self.need_rescan:
             # Если требуется рескан файлов - проводим его
-            #print('Требуется рескан файлов')
+            # print('Требуется рескан файлов')
             self.clear_items()
             self.collect_history_items_list()
             self.collect_other_items_list()
             self.need_rescan = False
 
         # Обновляем информацию в статусной строке главного окна
-        main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count)+' notes ('+hbytes(self.all_found_files_size) + ') at ' + path_to_notes +
-                                            ', showed ' + str(self.items_notes_count)+' notes ('+hbytes(self.items_notes_size)+') in list.' )
+        main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count) + ' notes (' + hbytes(self.all_found_files_size) + ') at ' + path_to_notes + 
+                                            ', showed ' + str(self.items_notes_count) + ' notes (' + hbytes(self.items_notes_size) + ') in list.')
 
         if self.items_notes_count and not self.items_cursor_position:
             # Инициализируем положение курсора в списке
@@ -3192,7 +3193,7 @@ class Notelist():
         
         # QtCore.QObject.connect(main_window.lineEdit_Filter_Note_Text, QtCore.SIGNAL("textChanged( const QString& )"),
                                # main_window.filter_note_text_changed)
-        #main_window.lineEdit_Filter_Note_Text.textChanged.connect(main_window.filter_note_text_changed)
+        # main_window.lineEdit_Filter_Note_Text.textChanged.connect(main_window.filter_note_text_changed)
         
         # QtCore.QObject.connect(main_window.lineEdit_Filter_Note_Text, QtCore.SIGNAL("returnPressed ()"),
         # main_window.checkBox_Filter_Note_Content_Text_switch_state)
@@ -3234,7 +3235,7 @@ class Table_of_note_contents():
         main_window.actionShow_note_contents.setChecked(visible)
 
     def isVisible(self):
-        if main_window.stackedWidget.currentIndex()==2:
+        if main_window.stackedWidget.currentIndex() == 2:
             return True
         else:
             return False
@@ -3270,7 +3271,7 @@ class Table_of_note_contents():
         
         cursor.movePosition(QtGui.QTextCursor.StartOfLine)
         i = 1
-        while cursor.position()>0:
+        while cursor.position() > 0:
             cursor.movePosition(QtGui.QTextCursor.Down)
             cursor.movePosition(QtGui.QTextCursor.StartOfLine)
             # Если не перемещаться на начало линии - зависнет на <li> и др.
@@ -3357,7 +3358,7 @@ class NoteMultiactionWindow(QtWidgets.QDialog, note_multiaction.Ui_DialogNoteMul
 Wiki-Format: zim 0.4
 Creation-Date: 2012-09-02T11:16:31+04:00
 
-'''+'====== '+notename+''' ======
+''' + '====== ' + notename + ''' ======
 
 
 '''
@@ -3369,31 +3370,31 @@ Creation-Date: 2012-09-02T11:16:31+04:00
     def add_note_nearly(self):
         # Создаем новый файл рядом с указанным, с заданным именем
         new_note_name = self.lineEdit.text()
-        new_filename = new_note_name.replace(' ', '_')+'.txt'
+        new_filename = new_note_name.replace(' ', '_') + '.txt'
         note_path = self.labelNoteFileName.text()
-        #note_path = note_path.rpartition('/')[0]
+        # note_path = note_path.rpartition('/')[0]
         note_path = note_path.rpartition(os.path.sep)[0]
-        #full_filename = note_path+'/'+new_filename
-        full_filename = note_path+os.path.sep+new_filename
+        # full_filename = note_path+'/'+new_filename
+        full_filename = note_path + os.path.sep + new_filename
         self.make_new_note_file(full_filename, new_note_name)
         main_window.open_file_in_editor(full_filename)
-        main_window.statusbar.showMessage('New note created: '+full_filename)
+        main_window.statusbar.showMessage('New note created: ' + full_filename)
         self.close()
 
     def add_child_note(self):
         # Создаем новый файл под указанной заметкой, с заданным именем
         new_note_name = self.lineEdit.text()
-        new_filename = new_note_name.replace(' ', '_')+'.txt'
+        new_filename = new_note_name.replace(' ', '_') + '.txt'
         note_path = self.labelNoteFileName.text()
         note_path = note_path.rpartition('.txt')[0]
-        #full_filename = note_path+'/'+new_filename
-        full_filename = note_path+os.path.sep+new_filename
+        # full_filename = note_path+'/'+new_filename
+        full_filename = note_path + os.path.sep + new_filename
         if not os.path.exists(note_path):
             # Создаем каталог нужный
             os.makedirs(note_path)
         self.make_new_note_file(full_filename, new_note_name)
         main_window.open_file_in_editor(full_filename)
-        main_window.statusbar.showMessage('New note created: '+full_filename)
+        main_window.statusbar.showMessage('New note created: ' + full_filename)
         self.close()
     
 
