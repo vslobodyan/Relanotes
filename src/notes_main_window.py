@@ -1205,6 +1205,8 @@ class Note():
     format_type = 'zim'  # zim, md, ...
     metadata_lines_before_note = ''  # Специальные поля заметки, например, от Zim, которые надо сохранить и записать при сохранении
 
+    space_symbol = '&ensp;'  # Символ пробела для замены и сохранения пробелов в исходнике для редактора
+
 
     class Format():
         
@@ -2055,7 +2057,7 @@ class Note():
         
         new_text_source_lines = []
         for one_line in text_source_lines:
-            new_text_source_lines.append(html.escape(one_line).replace(' ', '&nbsp;'))
+            new_text_source_lines.append(html.escape(one_line).replace(' ', self.space_symbol))
 
         # html_source = '\n'.join(new_text_source_lines)
         html_source = ''
@@ -2097,12 +2099,12 @@ class Note():
         # html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
         # html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
 
-        html_source = re.sub('======&nbsp;(.*?)&nbsp;======', '<font id=head1>\\1</font>', html_source)
-        html_source = re.sub('=====&nbsp;(.*?)&nbsp;=====', '<font id=head2>\\1</font>', html_source)
-        html_source = re.sub('====&nbsp;(.*?)&nbsp;====', '<font id=head3>\\1</font>', html_source)
-        html_source = re.sub('===&nbsp;(.*?)&nbsp;===', '<font id=head4>\\1</font>', html_source)
-        html_source = re.sub('==&nbsp;(.*?)&nbsp;==', '<font id=head5>\\1</font>', html_source)
-        html_source = re.sub('=&nbsp;(.*?)&nbsp;=', '<font id=head6>\\1</font>', html_source)
+        html_source = re.sub('======'+self.space_symbol+'(.*?)'+self.space_symbol+'======', '<font id=head1>\\1</font>', html_source)
+        html_source = re.sub('====='+self.space_symbol+'(.*?)'+self.space_symbol+'=====', '<font id=head2>\\1</font>', html_source)
+        html_source = re.sub('===='+self.space_symbol+'(.*?)'+self.space_symbol+'====', '<font id=head3>\\1</font>', html_source)
+        html_source = re.sub('==='+self.space_symbol+'(.*?)'+self.space_symbol+'===', '<font id=head4>\\1</font>', html_source)
+        html_source = re.sub('=='+self.space_symbol+'(.*?)'+self.space_symbol+'==', '<font id=head5>\\1</font>', html_source)
+        html_source = re.sub('='+self.space_symbol+'(.*?)'+self.space_symbol+'=', '<font id=head6>\\1</font>', html_source)
 
         
         # html_source = re.sub('====== (.*?) ======', '--><p id=head1>\\1</p>', html_source)
@@ -2129,13 +2131,13 @@ class Note():
         # 'emphasis': Re('//(?!/)(.+?)//'),
 
         # html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
-        html_source = re.sub('\n\*&nbsp;([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
+        html_source = re.sub('\n\*'+self.space_symbol+'([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
 
 
         html_source = re.sub('</ul>\n', '</ul>', html_source)
 
         # html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
-        html_source = re.sub('(Created&nbsp;[^\n]*)', '<font id="created">\\1</font>', html_source)
+        html_source = re.sub('(Created'+self.space_symbol+'[^\n]*)', '<font id="created">\\1</font>', html_source)
 
 
         # 'code':     Re("''(?!')(.+?)''"),
@@ -2175,8 +2177,6 @@ class Note():
         
         html_source = '<html>%s<body>%s</body></html>' % (Theme.html_theme_head, html_source,)
         
-        # html_source = html_source.replace(' ', '&nbsp;')
-
         # print('Итоговый вид html:')
         # print(html_source)
 
@@ -2285,7 +2285,7 @@ class Note():
         # profiler.stop()
 
         # text = urllib.request.unquote(text)
-        text = text.replace('&nbsp;', ' ')
+        text = text.replace(self.space_symbol, ' ')
         text = html.unescape(text)
 
         # Добавляем начало файла как у Zim        
