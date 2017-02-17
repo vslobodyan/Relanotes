@@ -977,8 +977,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 print('FILE_RECS for %s starting here' % filename)
                 ######### file_recs
                 # Перед добавлением новой записи проверяем - нет-ли записи с такими-же значениями уже в списке
-                if notelist.file_in_history(filename):
-                    print('FILE_RECS: для файла %s запись есть. Обновляем.' % filename)
+                if notelist.file_in_state_db(filename):
+                    #notelist.file_in_history(filename):
+                    print('FILE_RECS: для файла %s запись в базе есть. Обновляем.' % filename)
                     # Запись уже есть. Прописываем ей новое время открытия и увеличиваем счетчик открытий
                     # Получаем количество открытий данного файла
                     state_db_connection.execute("SELECT count_opens, current_position FROM file_recs WHERE filename=?", (filename,))
@@ -2816,6 +2817,16 @@ class Notelist():
         existed_rec = state_db_connection.fetchall()
         if len(existed_rec) > 0:
             # print('Файл обнаружен в истории: ', filename)
+            return True
+        else:
+            return False
+
+    def file_in_state_db(self, filename):
+        # Проверяем - есть ли файл в списке истории
+        state_db_connection.execute("SELECT * FROM file_recs WHERE filename=?", (filename,))
+        existed_rec = state_db_connection.fetchall()
+        if len(existed_rec) > 0:
+            # print('Файл обнаружен в базе: ', filename)
             return True
         else:
             return False
