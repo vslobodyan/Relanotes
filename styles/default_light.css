@@ -70,6 +70,7 @@ font-family: Sans;
 font-size: 15px;
 /* background: #eee; */
 color: #1a1a1a;
+white-space: pre-wrap;  /* Важнейшая штука - позволяет сохранять пробелы в html в том количестве, в котором они загружены из текстового файла. */
 }
 
 h1, h2, h3, h4, h5, h6 {

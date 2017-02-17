@@ -684,13 +684,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         print('Тестирование завершено.')
 
     def save_note_cursor_position(self):
-        print('Проверка необходимости сохранить позицию открытой заметки')
+        #print('Проверка необходимости сохранить позицию открытой заметки')
         # Проверяем - есть ли открытая заметка в окне редактора
 
         filename = main_window.current_open_note_link
         if filename:
             current_position = main_window.textBrowser_Note.textCursor().position()
-            print('Файл открытой заметки %s и позиция курсора %s' % (filename, current_position))
+            #print('Файл открытой заметки %s и позиция курсора %s' % (filename, current_position))
             # Если есть - сохраняем для неё последнюю позицию курсора
 
             # Обновляем запись в базе
@@ -698,7 +698,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                         (current_position, filename))
             state_db.commit()                        
         else:
-            print('Открытой заметки нет.')
+            #print('Открытой заметки нет.')
+            pass
 
 
     def closeEvent(self, e):
@@ -904,8 +905,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 # img_src = 'resources/icons/notelist/g3.png'
                 line_style = ''
 
-            # html_string += '<p'+line_style+'><a href="'+file_rec+'"><img src="'
-            # +img_src+'">&nbsp;'+file_parent+file_cute_name+'</a></p>'
             html_string += '<p' + line_style + '><a href="' + file_rec + '" title="'\
                            + file_parent + file_cute_name + '">' + file_parent + file_cute_name + '</a></p>'
             # state_db.commit()
@@ -924,9 +923,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
    
     def open_file_in_editor(self, filename, founded_i=0):
         self.statusbar.showMessage('Загружается файл ' + filename)
-        print('DEBUG: open_file_in_editor("filename=%s")' % filename)
+        #print('DEBUG: open_file_in_editor("filename=%s")' % filename)
         filename = get_correct_filename_from_url(filename)
-        print('DEBUG: open_file_in_editor(" after unquote =%s")' % filename)
+        #print('DEBUG: open_file_in_editor(" after unquote =%s")' % filename)
         
         # Сохраняем позицию предыдущей заметки, если она была открыта
         self.save_note_cursor_position()
@@ -1206,7 +1205,12 @@ class Note():
     format_type = 'zim'  # zim, md, ...
     metadata_lines_before_note = ''  # Специальные поля заметки, например, от Zim, которые надо сохранить и записать при сохранении
 
-    space_symbol = '&ensp;'  # Символ пробела для замены и сохранения пробелов в исходнике для редактора
+    # Символ пробела для замены и сохранения пробелов в исходнике для редактора
+    #space_symbol = '&ensp;'
+    #space_symbol = '&emsp;'
+    #space_symbol = '&nbsp;'
+    #space_symbol = '&#32;'
+    #space_symbol = ' '
 
 
     class Format():
@@ -2058,7 +2062,8 @@ class Note():
         
         new_text_source_lines = []
         for one_line in text_source_lines:
-            new_text_source_lines.append(html.escape(one_line).replace(' ', self.space_symbol))
+            #new_text_source_lines.append(html.escape(one_line).replace(' ', self.space_symbol))
+            new_text_source_lines.append(html.escape(one_line))
 
         # html_source = '\n'.join(new_text_source_lines)
         html_source = ''
@@ -2100,12 +2105,12 @@ class Note():
         # html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
         # html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
 
-        html_source = re.sub('======'+self.space_symbol+'(.*?)'+self.space_symbol+'======', '<font id=head1>\\1</font>', html_source)
-        html_source = re.sub('====='+self.space_symbol+'(.*?)'+self.space_symbol+'=====', '<font id=head2>\\1</font>', html_source)
-        html_source = re.sub('===='+self.space_symbol+'(.*?)'+self.space_symbol+'====', '<font id=head3>\\1</font>', html_source)
-        html_source = re.sub('==='+self.space_symbol+'(.*?)'+self.space_symbol+'===', '<font id=head4>\\1</font>', html_source)
-        html_source = re.sub('=='+self.space_symbol+'(.*?)'+self.space_symbol+'==', '<font id=head5>\\1</font>', html_source)
-        html_source = re.sub('='+self.space_symbol+'(.*?)'+self.space_symbol+'=', '<font id=head6>\\1</font>', html_source)
+        html_source = re.sub('====== (.*?) ======', '<font id=head1>\\1</font>', html_source)
+        html_source = re.sub('===== (.*?) =====', '<font id=head2>\\1</font>', html_source)
+        html_source = re.sub('==== (.*?) ====', '<font id=head3>\\1</font>', html_source)
+        html_source = re.sub('=== (.*?) ===', '<font id=head4>\\1</font>', html_source)
+        html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
+        html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
 
         
         # html_source = re.sub('====== (.*?) ======', '--><p id=head1>\\1</p>', html_source)
@@ -2132,13 +2137,13 @@ class Note():
         # 'emphasis': Re('//(?!/)(.+?)//'),
 
         # html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
-        html_source = re.sub('\n\*'+self.space_symbol+'([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
+        html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
 
 
         html_source = re.sub('</ul>\n', '</ul>', html_source)
 
         # html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
-        html_source = re.sub('(Created'+self.space_symbol+'[^\n]*)', '<font id="created">\\1</font>', html_source)
+        html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
 
 
         # 'code':     Re("''(?!')(.+?)''"),
@@ -2286,7 +2291,7 @@ class Note():
         # profiler.stop()
 
         # text = urllib.request.unquote(text)
-        text = text.replace(self.space_symbol, ' ')
+        #text = text.replace(self.space_symbol, ' ')
         text = html.unescape(text)
 
         # Добавляем начало файла как у Zim        
