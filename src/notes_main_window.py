@@ -2137,10 +2137,11 @@ class Note():
         # 'emphasis': Re('//(?!/)(.+?)//'),
 
         # html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
+        #html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
         html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
 
-
-        html_source = re.sub('</ul>\n', '</ul>', html_source)
+        # Замена переноса строк в конце ul
+        #html_source = re.sub('</ul>\n\n', '</ul>\n', html_source)
 
         # html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
         html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
