@@ -2313,8 +2313,13 @@ class Note():
                                     (datetime.now(), filename))
         state_db.commit()                        
         
-
-        filename = filename + '-saved'
+        # Добавляем суффикс к имени файла, при этом сохраняя оригинальное его расширение
+        filename_wo_ext = os.path.splitext(filename)[0]
+        filename_ext_only = os.path.splitext(filename)[-1]
+        filename_suffix = '-saved'
+        if not filename_suffix in filename_wo_ext:
+            # Если суффикса ещё нет в имени файла- добавляем его. Иначе оставляем без изменений.
+            filename = filename_wo_ext + filename_suffix + filename_ext_only
 
         # # Сохраняем текущую заметку с суффиксом -rt
         # tmp_str = main_window.current_open_note_link[:-len('.txt')]
