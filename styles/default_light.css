@@ -67,7 +67,7 @@ background-color: #fff8a5;
 
 html, body {
 font-family: Sans;
-font-size: 15px;
+font-size: 17px;
 /* background: #eee; */
 color: #1a1a1a;
 white-space: pre-wrap;  /* Важнейшая штука - позволяет сохранять пробелы в html в том количестве, в котором они загружены из текстового файла. */
@@ -120,19 +120,19 @@ margin: 6px 0px 6px -20px;
 
 #head4 {
 	color: #008066;
-	font-size: 20px;
+	font-size: 21px;
 	font-weight: bold;
 }
 
 #head5 {
 	color: #008066;
-	font-size: 17px;
+	font-size: 19px;
 	font-weight: bold;
 }
 
 #head6 {
 	color: #008066;
-	font-size: 14px;
+	font-size: 17px;
 	font-weight: bold;
 }
 
