@@ -1931,8 +1931,13 @@ class Note():
                 # У нас ссылка с подмененным текстом
                 # [[1234|text]]
                 # Обрабатывается нормально на сохранение в блоке выше, но открытие пока не обрабатывается. 
-                note_source = note_source[: pos_a_begin] + '[[' + a_href + '|' + a_text + ']]' + note_source[pos_a_end + 
-                                                                                                     len(str_a_end):]
+                print ('У нас текст ссылки отличается от текста:')
+                print( note_source[pos_a_begin: pos_a_end] )
+                print ('a_href: '+a_href)
+                print ('a_text: '+a_text)
+
+                note_source = note_source[: pos_a_begin] + '[[' + a_href + '|' + a_text + ']]' + note_source[pos_a_end +
+                                                   len(str_a_end):]
             
             pos = pos_a_begin
 
