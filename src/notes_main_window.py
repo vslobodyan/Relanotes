@@ -2117,6 +2117,14 @@ class Note():
         html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
         html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
 
+        #html_source = re.sub('====== (.*?) ======', '<div id=head1>\\1</div>', html_source)
+        #html_source = re.sub('===== (.*?) =====', '<div id=head2>\\1</div>', html_source)
+        #html_source = re.sub('==== (.*?) ====', '<div id=head3>\\1</div>', html_source)
+        #html_source = re.sub('=== (.*?) ===', '<div id=head4>\\1</div>', html_source)
+        #html_source = re.sub('== (.*?) ==', '<div id=head5>\\1</div>', html_source)
+        #html_source = re.sub('= (.*?) =', '<div id=head6>\\1</div>', html_source)
+
+
         
         # html_source = re.sub('====== (.*?) ======', '--><p id=head1>\\1</p>', html_source)
         # html_source = re.sub('===== (.*?) =====', '<p id=head2>\\1</p>', html_source)
@@ -3118,7 +3126,7 @@ class Notelist():
                     header_string = "Найдено в списке неоткрытых заметок:"
                 else:
                     header_string = "Список неоткрытых заметок"
-                html_source += '<p id=head5>%s</p>' % header_string
+                html_source += '<span id=head5>%s</span>' % header_string
                 html_source += '<div id=notelist>'
             # Увеличиваем порядковый номер элемента
             item_number += 1
