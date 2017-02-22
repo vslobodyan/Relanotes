@@ -899,7 +899,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             #    file_cute_name = file_rec
 
             if file_rec == active_link:
-                line_style = ' id="current_note" '
+                line_style = ' id="note_opened" '
                 # img_src = 'resources/icons/notelist/g3-g1.png'
             else:
                 # img_src = 'resources/icons/notelist/g3.png'
@@ -3073,9 +3073,9 @@ class Notelist():
                 img_src = 'resources/icons/notelist/g3.png'
 
         if filename == active_link:
-            line_style = ' id="current_note" '
+            line_style = ' id="note_opened" '
         else:
-            line_style = ' id="notelist"'
+            line_style = ' id="note_other"'
 
         if self.filter_name != '':
             # Делаем подсветку текста из фильтра в списке заметки
@@ -3107,6 +3107,10 @@ class Notelist():
         collect_history_is_done = False  # Признак завершения обработки всех элементов истории
         first_history_item_done = False  # Признак завершения обработки первого элемента истории
         item_number = 0  # Порядковый номер элемента в списке
+
+        #header_element_string = '<div id=notelist_header>%s</div>'
+        header_element_string = '<p id=notelist_header>%s</p>'
+
         for one_item in self.items:
             if not first_history_item_done and not one_item['history']:
                 # У нас отсутствует история - ещё не обработали первый элемент истории, а уже обычная заметка
@@ -3118,7 +3122,8 @@ class Notelist():
                     header_string = "Найдено в истории обращений к заметкам:"
                 else:
                     header_string = "История обращений к заметкам"
-                html_source += '<span id=head5>%s</span>' % header_string
+                html_source += header_element_string % header_string
+
             if not collect_history_is_done and not one_item['history']:
                 # У нас первый элемент, который не связан с историей. Надо внести новый заголовок
                 collect_history_is_done = True
@@ -3126,8 +3131,8 @@ class Notelist():
                     header_string = "Найдено в списке неоткрытых заметок:"
                 else:
                     header_string = "Список неоткрытых заметок"
-                html_source += '<span id=head5>%s</span>' % header_string
-                html_source += '<div id=notelist>'
+                html_source += header_element_string % header_string
+
             # Увеличиваем порядковый номер элемента
             item_number += 1
             # print('Создаем html-код для элемента %s' % item_number)
@@ -3136,7 +3141,7 @@ class Notelist():
             html_source += self.make_html_source_for_item(one_item, item_number)
 
         # Используем настройки темы для оформления списка элементов
-        html_source = '<html>%s<body id=notelist>%s</body></html>' % (Theme.html_theme_head, html_source,)
+        html_source = '<html>%s<body id=notelist_body><div id=notelist>%s</div></body></html>' % (Theme.html_theme_head, html_source,)
         return html_source
 
 
