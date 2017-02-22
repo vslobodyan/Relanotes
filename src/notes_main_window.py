@@ -2117,12 +2117,12 @@ class Note():
         #html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
         #html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
 
-        html_source = re.sub('\n====== (.*?) ======\n', '<div id=head1>\\1</div>', html_source)
-        html_source = re.sub('\n===== (.*?) =====\n', '<div id=head2>\\1</div>', html_source)
-        html_source = re.sub('\n==== (.*?) ====\n', '<div id=head3>\\1</div>', html_source)
-        html_source = re.sub('\n=== (.*?) ===\n', '<div id=head4>\\1</div>', html_source)
-        html_source = re.sub('\n== (.*?) ==\n', '<div id=head5>\\1</div>', html_source)
-        html_source = re.sub('\n= (.*?) =\n', '<div id=head6>\\1</div>', html_source)
+        html_source = re.sub('\n====== (.*?) ======', '<div id=head1>\\1</div>', html_source)
+        html_source = re.sub('\n===== (.*?) =====', '<div id=head2>\\1</div>', html_source)
+        html_source = re.sub('\n==== (.*?) ====', '<div id=head3>\\1</div>', html_source)
+        html_source = re.sub('\n=== (.*?) ===', '<div id=head4>\\1</div>', html_source)
+        html_source = re.sub('\n== (.*?) ==', '<div id=head5>\\1</div>', html_source)
+        html_source = re.sub('\n= (.*?) =', '<div id=head6>\\1</div>', html_source)
 
 
         
