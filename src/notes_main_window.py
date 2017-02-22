@@ -506,6 +506,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 settings.sync()
                 print("Выбран новый путь к заметкам:", path_to_notes)
 
+
     def minimize(self):
         # print('main_window.showMinimized()')
         main_window.showMinimized()
@@ -562,15 +563,86 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.unlock_ui()
 
-    def filter_note_text_changed(self, filter_text=''):
-        notelist.items_cursor_position = 0
-        notelist.need_rescan = True
-        notelist.timer_update.start(notelist.update_timeout)
+    #def filter_note_text_changed(self, filter_text=''):
+    #    notelist.items_cursor_position = 0
+    #    notelist.need_rescan = True
+    #    notelist.timer_update.start(notelist.update_timeout)
 
     def notelist_filter_changed(self, filter_text):
-        notelist.items_cursor_position = 0
-        notelist.need_rescan = True
-        notelist.timer_update.start(notelist.update_timeout)
+        # Проверяем - не внутреннее ли это программное изменение текста фильтра на подсказку или наоборот.
+        if notelist.filter_in_change:
+            print('notelist.filter_in_change')
+            return 0
+
+        print('filter_text = ##%s##' % filter_text)
+        #notelist_filter = filter_text
+        #notelist_filter = main_window.lineNotelist_Filter.text()
+        # Проверяем на пустоту поля фильтра
+        if not filter_text:
+            # У нас совсем пустой фильтр. Надо указать что он пуст и показать подсказку
+            print('not filter_text')
+            notelist.filter_in_change = True
+            main_window.lineNotelist_Filter.setText(notelist.filter_tip_for_using)
+            main_window.lineNotelist_Filter.setStyleSheet('''
+                                color: #aaa;
+                                font-size: 14px;
+                                background: white;
+                                '''
+                                )
+            main_window.lineNotelist_Filter.selectAll()
+            #main_window.lineNotelist_Filter.cursor
+            notelist.filter_in_change = False
+            if notelist.filter_is_empty:
+                # Признак того, что фильтр пуст уже стоял - это инициирущий запуск функции для обновления внешнего вида
+                return 0
+            else:
+                # Фильтр был очищен, надо обновить список заметок
+                notelist.filter_is_empty = True
+                notelist.schedule_update()
+                return 0
+        else:
+            # Текст фильтра не пуст. Если он не подсказка - то надо указать во внутреннем признаке что фильтр не пуст и запустить отложенное обновление вида списка.
+            print('filter_text is True')
+            if not ( notelist.filter_is_empty and filter_text == notelist.filter_tip_for_using):
+                print('not ( notelist.filter_is_empty and filter_text == notelist.filter_tip_for_using)')
+                main_window.lineNotelist_Filter.setStyleSheet('''
+                                    color: #1a1a1a;
+                                    font-size: 16px;
+                                    background: #fff8a5;
+                                    '''
+                                    )
+                notelist.filter_is_empty = False
+                notelist.schedule_update()
+                return 0
+
+        if notelist.filter_is_empty:
+            # Возможно, текст был изменен в пустом фильтре с подсказкой
+            if filter_text == notelist.filter_tip_for_using:
+                # Текст подсказки по-умолчанию остался без изменений. Выходим
+                print('notelist.filter_is_empty and filter_text == notelist.filter_tip_for_using')
+                return 0
+            else:
+                # Текст в фильтре не соответствует подсказке. Меняем фильтр и стиль оформления поля ввода
+                print("notelist.filter_is_empty and text isn't filter_tip_for_using")
+                notelist.filter_is_empty = False
+                notelist.filter_in_change = True
+                main_window.lineNotelist_Filter.setText(filter_text)
+                main_window.lineNotelist_Filter.setStyleSheet('''
+                                    color: #1a1a1a;
+                                    font-size: 16px;
+                                    background: #fff8a5;
+                                    '''
+                                    )
+                notelist.filter_in_change = False
+                notelist.schedule_update()
+                return 0
+
+
+        #print('notelist.timer_update.start')
+        #notelist.items_cursor_position = 0
+        #notelist.need_rescan = True
+        #notelist.timer_update.start(notelist.update_timeout)
+
 
     def show_html_source(self):
         if self.plainTextEdit_Note_Ntml_Source.isVisible():
@@ -2558,6 +2630,9 @@ class Notelist():
     """
     filter_name = ''  # Фильтрация списка заметок по имени заметки
     filter_text = ''  # Фильтрация списка заметок по тексту, содержащемуся внутри заметок
+    filter_is_empty = True  # Признак пустоты пользовательского фильтра, чтобы можно было отображать подсказку в самом текстовом поле
+    filter_in_change = False # Признак того, что фильтр сейчас преднамеренно меняется в другом участке кода. Чтобы не было ложных срабатываний на внутренние изменения пустоты на подсказки и наоборот.
+    filter_tip_for_using = 'Name␣Text' # &blank;
 
     # opened_url = None # Ссылка на открытую заметку
 
@@ -2760,6 +2835,13 @@ class Notelist():
         # Обновляем список заметок
         self.rescan_files_in_notes_path()
 
+    def schedule_update(self):
+        # Запланировать обновление списка элементов с заданным в настройках таймаутов (через какую-то долю секунды)
+        print('notelist.timer_update.start')
+        self.items_cursor_position = 0
+        self.need_rescan = True
+        self.timer_update.start(notelist.update_timeout)
+
 
     def move_cursor(self, delta=0):
         # print('Перемещаем курсор по списку с дельтой %s' % delta)
@@ -2785,12 +2867,58 @@ class Notelist():
     def get_and_display_filters(self):
         # Получаем текущий фильтр для списка заметок
 
+        ## Проверяем - не внутреннее ли это программное изменение текста фильтра на подсказку или наоборот.
+        #if self.filter_in_change:
+        #    return 0
+        
+        if self.filter_is_empty:
+            # Если стоит признак пустого фильтра - указываем это в анализируемой переменной
+            notelist_filter = ''
+        else:
+            # Иначе берем фильтр из поля в UI
+            notelist_filter = main_window.lineNotelist_Filter.text()
+        
+        ## Проверяем на пустоту поля фильтра
+        #if not notelist_filter:
+        #    # У нас совсем пустой фильтр. Надо указать что он пуст и показать подсказку
+        #    self.filter_is_empty = True
+        #    self.filter_in_change = True
+        #    main_window.lineNotelist_Filter.setText(self.filter_tip_for_using)
+        #    main_window.lineNotelist_Filter.setStyleSheet('''
+        #                        color: #aaa;
+        #                        font-size: 14px;
+        #                        background: white;
+        #                        '''
+        #                        )
+        #    self.filter_in_change = False
+        #    return 0
+
+        #if self.filter_is_empty:
+        #    # Возможно, текст был изменен в пустом фильтре с подсказкой
+        #    if notelist_filter == self.filter_tip_for_using:
+        #        # Текст подсказки по-умолчанию остался без изменений. Выходим
+        #        return 0
+        #    else:
+        #        # Текст в фильтре не соответствует подсказке. Меняем фильтр и стиль оформления поля ввода
+        #        self.filter_is_empty = False
+        #        self.filter_in_change = True
+        #        main_window.lineNotelist_Filter.setText(self.filter_tip_for_using)
+        #        main_window.lineNotelist_Filter.setStyleSheet('''
+        #                            color: #1a1a1a;
+        #                            font-size: 16px;
+        #                            background: #fff8a5;
+        #                            '''
+        #                            )
+        #        self.filter_in_change = False
+
+
         # Делим фильтр заметок на фильтр имени и фильтр текста внутри
-        notelist_filter = main_window.lineNotelist_Filter.text()
         if ' ' not in notelist_filter:
+            # Если и есть фильтр - он только по имени
             self.filter_text = ''
             self.filter_name = notelist_filter
         else:
+            # У нас указан фильтр по тексту. Может ещё и по имени.
             # Первое слово до пробела - имя. Остальные - текст.
             filter_words = notelist_filter.split(' ')
             self.filter_name = filter_words[0]
@@ -3568,6 +3696,9 @@ main_window.statusbar.showMessage('Application initializing..')
 main_window.initial_db()
 main_window.renew_history_list('')
 notelist.update()
+# Делаем инициализацию текста в поле фильтра списка заметок
+main_window.notelist_filter_changed('')
+
 
 sys.exit(app.exec_())
 
