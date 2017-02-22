@@ -71,6 +71,7 @@ font-size: 17px;
 /* background: #eee; */
 color: #1a1a1a;
 white-space: pre-wrap;  /* Важнейшая штука - позволяет сохранять пробелы в html в том количестве, в котором они загружены из текстового файла. */
+/*margin: 15px;*/
 }
 
 /*h1, h2, h3, h4, h5, h6 {
@@ -100,49 +101,60 @@ margin: 6px 0px 6px -20px;
 	font-size: 10px;
 }
 
+/*#border {
+    background: #efefef;
+    margin: 2px;
+}*/
+
 h1, #head1 {
 	color: #005c4a; /*#008066;*/
 	font-size: 29px;
 	font-weight: bold;
+    /*background: #efefef;*/
 }
 
 h2, #head2 {
 	color: #006853; /*#008066;*/
 	font-size: 26px;
 	font-weight: bold;
-    margin-left: 5px;
+    margin-left: 10px;
     /*padding: 5px;*/
     /*border: 1px solid #eee;*/
+    /*background: #efefef;*/
 }
 
 h3, #head3 {
 	color: #00745a; /*#008066;*/
 	font-size: 23px;
 	font-weight: bold;
-    margin-left: 10px;
+    margin-left: 20px;
     /*padding: 10px;*/
     /*border: 1px solid #eee;*/
+    /*background: #efefef;*/
 }
 
 h4, #head4 {
 	color: #008061; /*#008066;*/
 	font-size: 21px;
 	font-weight: bold;
-    margin-left: 15px;
+    margin-left: 30px;
+    /*background: #efefef;*/
 }
 
 h5, #head5 {
 	color: #008c70;
 	font-size: 19px;
 	font-weight: bold;
-    margin-left: 20px;
+    margin-left: 40px;
+    /*background: #efefef;*/
 }
 
 h6, #head6 {
 	color: #00987e; /*#008066;*/
 	font-size: 17px;
 	font-weight: bold;
-    margin-left: 25px;
+    margin-left: 50px;
+    /*background: #efefef;*/
 }
 
 
