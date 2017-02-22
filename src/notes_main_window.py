@@ -3147,13 +3147,13 @@ class Notelist():
             
             notelist_empty_string = '<div id=notelist_empty_message>%s</div>'
             notelist_empty_by_filter = '''<br>
-    Нет заметок, удовлетворяющих текущему фильтру.
+Нет заметок, удовлетворяющих текущему фильтру.
 
-    <small>Всего заметок по текущим настройкам: %s</small>''' % self.all_found_files_count
+<small>Всего заметок по текущим настройкам: %s</small>''' % self.all_found_files_count
 
             notelist_empty_by_settings = '''<br>
-    Нет заметок, удовлетворяющих текущим настройкам.
-    <small>Проверьте указанный путь к каталогу заметок и настройки выбранных типов файлов заметок.</small>'''
+Нет заметок, удовлетворяющих текущим настройкам.
+<small>Проверьте указанный путь к каталогу заметок и настройки выбранных типов файлов заметок.</small>'''
 
             if self.all_found_files_count<1:
                 # Заметок по указанному пути нет вообще
@@ -3165,16 +3165,32 @@ class Notelist():
             notelist_empty_message = ''
 
         # Получение информации о текущей установке фильтров списка заметок
+        notelist_search_param_string = '<div id=notelist_search_param_message>%s</div>'
         notelist_search_param_message = ''
+
+        if self.filter_name:
+            description_filter_name = ('Show notes with a name containing <b>"%s"</b>' % self.filter_name)
+        else:
+            description_filter_name = 'Show notes with any name'
+        if self.filter_text:
+            description_filter_text = ('containing the text <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;'))
+        else:
+            description_filter_text = 'containing any text'
+
+        notelist_search_param_message_text = description_filter_name + ' and ' + description_filter_text
+        notelist_search_param_message = notelist_search_param_string % notelist_search_param_message_text
+
 
         # Используем настройки темы для оформления списка элементов
         html_source = '''<html>
                          <body id=notelist_body>
                          %s
                          %s
+                         %s
                          <div id=notelist>%s</div>
                          </body>
                          </html>''' % (Theme.html_theme_head,
+                                       notelist_search_param_message,
                                        notelist_empty_message,
                                        html_source,)
         #print('html_source of notelist: ###%s###' % html_source)

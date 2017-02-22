@@ -45,15 +45,16 @@ background-color: #fff8a5;
     }
 
 #notelist_search_param_message {
-
+	color: #aaa;
+	/*font-size: 18px;*/
 }
 
 #notelist_empty_message {
-	color: #aaa;
+	color: #666;
 	font-size: 18px;
 }
 #notelist_empty_message small {
-	color: #aaa;
+	color: #999;
 	font-size: 15px;
 }
 
