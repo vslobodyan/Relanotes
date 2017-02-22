@@ -73,9 +73,9 @@ color: #1a1a1a;
 white-space: pre-wrap;  /* Важнейшая штука - позволяет сохранять пробелы в html в том количестве, в котором они загружены из текстового файла. */
 }
 
-h1, h2, h3, h4, h5, h6 {
+/*h1, h2, h3, h4, h5, h6 {
 color: #008066;
-}
+}*/
 
 s {
 color: #aaa;
@@ -100,38 +100,38 @@ margin: 6px 0px 6px -20px;
 	font-size: 10px;
 }
 
-#head1 {
-	color: #008066;
+h1, #head1 {
+	color: #004033; /*#008066;*/
 	font-size: 29px;
 	font-weight: bold;
 }
 
-#head2 {
-	color: #008066;
+h2, #head2 {
+	color: #005040; /*#008066;*/
 	font-size: 26px;
 	font-weight: bold;
 }
 
-#head3 {
-	color: #008066;
+h3, #head3 {
+	color: #00604a; /*#008066;*/
 	font-size: 23px;
 	font-weight: bold;
 }
 
-#head4 {
-	color: #008066;
+h4, #head4 {
+	color: #007055; /*#008066;*/
 	font-size: 21px;
 	font-weight: bold;
 }
 
-#head5 {
+h5, #head5 {
 	color: #008066;
 	font-size: 19px;
 	font-weight: bold;
 }
 
-#head6 {
-	color: #008066;
+h6, #head6 {
+	color: #009077; /*#008066;*/
 	font-size: 17px;
 	font-weight: bold;
 }
