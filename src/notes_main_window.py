@@ -409,7 +409,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # QtCore.QObject.connect(self.lineNotelist_Filter, QtCore.SIGNAL("textChanged( const QString& )"),
                                # self.notelist_filter_changed)
+
+        # Отслеживаем изменение текста в поле
         self.lineNotelist_Filter.textChanged.connect(self.notelist_filter_changed)
+        
+        # Отслеживаем изменение положения курсора в поле
+        self.lineNotelist_Filter.cursorPositionChanged.connect(self.notelist_filter_cursorPositionChanged)
+
+        # Отслеживаем изменение выделения в поле
+        self.lineNotelist_Filter.selectionChanged.connect(self.notelist_filter_selectionChanged)
 
         # QtCore.QObject.connect(self.lineTextToFind, QtCore.SIGNAL("textChanged( const QString& )"),
                                # self.find_text_in_cur_note)
@@ -568,19 +576,30 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     #    notelist.need_rescan = True
     #    notelist.timer_update.start(notelist.update_timeout)
 
+
+    def notelist_filter_cursorPositionChanged(self, old, new):
+        if notelist.filter_is_empty:
+            # Надо пресечь изменение положения курсора
+            self.lineNotelist_Filter.setCursorPosition(0)
+
+    def notelist_filter_selectionChanged(self):
+        if notelist.filter_is_empty:
+            # Надо пресечь изменение выделения
+            self.lineNotelist_Filter.setSelection(0,0)
+
     def notelist_filter_changed(self, filter_text):
         # Проверяем - не внутреннее ли это программное изменение текста фильтра на подсказку или наоборот.
         if notelist.filter_in_change:
-            print('notelist.filter_in_change')
+            #print('notelist.filter_in_change')
             return 0
 
-        print('filter_text = ##%s##' % filter_text)
+        #print('filter_text = ##%s##' % filter_text)
         #notelist_filter = filter_text
         #notelist_filter = main_window.lineNotelist_Filter.text()
         # Проверяем на пустоту поля фильтра
         if not filter_text:
             # У нас совсем пустой фильтр. Надо указать что он пуст и показать подсказку
-            print('not filter_text')
+            #print('not filter_text')
             notelist.filter_in_change = True
             main_window.lineNotelist_Filter.setText(notelist.filter_tip_for_using)
             main_window.lineNotelist_Filter.setStyleSheet('''
@@ -589,7 +608,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                 background: white;
                                 '''
                                 )
-            main_window.lineNotelist_Filter.selectAll()
+            #main_window.lineNotelist_Filter.selectAll()
+            self.lineNotelist_Filter.setCursorPosition(0)
             #main_window.lineNotelist_Filter.cursor
             notelist.filter_in_change = False
             if notelist.filter_is_empty:
@@ -602,28 +622,39 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 return 0
         else:
             # Текст фильтра не пуст. Если он не подсказка - то надо указать во внутреннем признаке что фильтр не пуст и запустить отложенное обновление вида списка.
-            print('filter_text is True')
+            #print('filter_text is True')
             if not ( notelist.filter_is_empty and filter_text == notelist.filter_tip_for_using):
-                print('not ( notelist.filter_is_empty and filter_text == notelist.filter_tip_for_using)')
-                main_window.lineNotelist_Filter.setStyleSheet('''
-                                    color: #1a1a1a;
-                                    font-size: 16px;
-                                    background: #fff8a5;
-                                    '''
-                                    )
-                notelist.filter_is_empty = False
-                notelist.schedule_update()
-                return 0
+                #print('not ( notelist.filter_is_empty and filter_text == notelist.filter_tip_for_using)')
+                # Проверяем - не начал ли менять текст пользователь в начале текста подсказки
+                if notelist.filter_is_empty and filter_text.endswith(notelist.filter_tip_for_using):
+                    # Надо удалить подсказку из фильтра, начинаемого набирать или вставленного пользователем
+                    #notelist.filter_in_change = True
+                    #print('full text: #%s#' % filter_text)
+                    cleared_user_filter = filter_text.rpartition(notelist.filter_tip_for_using)[0]
+                    #print('text after rpartition: #%s#' % cleared_user_filter)
+                    main_window.lineNotelist_Filter.setText(cleared_user_filter)
+                    #notelist.filter_in_change = False
+                else:
+                    # Текст уже без примеси подсказки
+                    main_window.lineNotelist_Filter.setStyleSheet('''
+                                        color: #1a1a1a;
+                                        font-size: 16px;
+                                        background: #fff8a5;
+                                        '''
+                                        )
+                    notelist.filter_is_empty = False
+                    notelist.schedule_update()
+                    return 0
 
         if notelist.filter_is_empty:
             # Возможно, текст был изменен в пустом фильтре с подсказкой
             if filter_text == notelist.filter_tip_for_using:
                 # Текст подсказки по-умолчанию остался без изменений. Выходим
-                print('notelist.filter_is_empty and filter_text == notelist.filter_tip_for_using')
+                #print('notelist.filter_is_empty and filter_text == notelist.filter_tip_for_using')
                 return 0
             else:
                 # Текст в фильтре не соответствует подсказке. Меняем фильтр и стиль оформления поля ввода
-                print("notelist.filter_is_empty and text isn't filter_tip_for_using")
+                #print("notelist.filter_is_empty and text isn't filter_tip_for_using")
                 notelist.filter_is_empty = False
                 notelist.filter_in_change = True
                 main_window.lineNotelist_Filter.setText(filter_text)
@@ -2824,7 +2855,8 @@ class Notelist():
             # Устанавливаем фокус на поля фильтров ввода
             # При любом раскладе выделяем весь текст в поле имени и ставим на него фокус            
             main_window.lineNotelist_Filter.setFocus()
-            main_window.lineNotelist_Filter.selectAll()
+            if not notelist.filter_is_empty:
+                main_window.lineNotelist_Filter.selectAll()
             
             # # Если обнаружен текст в поле поиска по содержимому - переставляем фокус в него
             # if main_window.lineEdit_Filter_Note_Text.text() != '':
@@ -2837,7 +2869,7 @@ class Notelist():
 
     def schedule_update(self):
         # Запланировать обновление списка элементов с заданным в настройках таймаутов (через какую-то долю секунды)
-        print('notelist.timer_update.start')
+        #print('notelist.timer_update.start')
         self.items_cursor_position = 0
         self.need_rescan = True
         self.timer_update.start(notelist.update_timeout)
