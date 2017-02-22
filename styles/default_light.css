@@ -44,6 +44,19 @@ background-color: #fff8a5;
     text-decoration: none;    
     }
 
+#notelist_search_param_message {
+
+}
+
+#notelist_empty_message {
+	color: #aaa;
+	font-size: 18px;
+}
+#notelist_empty_message small {
+	color: #aaa;
+	font-size: 15px;
+}
+
 #notelist_body {
     margin-top: 10px;
 }

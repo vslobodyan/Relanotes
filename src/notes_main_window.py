@@ -3140,8 +3140,44 @@ class Notelist():
             # Добавляем собственно сам элемент в html-обертке
             html_source += self.make_html_source_for_item(one_item, item_number)
 
+
+        # Проверка на пустой список элементов
+        if len(self.items)<1:
+            # Проверка на полное отсутствие элементов в списке
+            
+            notelist_empty_string = '<div id=notelist_empty_message>%s</div>'
+            notelist_empty_by_filter = '''<br>
+    Нет заметок, удовлетворяющих текущему фильтру.
+
+    <small>Всего заметок по текущим настройкам: %s</small>''' % self.all_found_files_count
+
+            notelist_empty_by_settings = '''<br>
+    Нет заметок, удовлетворяющих текущим настройкам.
+    <small>Проверьте указанный путь к каталогу заметок и настройки выбранных типов файлов заметок.</small>'''
+
+            if self.all_found_files_count<1:
+                # Заметок по указанному пути нет вообще
+                notelist_empty_message = notelist_empty_string % notelist_empty_by_settings
+            else:
+                # Заметки есть, но выставленным фильтрам они не удовлетворяют
+                notelist_empty_message = notelist_empty_string % notelist_empty_by_filter
+        else:
+            notelist_empty_message = ''
+
+        # Получение информации о текущей установке фильтров списка заметок
+        notelist_search_param_message = ''
+
         # Используем настройки темы для оформления списка элементов
-        html_source = '<html>%s<body id=notelist_body><div id=notelist>%s</div></body></html>' % (Theme.html_theme_head, html_source,)
+        html_source = '''<html>
+                         <body id=notelist_body>
+                         %s
+                         %s
+                         <div id=notelist>%s</div>
+                         </body>
+                         </html>''' % (Theme.html_theme_head,
+                                       notelist_empty_message,
+                                       html_source,)
+        #print('html_source of notelist: ###%s###' % html_source)
         return html_source
 
 
