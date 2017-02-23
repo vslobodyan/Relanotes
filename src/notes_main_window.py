@@ -3187,16 +3187,10 @@ class Notelist():
                                               size=size)
 
 
-    def make_html_source_highlight_found_text_item(self, item_source, highlight_text):
+    def highlight_found_text_in_html_source(self, item_source, highlight_text):
         # Выполняем замену подстроки html кода элемента для подсветки найденного текста
-
-        insensitive_hippo = re.compile(re.escape(highlight_text), re.IGNORECASE)
-        insensitive_hippo.sub('giraffe', 'I want a hIPpo for my birthday')
-
-
-        # line = re.sub('(' + self.filter_text + ')', '<span id="highlight">' + '\\1</span>', line, flags=re.I)
-        line = line.replace(self.filter_text, '<span id="highlight">' + self.filter_text + '</span>')
-
+        insensitive_text = re.compile('(' + re.escape(highlight_text) + ')', re.IGNORECASE)
+        return insensitive_text.sub('<span id="highlight">\\1</span>', item_source)
 
 
     def make_html_source_for_item_cursor(self, item_number, one_item, filename, active_link):
@@ -3252,7 +3246,8 @@ class Notelist():
             line_i = one_item['found_line_number']
 
             # line = re.sub('(' + self.filter_text + ')', '<span id="highlight">' + '\\1</span>', line, flags=re.I)
-            line = line.replace(self.filter_text, '<span id="highlight">' + self.filter_text + '</span>')
+            #line = line.replace(self.filter_text, '<span id="highlight">' + self.filter_text + '</span>')
+            line = self.highlight_found_text_in_html_source(line, self.filter_text)
                 # &nbsp;&nbsp;&nbsp;
             html_source += '<p id=founded_text_in_note>' + item_cursor_source + \
                 '   <small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename + '?' + str(line_i) + '">' + line + '</a></p>'
@@ -3290,7 +3285,9 @@ class Notelist():
         if self.filter_name != '':
             # Делаем подсветку текста из фильтра в списке заметки
             # cute_filename = re.sub('(' + self.filter_name + ')', '<span id="highlight">' + '\\1</span>', cute_filename, flags=re.I)
-            cute_filename = cute_filename.replace(self.filter_name, '<span id="highlight">' + self.filter_name + '</span>')
+            #cute_filename = cute_filename.replace(self.filter_name, '<span id="highlight">' + self.filter_name + '</span>')
+            cute_filename = self.highlight_found_text_in_html_source(cute_filename, self.filter_name)
+
          # html_source += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
          # Format: multiaction / note :|: note_filename
 
