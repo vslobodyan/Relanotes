@@ -1031,6 +1031,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
    
     def open_file_in_editor(self, filename, founded_i=0):
         self.statusbar.showMessage('Загружается файл ' + filename)
+        print('open_file_in_editor("filename=%s", "founded_i=%s")' % (filename, founded_i) )
         #print('DEBUG: open_file_in_editor("filename=%s")' % filename)
         filename = get_correct_filename_from_url(filename)
         #print('DEBUG: open_file_in_editor(" after unquote =%s")' % filename)
@@ -1081,12 +1082,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                         state_db.commit()
 
 
-                print('FILE_RECS for %s starting here' % filename)
+                #print('FILE_RECS for %s starting here' % filename)
                 ######### file_recs
                 # Перед добавлением новой записи проверяем - нет-ли записи с такими-же значениями уже в списке
                 if notelist.file_in_state_db(filename):
                     #notelist.file_in_history(filename):
-                    print('FILE_RECS: для файла %s запись в базе есть. Обновляем.' % filename)
+                    #print('FILE_RECS: для файла %s запись в базе есть. Обновляем.' % filename)
                     # Запись уже есть. Прописываем ей новое время открытия и увеличиваем счетчик открытий
                     # Получаем количество открытий данного файла
                     state_db_connection.execute("SELECT count_opens, current_position FROM file_recs WHERE filename=?", (filename,))
@@ -1101,7 +1102,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
 
                     rec_current_position = None
-                    print('FILE_RECS: для файла %s записи нет. Создаем новую.' % filename)
+                    #print('FILE_RECS: для файла %s записи нет. Создаем новую.' % filename)
                     # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
                     state_db_connection.execute("INSERT INTO file_recs (filename, last_open, count_opens) VALUES (?,?,?)",
                                                     (filename, datetime.now(), 1))
@@ -1214,8 +1215,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.statusbar.showMessage('Заметка загружена')
         self.current_open_note_link = filename
 
-        # Восстанавливаем позицию предыдущую позицию курсора, если она была сохранена
-        if rec_current_position:
+        # Проверяем - делали ли промотку на нужную позицию найденного текста
+        if founded_i:
+           print('Перемещение курсора на последнюю сохраненную позицию не нужно - у нас был переход на позицию найденного текста.')
+        elif rec_current_position:
+            # Восстанавливаем позицию предыдущую позицию курсора, если она была сохранена
             print('Перемещаем курсор в заметке на позицию %s' % rec_current_position)
             # Получаем копию текущего курсора
             cursor = main_window.textBrowser_Note.textCursor()
