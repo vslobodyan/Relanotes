@@ -3186,6 +3186,22 @@ class Notelist():
                     self.work_with_found_note(filename=filename,
                                               size=size)
 
+    def make_html_source_for_item_cursor(self, item_number, filename, active_link):
+        # Проверяем- активный ли элемент в списке. 
+        # Если да - добавляем курсор. Если нет - оформляем без выделения, как обычно.
+        img_src = ''
+        # Устанавливаем картинку - заметка с курсором, или без него
+        if self.items_cursor_position == item_number:
+            # Текущая позиция - должна быть с курсором
+            img_src = 'resources/icons/notelist/arrow130_h11.png'
+            self.items_cursor_url = 'note?' + filename
+            self.items_cursor_cutename = self.make_cute_name(filename)
+        else:
+            if filename == active_link:
+                img_src = 'resources/icons/notelist/g3-g1.png'
+            else:
+                img_src = 'resources/icons/notelist/g3.png'
+        return img_src
 
 
 
@@ -3198,6 +3214,8 @@ class Notelist():
         active_link = main_window.current_open_note_link
         last_open = ''  # Признак элемента из истории
 
+        img_src = self.make_html_source_for_item_cursor(item_number, filename, active_link)
+
         if one_item['found_line_number']:
             # Это найденный текст внутри заметки
             line = one_item['found_line_text']
@@ -3205,7 +3223,7 @@ class Notelist():
 
             # line = re.sub('(' + self.filter_text + ')', '<span id="highlight">' + '\\1</span>', line, flags=re.I)
             line = line.replace(self.filter_text, '<span id="highlight">' + self.filter_text + '</span>')
-            html_source += '<p id=founded_text_in_note>&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename + '?' + str(line_i) + '">' + line + '</a></p>'
+            html_source += '<p id=founded_text_in_note><img src="' + img_src + '">&nbsp;&nbsp;&nbsp;&nbsp;<small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename + '?' + str(line_i) + '">' + line + '</a></p>'
             return html_source
 
 
@@ -3220,17 +3238,17 @@ class Notelist():
         # Если продолжаем - значит или обычный элемент списка или из истории
         size = one_item['size']
 
-        # Устанавливаем картинку - заметка с курсором, или без него
-        if self.items_cursor_position == item_number:
-            # Текущая позиция - должна быть с курсором
-            img_src = 'resources/icons/notelist/arrow130_h11.png'
-            self.items_cursor_url = 'note?' + filename
-            self.items_cursor_cutename = self.make_cute_name(filename)
-        else:
-            if filename == active_link:
-                img_src = 'resources/icons/notelist/g3-g1.png'
-            else:
-                img_src = 'resources/icons/notelist/g3.png'
+        ## Устанавливаем картинку - заметка с курсором, или без него
+        #if self.items_cursor_position == item_number:
+        #    # Текущая позиция - должна быть с курсором
+        #    img_src = 'resources/icons/notelist/arrow130_h11.png'
+        #    self.items_cursor_url = 'note?' + filename
+        #    self.items_cursor_cutename = self.make_cute_name(filename)
+        #else:
+        #    if filename == active_link:
+        #        img_src = 'resources/icons/notelist/g3-g1.png'
+        #    else:
+        #        img_src = 'resources/icons/notelist/g3.png'
 
         if filename == active_link:
             line_style = ' id="note_opened" '
