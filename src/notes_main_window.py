@@ -588,6 +588,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.lineNotelist_Filter.setSelection(0,0)
 
     def notelist_filter_changed(self, filter_text):
+        # Функция обработки изменения текста фильтра заметок
+
+        # Останавливаем отложенное обновление. Если надо - запустим заново в коде ниже.
+        notelist.cancel_scheduled_update()
+
         # Проверяем - не внутреннее ли это программное изменение текста фильтра на подсказку или наоборот.
         if notelist.filter_in_change:
             #print('notelist.filter_in_change')
@@ -2867,9 +2872,19 @@ class Notelist():
         # Обновляем список заметок
         self.rescan_files_in_notes_path()
 
+    def cancel_scheduled_update(self):
+        # Отменяем отложенное обновление списка элементов
+        #print('notelist.timer_update STOP.')
+        self.timer_update.stop()
+
     def schedule_update(self):
         # Запланировать обновление списка элементов с заданным в настройках таймаутов (через какую-то долю секунды)
-        #print('notelist.timer_update.start')
+
+        #if self.timer_update.isActive():
+        #    print('notelist.timer_update уже активен. Останавливаем и запускаем его снова.')
+        #    self.timer_update.stop()
+        #else:
+        #print('notelist.timer_update start')
         self.items_cursor_position = 0
         self.need_rescan = True
         self.timer_update.start(notelist.update_timeout)
