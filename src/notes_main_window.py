@@ -1122,7 +1122,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # found_text - искомый текст, который надо подсветить
 
         self.statusbar.showMessage('Загружается файл ' + filename)
-        print('open_file_in_editor("filename=%s", "line_number=%s")' % (filename, line_number) )
+        #print('open_file_in_editor("filename=%s", "line_number=%s")' % (filename, line_number) )
         #print('DEBUG: open_file_in_editor("filename=%s")' % filename)
         filename = get_correct_filename_from_url(filename)
         #print('DEBUG: open_file_in_editor(" after unquote =%s")' % filename)
