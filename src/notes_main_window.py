@@ -596,26 +596,29 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if notelist.filter_is_empty:
             # Надо пресечь изменение положения курсора
             self.lineNotelist_Filter.setCursorPosition(0)
+            filter_string = ''
         else:
-            # Выводим подсказку по текущему положению курсора
             filter_string = self.lineNotelist_Filter.text()
-            # Получаем строку до курсора
-            left_part = filter_string[:new]
-            # Строка после курсора
-            right_part = filter_string[new:]
-            print('filter_string #%s#%s#' % (left_part, right_part) )
-            # Подсказка о вводе имени и возможности нажать пробел
-            if ' ' not in left_part:
-                # Курсор стоит на имени
-                if right_part:
-                    # Есть правая часть от имени
-                    self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['name'])
-                else:
-                    # Правой части фильтра от курсора на имени нет
-                    self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['empty'])
+        
+        # Выводим подсказку по текущему положению курсора
+        
+        # Получаем строку до курсора
+        left_part = filter_string[:new]
+        # Строка после курсора
+        right_part = filter_string[new:]
+        #print('filter_string #%s#%s#' % (left_part, right_part) )
+        # Подсказка о вводе имени и возможности нажать пробел
+        if ' ' not in left_part:
+            # Курсор стоит на имени
+            if right_part:
+                # Есть правая часть от имени
+                self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['name'])
             else:
-                # Курсор стоит на тексте
-                self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['text'])
+                # Правой части фильтра от курсора на имени нет
+                self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['empty'])
+        else:
+            # Курсор стоит на тексте
+            self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['text'])
 
             
 
@@ -652,15 +655,19 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                 '''
                                 )
             #main_window.lineNotelist_Filter.selectAll()
-            self.lineNotelist_Filter.setCursorPosition(0)
             #main_window.lineNotelist_Filter.cursor
+            self.lineNotelist_Filter.setCursorPosition(0)
             notelist.filter_in_change = False
+            
             if notelist.filter_is_empty:
                 # Признак того, что фильтр пуст уже стоял - это инициирущий запуск функции для обновления внешнего вида
                 return 0
             else:
                 # Фильтр был очищен, надо обновить список заметок
                 notelist.filter_is_empty = True
+                # Вызываем фейковую установке курсора, чтобы стработала инициация начального значения подсказки для поля.
+                #self.lineNotelist_Filter.setCursorPosition(0)
+                self.notelist_filter_cursorPositionChanged(1,0)
                 notelist.schedule_update()
                 return 0
         else:
