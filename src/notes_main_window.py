@@ -3332,6 +3332,22 @@ class Notelist():
         insensitive_text = re.compile('(' + re.escape(highlight_text) + ')', re.IGNORECASE)
         return insensitive_text.sub('<span id="highlight">\\1</span>', item_source)
 
+    
+    action_link_items_separator = '?'
+
+    def action_link(self, action_type, filename=None, line_number=None, found_text=None):
+        # Формируем ссылку действий (внутренний линк) для использования в списке заметок
+        link_string = action_type
+        if filename:
+            link_string += self.action_link_items_separator + filename
+            if line_number:
+                link_string += self.action_link_items_separator + str(line_number)
+        return link_string
+
+    def action_link_items(self, link):
+        # Извлекаем элементы ссылки действий
+        return link.split(self.action_link_items_separator)
+
 
     def make_html_source_for_item_cursor(self, item_number, one_item, filename, active_link):
         # Проверяем- активный ли элемент в списке. 
@@ -3393,12 +3409,19 @@ class Notelist():
             line = one_item['found_line_text']
             line_i = one_item['found_line_number']
 
+            note_link = self.action_link('note', filename, line_i)
+
             # line = re.sub('(' + self.filter_text + ')', '<span id="highlight">' + '\\1</span>', line, flags=re.I)
             #line = line.replace(self.filter_text, '<span id="highlight">' + self.filter_text + '</span>')
             line = self.highlight_found_text_in_html_source(line, self.filter_text)
                 # &nbsp;&nbsp;&nbsp;
+
+            #html_source += '<p id=founded_text_in_note>' + item_cursor_source + \
+            #    '   <small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename + '?' + str(line_i) + '">' + line + '</a></p>'
+
             html_source += '<p id=founded_text_in_note>' + item_cursor_source + \
-                '   <small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="note?' + filename + '?' + str(line_i) + '">' + line + '</a></p>'
+                '   <small>' + str(line_i) + ':</small>&nbsp;&nbsp;<a href="' + note_link + '">' + line + '</a></p>'
+
             return html_source
 
 
@@ -3439,9 +3462,13 @@ class Notelist():
          # html_source += '<p><a href="'+filename+'">'+cute_filename+'</a></p>'
          # Format: multiaction / note :|: note_filename
 
-        html_source += '<p' + line_style + '><a href="note?' + filename + '">' + item_cursor_source + \
+        note_link = self.action_link('note', filename)
+        multiaction_link = self.action_link('multiaction', filename)
+
+
+        html_source += '<p' + line_style + '><a href="' + note_link + '">' + item_cursor_source + \
             cute_filename + '</a>' + '&nbsp;&nbsp;<font id=filesize>' + hbytes(size) + '</font>' + \
-            '&nbsp;&nbsp;&nbsp;&nbsp; <a href="multiaction?' + filename + \
+            '&nbsp;&nbsp;&nbsp;&nbsp; <a href="' + multiaction_link + \
             '"><img src="resources/icons/notelist/document62-3.png"></a> ' + \
             last_open + '</p>'
         # print('Сделали html для элемента %s:' % filename)
@@ -3593,7 +3620,8 @@ class Notelist():
         else:
             # Кликнули мышкой на ссылке в списке заметок
             url_string = url.toString()
-        link_attributes = url_string.split('?')
+        #link_attributes = url_string.split('?')
+        link_attributes = self.action_link_items(url_string)
         link_type = link_attributes[0] 
         link_filename = link_attributes[1]
         founded_i = 0
@@ -3612,23 +3640,23 @@ class Notelist():
     #    if link_type == 'multiaction':
     #        note.show_note_multiaction_win(link_filename)
     
-    '''
-    def switch_show_note_content(self)
-    :
-        if main_window.textBrowser_NoteContents.isVisible():
-            # Скрываем панель содержания, включаем показ заметки
-            main_window.textBrowser_NoteContents.setVisible(False)
-            #main_window.textBrowser_Note.setVisible(True)
-            main_window.frame_Note.setVisible(True)
-            #main_window.actionShow_note_contents.setChecked(False)
-        else:
-            # Показывам панель содержания, выключаем показ заметки
-            self.make_note_contents()  # Обновляем html исходник содержание
-            main_window.textBrowser_NoteContents.setVisible(True)
-            #main_window.textBrowser_Note.setVisible(False)
-            main_window.frame_Note.setVisible(False)
-            #main_window.actionShow_note_contents.setChecked(True)
-    '''
+    
+    #def switch_show_note_content(self)
+    #:
+    #    if main_window.textBrowser_NoteContents.isVisible():
+    #        # Скрываем панель содержания, включаем показ заметки
+    #        main_window.textBrowser_NoteContents.setVisible(False)
+    #        #main_window.textBrowser_Note.setVisible(True)
+    #        main_window.frame_Note.setVisible(True)
+    #        #main_window.actionShow_note_contents.setChecked(False)
+    #    else:
+    #        # Показывам панель содержания, выключаем показ заметки
+    #        self.make_note_contents()  # Обновляем html исходник содержание
+    #        main_window.textBrowser_NoteContents.setVisible(True)
+    #        #main_window.textBrowser_Note.setVisible(False)
+    #        main_window.frame_Note.setVisible(False)
+    #        #main_window.actionShow_note_contents.setChecked(True)
+    
 
     def __init__(self):
         # QtCore.QObject.connect(main_window.textBrowser_Listnotes, QtCore.SIGNAL("anchorClicked (const QUrl&)"),
