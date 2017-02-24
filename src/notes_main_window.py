@@ -1201,48 +1201,48 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
         # Передвигаем курсор на нужную позицию
-        i = 1
         self.textBrowser_Note.moveCursor(QtGui.QTextCursor.Start)
         if not line_number == None:
             # У нас указано - на какую строку перематывать
             print('Выполняется промотка на линию %s и поиск текста "%s"' % (line_number, found_text) )
+
             # Отключаем перенос строк в редакторе
             self.textBrowser_Note.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
 
-            
-            
-
             # Получаем копию текущего курсора
             cursor = self.textBrowser_Note.textCursor()
-            #cursor.atStart
 
             # Учитываем в количестве переходов по строкам количество удаленных служебных строк в начале заметки
-            while i < int(line_number)-len(note.metadata_lines_before_note):
-                # Перемещаем курсор на следующую линию (не строку, в понимании человека, видящего текст с переносом)
-                #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.EndOfLine)
-                #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.Right)
+            lines_to_skip = int(line_number)-len(note.metadata_lines_before_note)-1
+            cursor.movePosition( QtGui.QTextCursor.Down, n=lines_to_skip )
 
-                cursor.movePosition(QtGui.QTextCursor.EndOfLine)
-                cursor.movePosition(QtGui.QTextCursor.Right)
-                #pos1 = cursor.position()
-                #cursor.movePosition(QtGui.QTextCursor.Right)
-                #pos2 = cursor.position()
-                #cursor.movePosition( (QtGui.QTextCursor.EndOfLine | QtGui.QTextCursor.Right), n=1)
+            #i = 1
+            #while i < int(line_number)-len(note.metadata_lines_before_note):
+            #    # Перемещаем курсор на следующую линию (не строку, в понимании человека, видящего текст с переносом)
+            #    #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.EndOfLine)
+            #    #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.Right)
+
+            #    cursor.movePosition(QtGui.QTextCursor.StartOfLine)
+            #    cursor.movePosition(QtGui.QTextCursor.Down)
+            #    #pos1 = cursor.position()
+            #    #cursor.movePosition(QtGui.QTextCursor.Right)
+            #    #pos2 = cursor.position()
+            #    #cursor.movePosition( (QtGui.QTextCursor.EndOfLine | QtGui.QTextCursor.Right), n=1)
                 
-                #cursor.LineUnderCursor
+            #    #cursor.LineUnderCursor
 
-                #print('iteration %s, position 1: %s, position 2: %s' % (i, pos1, pos2) )
-                #print('line under cursor: ###%s###' % line)
+            #    #print('iteration %s, position 1: %s, position 2: %s' % (i, pos1, pos2) )
+            #    #print('line under cursor: ###%s###' % line)
 
-                #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.EndOfLine)
-                #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.Down)
-                #self.textBrowser_Note.moveCursor(
-                # text_to_find = self.lineEdit_Filter_Note_Text.text()
-                #text_to_find = notelist.filter_text
-                #self.textBrowser_Note.find(text_to_find)
-                # print ('Выполняем поиск')
-                # cursor.movePosition(QtGui.QTextCursor.Down)
-                i += 1
+            #    #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.EndOfLine)
+            #    #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.Down)
+            #    #self.textBrowser_Note.moveCursor(
+            #    # text_to_find = self.lineEdit_Filter_Note_Text.text()
+            #    #text_to_find = notelist.filter_text
+            #    #self.textBrowser_Note.find(text_to_find)
+            #    # print ('Выполняем поиск')
+            #    # cursor.movePosition(QtGui.QTextCursor.Down)
+            #    i += 1
             # Ищем нужный текст
             #self.textBrowser_Note.find(found_text)
 
@@ -1251,8 +1251,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             # Делаем копию основным курсором текстового редактора с новой позицией
 
             main_window.textBrowser_Note.setTextCursor(cursor)
+            main_window.textBrowser_Note.ensureCursorVisible()
             # Восстанавливаем перенос по словам
             self.textBrowser_Note.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
+            
+            # Надо промотать скроллбокс немного ниже, чтобы отобразить курсор примерно в середине окна
+
 
 
         # self.textBrowser_Note.setTextCursor(cursor)
