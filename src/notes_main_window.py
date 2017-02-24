@@ -641,7 +641,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Останавливаем отложенное обновление. Если надо - запустим заново в коде ниже.
         notelist.cancel_scheduled_update()
-
+        main_window.lineNotelist_Filter.setFocus()
         # Проверяем - не внутреннее ли это программное изменение текста фильтра на подсказку или наоборот.
         if notelist.filter_in_change:
             #print('notelist.filter_in_change')
@@ -3021,6 +3021,10 @@ class Notelist():
             description_filter_text = 'containing any text'
 
         notelist_search_param_message_text = description_filter_name + ' and ' + description_filter_text
+        #if not self.filter_name and not self.filter_text:
+        #    # Фильтры не установлены. Минимальная строка.
+        #    # Надо добавить к ней пробелов
+        #    notelist_search_param_message_text += ' &nbsp;'*20 + '.'
         return notelist_search_param_string % notelist_search_param_message_text
 
 
@@ -3049,21 +3053,34 @@ class Notelist():
         #main_window.textBrowser_Listnotes.clear()
         #main_window.textBrowser_Listnotes.append(self.search_param_message())
 
+        #main_window.lbSearchParam.setMinimumWidth(400)
         main_window.lbSearchParam.setText(self.search_param_message())
+        #main_window.lbSearchParam.resize()
 
+        #main_window.lbSearchParam.setStyleSheet('''
+        #                        font-size: 12px;
+        #                        '''
+        #                        )
         main_window.lbSearchFiles.setText('Файлов в обработке: ')
         main_window.lbSearchItems.setText('Элементов найдено: ')
         main_window.lbFormatItems.setText('Элементов оформлено: ')
+        
+        #main_window.lbSearchFilesProgress.setMinimumWidth(40)
+        #main_window.lbSearchItemsProgress.setMinimumWidth(50)
+        #main_window.lbFormatItemsProgress.setMinimumWidth(50)
+
         main_window.progressBar_Notelist.setMaximum(0)
         self.progress_count_files = 0
         self.progress_count_items = 0
-        main_window.lbSearchFilesProgress.setText(str(self.progress_count_files))
+        main_window.lbSearchFilesProgress.setText('0')
         main_window.lbSearchItemsProgress.setText('0')
         main_window.lbFormatItemsProgress.setText('0')
 
         main_window.Search_Progressbar_Panel.show()
-        #main_window.Search_Progressbar_Panel.update()
-        #main_window.Search_Progressbar_Panel.repaint()
+        #main_window.Search_Progressbar_Panel.resize()
+        main_window.Search_Progressbar_Panel.update()
+        main_window.Search_Progressbar_Panel.repaint()
+        
         #main_window.textBrowser_Listnotes.update()
         #main_window.update()
 
@@ -3093,6 +3110,10 @@ class Notelist():
         main_window.lbSearchItemsProgress.setText(str(len(self.items)))
         #main_window.lbSearchItemsProgress.update()
         main_window.lbSearchItemsProgress.repaint()
+
+        #main_window.Search_Progressbar_Panel.resize()
+        main_window.Search_Progressbar_Panel.update()
+        main_window.Search_Progressbar_Panel.repaint()
         
         ##main_window.lbSearchItems.setText('Элементов найдено: ')
         #print('progress: files %s, found %s, items %s' % ( self.progress_count_files, 
@@ -3107,6 +3128,7 @@ class Notelist():
     
     def search_progress_indicator_hide(self):
         main_window.Search_Progressbar_Panel.hide()
+        #pass
 
 
     def set_visible(self, visible=True):
