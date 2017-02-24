@@ -638,6 +638,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def notelist_filter_changed(self, filter_text):
         # Функция обработки изменения текста фильтра заметок
+        
+        needed_list_update = True # Признак необходимости обновить список
 
         # Останавливаем отложенное обновление. Если надо - запустим заново в коде ниже.
         notelist.cancel_scheduled_update()
@@ -646,6 +648,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if notelist.filter_in_change:
             #print('notelist.filter_in_change')
             return 0
+
+        # Проверяем ситуацию, когда ввели пробел перед текстом, и фильтры при этом не изменились
+        new_filter_name, new_filter_text = notelist.extract_filters(filter_text)
+        if new_filter_name == notelist.filter_name and new_filter_text ==         notelist.filter_text:
+            # Фильтры не изменились. Обновлять список не надо.
+            #print('Фильтры не изменились.')
+            needed_list_update = False
 
         #print('filter_text = ##%s##' % filter_text)
         #notelist_filter = filter_text
@@ -677,7 +686,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Вызываем фейковую установке курсора, чтобы стработала инициация начального значения подсказки для поля.
                 #self.lineNotelist_Filter.setCursorPosition(0)
                 self.notelist_filter_cursorPositionChanged(1,0)
-                notelist.schedule_update()
+                if needed_list_update:
+                    notelist.schedule_update()
                 return 0
         else:
             # Текст фильтра не пуст. Если он не подсказка - то надо указать во внутреннем признаке что фильтр не пуст и запустить отложенное обновление вида списка.
@@ -702,7 +712,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                         '''
                                         )
                     notelist.filter_is_empty = False
-                    notelist.schedule_update()
+                    if needed_list_update:
+                        notelist.schedule_update()
                     return 0
 
         if notelist.filter_is_empty:
@@ -724,7 +735,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                     '''
                                     )
                 notelist.filter_in_change = False
-                notelist.schedule_update()
+                if needed_list_update:
+                    notelist.schedule_update()
                 return 0
 
 
@@ -2843,7 +2855,7 @@ class Notelist():
                 to enter text''',
  
                 'name' : 'Enter <span style="color: #008066;"><b>name</b></span>',
-                'text' : 'Enter <span style="color: #008066;"><b>any text</b></span>',
+                'text' : 'Enter <span style="color: #008066;"><b>any text</b></span> (space included)',
                 'html_begin' : '<p style="font-size: 15px;">&nbsp;',
                 'html_end' : '</p>',
                 }
@@ -3218,6 +3230,23 @@ class Notelist():
         self.update()
 
 
+    def extract_filters(self, notelist_filter):
+        # Функция извлечения фильтра для имени и фильтра для текста из единой строки
+
+        # Делим фильтр заметок на фильтр имени и фильтр текста внутри
+        if ' ' not in notelist_filter:
+            # Если и есть фильтр - он только по имени
+            extracted_filter_text = ''
+            extracted_filter_name = notelist_filter
+        else:
+            # У нас указан фильтр по тексту. Может ещё и по имени.
+            # Первое слово до пробела - имя. Остальные - текст.
+            filter_words = notelist_filter.split(' ')
+            extracted_filter_name = filter_words[0]
+            extracted_filter_text = ' '.join(filter_words[1:])
+        return extracted_filter_name, extracted_filter_text
+
+
 
     def get_and_display_filters(self):
         # Получаем текущий фильтр для списка заметок
@@ -3233,6 +3262,8 @@ class Notelist():
             # Иначе берем фильтр из поля в UI
             notelist_filter = main_window.lineNotelist_Filter.text()
         
+        self.filter_name, self.filter_text = self.extract_filters(notelist_filter)
+
         ## Проверяем на пустоту поля фильтра
         #if not notelist_filter:
         #    # У нас совсем пустой фильтр. Надо указать что он пуст и показать подсказку
@@ -3267,17 +3298,17 @@ class Notelist():
         #        self.filter_in_change = False
 
 
-        # Делим фильтр заметок на фильтр имени и фильтр текста внутри
-        if ' ' not in notelist_filter:
-            # Если и есть фильтр - он только по имени
-            self.filter_text = ''
-            self.filter_name = notelist_filter
-        else:
-            # У нас указан фильтр по тексту. Может ещё и по имени.
-            # Первое слово до пробела - имя. Остальные - текст.
-            filter_words = notelist_filter.split(' ')
-            self.filter_name = filter_words[0]
-            self.filter_text = ' '.join(filter_words[1:])
+        ## Делим фильтр заметок на фильтр имени и фильтр текста внутри
+        #if ' ' not in notelist_filter:
+        #    # Если и есть фильтр - он только по имени
+        #    self.filter_text = ''
+        #    self.filter_name = notelist_filter
+        #else:
+        #    # У нас указан фильтр по тексту. Может ещё и по имени.
+        #    # Первое слово до пробела - имя. Остальные - текст.
+        #    filter_words = notelist_filter.split(' ')
+        #    self.filter_name = filter_words[0]
+        #    self.filter_text = ' '.join(filter_words[1:])
         
         #if self.filter_text or self.filter_name:
         #    # Отображаем в интерфейсе полученные указания по фильтрам
