@@ -1047,7 +1047,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         percent_of_position = cursor_line / lines_count
         scrollbar_set_pos = scrollbar_maximum * percent_of_position
         textbrowser_height = textbrowser.height()
-        # print('scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, textbrowser_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, textbrowser_height) )
+        
+        print('Сдвиг промотки: scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, textbrowser_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, textbrowser_height) )
 
         if scrollbar_set_pos < textbrowser_height * 0.8:
             scrollbar_set_pos = 0
@@ -1280,17 +1281,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             # Надо получить положение текущего курсора в тексте с учетом переносов строк
             #cursor = self.textBrowser_Note.textCursor()
             pos1 = cursor.position()
-            block1 = cursor.blockNumber()
             line_current = note.format.getLineAtPosition3(pos1)
             
             cursor.movePosition(QtGui.QTextCursor.End)
             pos2 = cursor.position()
-            block2 = cursor.blockNumber()
             lines_all = note.format.getLineAtPosition3(pos2)
 
-            print('pos1 %s / block1 %s / line_current %s, pos2 %s / block2 %s / lines_all %s' % (pos1, block1, line_current, pos2, block2, lines_all))
+            print('Информация для расчета изменения промотки: pos1 %s / line_current %s, pos2 %s / lines_all %s' % (pos1, line_current, pos2, lines_all))
 
-            #self.adjust_scrollbar_position_at_editor(main_window.textBrowser_Note, line_current, lines_all)
+            self.adjust_scrollbar_position_at_editor(main_window.textBrowser_Note, line_current, lines_all)
 
         # self.textBrowser_Note.setTextCursor(cursor)
 
@@ -1818,13 +1817,13 @@ class Note():
             cursor = main_window.textBrowser_Note.textCursor()
             # Устанавливаем курсору указанное в параметрах положение
             cursor.setPosition(pos)
-            cur_pos = cursor.position()
+            #cur_pos = cursor.position()
             cursor.movePosition(QtGui.QTextCursor.StartOfLine)
             i = 1
-            while cursor.position() > 0:
+            while not cursor.atStart():
                 cursor.movePosition(QtGui.QTextCursor.Up)
                 cursor.movePosition(QtGui.QTextCursor.StartOfLine)
-                # Если не перемещаться на начало линии - зависнет на <li> и др.
+                # Если не перемещаться на начало линии - зависнет, не достигнув начала первой строки
                 i += 1
             #cursor.setPosition(cur_pos)
             return i
@@ -1916,8 +1915,14 @@ class Note():
             # 'line2: '+str( self.getLineAtPosition2(cursor.position()) )+  \
             # 'line: '+str( self.getLineAtPosition(cursor.position()) )+  \
             
-            mess = 'line: ' + str(self.getLineAtPosition3(cursor.position())) + \
-                   '  column: ' + str(cursor.columnNumber())
+            #mess = 'line: ' + str(self.getLineAtPosition3(cursor.position())) + \
+            #       '  column: ' + str(cursor.columnNumber())
+
+            mess = 'line: %s  column: %s  pos: %s' % ( self.getLineAtPosition3(cursor.position()),
+                                                     cursor.columnNumber(),
+                                                     cursor.position(),
+                                                     )
+
             # + \
             # ', block: '+str(cursor.blockNumber())+ \
             # ', sel.start: '+str(cursor.selectionStart())+', sel.end: '+str(cursor.selectionEnd())
