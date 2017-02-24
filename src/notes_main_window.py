@@ -1278,12 +1278,19 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             
             # Надо промотать скроллбокс немного ниже или выше, чтобы отобразить курсор примерно в середине окна
             # Надо получить положение текущего курсора в тексте с учетом переносов строк
-            cursor = self.textBrowser_Note.textCursor()
-            line_current = note.format.getLineAtPosition3(cursor.position())
-            cursor.movePosition( QtGui.QTextCursor.End)
-            lines_all = note.format.getLineAtPosition3(cursor.position())
-            print('line_current %s, lines_all %s' % (line_current, lines_all))
-            self.adjust_scrollbar_position_at_editor(main_window.textBrowser_Note, line_current, lines_all)
+            #cursor = self.textBrowser_Note.textCursor()
+            pos1 = cursor.position()
+            block1 = cursor.blockNumber()
+            line_current = note.format.getLineAtPosition3(pos1)
+            
+            cursor.movePosition(QtGui.QTextCursor.End)
+            pos2 = cursor.position()
+            block2 = cursor.blockNumber()
+            lines_all = note.format.getLineAtPosition3(pos2)
+
+            print('pos1 %s / block1 %s / line_current %s, pos2 %s / block2 %s / lines_all %s' % (pos1, block1, line_current, pos2, block2, lines_all))
+
+            #self.adjust_scrollbar_position_at_editor(main_window.textBrowser_Note, line_current, lines_all)
 
         # self.textBrowser_Note.setTextCursor(cursor)
 
@@ -1807,8 +1814,10 @@ class Note():
             # Показываем исходник выделенного текста, если надо
             self.getHtmlSourceOfSelectedPart()
             
+            # Копируем курсор текстового редактора
             cursor = main_window.textBrowser_Note.textCursor()
-            # cursor.setPosition(pos)
+            # Устанавливаем курсору указанное в параметрах положение
+            cursor.setPosition(pos)
             cur_pos = cursor.position()
             cursor.movePosition(QtGui.QTextCursor.StartOfLine)
             i = 1
@@ -1817,7 +1826,7 @@ class Note():
                 cursor.movePosition(QtGui.QTextCursor.StartOfLine)
                 # Если не перемещаться на начало линии - зависнет на <li> и др.
                 i += 1
-            cursor.setPosition(cur_pos)
+            #cursor.setPosition(cur_pos)
             return i
 
         def getLineAtPosition(self, pos):
