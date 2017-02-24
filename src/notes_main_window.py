@@ -588,17 +588,36 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
     def notelist_filter_cursorPositionChanged(self, old, new):
+        # Реакция на изменение позиции курсора в поле редактирования фильтра списка заметок
+        if notelist.filter_in_change:
+            # Если производятся внутренние манипуляции с полем фильтра- ждем их окончания
+            return 0
+
         if notelist.filter_is_empty:
             # Надо пресечь изменение положения курсора
             self.lineNotelist_Filter.setCursorPosition(0)
         else:
             # Выводим подсказку по текущему положению курсора
-            filter_string = main_window.lineNotelist_Filter.text()
+            filter_string = self.lineNotelist_Filter.text()
             # Получаем строку до курсора
-            filter_string_begin = filter_string[:new]
+            left_part = filter_string[:new]
             # Строка после курсора
-            filter_string_end = filter_string[new:]
-            print('filter_string #%s#%s#' % (filter_string_begin, filter_string_end) )
+            right_part = filter_string[new:]
+            print('filter_string #%s#%s#' % (left_part, right_part) )
+            # Подсказка о вводе имени и возможности нажать пробел
+            if ' ' not in left_part:
+                # Курсор стоит на имени
+                if right_part:
+                    # Есть правая часть от имени
+                    self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['name'])
+                else:
+                    # Правой части фильтра от курсора на имени нет
+                    self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['empty'])
+            else:
+                # Курсор стоит на тексте
+                self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['text'])
+
+            
 
 
     def notelist_filter_selectionChanged(self):

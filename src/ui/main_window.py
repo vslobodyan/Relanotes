@@ -69,14 +69,14 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_4.setSpacing(3)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.label = QtWidgets.QLabel(self.widget)
+        self.labelNotelistFilterTip = QtWidgets.QLabel(self.widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy)
-        self.label.setObjectName("label")
-        self.verticalLayout_4.addWidget(self.label)
+        sizePolicy.setHeightForWidth(self.labelNotelistFilterTip.sizePolicy().hasHeightForWidth())
+        self.labelNotelistFilterTip.setSizePolicy(sizePolicy)
+        self.labelNotelistFilterTip.setObjectName("labelNotelistFilterTip")
+        self.verticalLayout_4.addWidget(self.labelNotelistFilterTip)
         self.label_DisplayFilters = QtWidgets.QLabel(self.widget)
         self.label_DisplayFilters.setObjectName("label_DisplayFilters")
         self.verticalLayout_4.addWidget(self.label_DisplayFilters)
@@ -673,7 +673,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Relanotes"))
         self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:13pt; color:#008066;\">Live search in your notes:</span></p></body></html>"))
-        self.label.setText(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+        self.labelNotelistFilterTip.setText(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
