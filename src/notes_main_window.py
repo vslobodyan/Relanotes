@@ -2836,8 +2836,8 @@ class Notelist():
 
     filter_editing_tips = { 
                 'empty' : '''Enter <span style="color: #008066;"><b>name</b></span>
-                or press <span style="color: #9c2b2b;">Space</span>
-                to enter <span style="color: #008066;"><b>text</b></span>''',
+                or press Space
+                to enter text''',
  
                 'name' : 'Enter <span style="color: #008066;"><b>name</b></span>',
                 'text' : 'Enter <span style="color: #008066;"><b>any text</b></span>',
