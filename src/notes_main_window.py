@@ -1039,6 +1039,26 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # print('Текст заметки изменен')
         pass
    
+
+    def adjust_scrollbar_position_at_editor(self, textbrowser, cursor_line, lines_count):
+        # Выставляем положение скроллинга для лучшего отображения курсора в тексте или в списке элементов
+
+        scrollbar_maximum = textbrowser.verticalScrollBar().maximum()
+        percent_of_position = cursor_line / lines_count
+        scrollbar_set_pos = scrollbar_maximum * percent_of_position
+        textbrowser_height = textbrowser.height()
+        # print('scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, textbrowser_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, textbrowser_height) )
+
+        if scrollbar_set_pos < textbrowser_height * 0.8:
+            scrollbar_set_pos = 0
+        if scrollbar_set_pos > scrollbar_maximum - textbrowser_height / 2:
+            scrollbar_set_pos = scrollbar_maximum
+        
+        # Устанавливаем выбранное значение промотки
+        textbrowser.verticalScrollBar().setValue(scrollbar_set_pos)
+
+
+
     def open_file_in_editor(self, filename, line_number=None, found_text=None):
         # line_number - новая переменная промотки редактора на нужную строку
         # found_text - искомый текст, который надо подсветить
@@ -1250,14 +1270,20 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             #cursor.setPosition(line=line_number)
             # Делаем копию основным курсором текстового редактора с новой позицией
 
-            main_window.textBrowser_Note.setTextCursor(cursor)
-            main_window.textBrowser_Note.ensureCursorVisible()
             # Восстанавливаем перенос по словам
             self.textBrowser_Note.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
+
+            main_window.textBrowser_Note.setTextCursor(cursor)
+            main_window.textBrowser_Note.ensureCursorVisible()
             
-            # Надо промотать скроллбокс немного ниже, чтобы отобразить курсор примерно в середине окна
-
-
+            # Надо промотать скроллбокс немного ниже или выше, чтобы отобразить курсор примерно в середине окна
+            # Надо получить положение текущего курсора в тексте с учетом переносов строк
+            cursor = self.textBrowser_Note.textCursor()
+            line_current = note.format.getLineAtPosition3(cursor.position())
+            cursor.movePosition( QtGui.QTextCursor.End)
+            lines_all = note.format.getLineAtPosition3(cursor.position())
+            print('line_current %s, lines_all %s' % (line_current, lines_all))
+            self.adjust_scrollbar_position_at_editor(main_window.textBrowser_Note, line_current, lines_all)
 
         # self.textBrowser_Note.setTextCursor(cursor)
 
@@ -2874,17 +2900,19 @@ class Notelist():
         if len(self.items) < 1:
             return 0
 
-        scrollbar_maximum = main_window.textBrowser_Listnotes.verticalScrollBar().maximum()
-        percent_of_position = self.items_cursor_position / len(self.items)
-        scrollbar_set_pos = scrollbar_maximum * percent_of_position
-        listnotes_height = main_window.textBrowser_Listnotes.height()
-        # print('scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, listnotes_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, listnotes_height) )
+        main_window.adjust_scrollbar_position_at_editor(main_window.textBrowser_Listnotes, self.items_cursor_position, len(self.items))
 
-        if scrollbar_set_pos < listnotes_height * 0.8:
-            scrollbar_set_pos = 0
-        if scrollbar_set_pos > scrollbar_maximum - listnotes_height / 2:
-            scrollbar_set_pos = scrollbar_maximum
-        main_window.textBrowser_Listnotes.verticalScrollBar().setValue(scrollbar_set_pos)
+        #scrollbar_maximum = main_window.textBrowser_Listnotes.verticalScrollBar().maximum()
+        #percent_of_position = self.items_cursor_position / len(self.items)
+        #scrollbar_set_pos = scrollbar_maximum * percent_of_position
+        #listnotes_height = main_window.textBrowser_Listnotes.height()
+        ## print('scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, listnotes_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, listnotes_height) )
+
+        #if scrollbar_set_pos < listnotes_height * 0.8:
+        #    scrollbar_set_pos = 0
+        #if scrollbar_set_pos > scrollbar_maximum - listnotes_height / 2:
+        #    scrollbar_set_pos = scrollbar_maximum
+        #main_window.textBrowser_Listnotes.verticalScrollBar().setValue(scrollbar_set_pos)
 
 
 
