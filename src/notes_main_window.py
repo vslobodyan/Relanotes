@@ -1048,7 +1048,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         scrollbar_set_pos = scrollbar_maximum * percent_of_position
         textbrowser_height = textbrowser.height()
         
-        print('Сдвиг промотки: scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, textbrowser_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, textbrowser_height) )
+        #print('Сдвиг промотки: scrollbar_maximum=%s, percent_of_position=%s, scrollbar_set_pos=%s, textbrowser_height=%s' % (scrollbar_maximum, percent_of_position,scrollbar_set_pos, textbrowser_height) )
 
         if scrollbar_set_pos < textbrowser_height * 0.8:
             scrollbar_set_pos = 0
@@ -1336,7 +1336,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         pos2 = cursor.position()
         lines_all = note.format.getLineAtPosition3(pos2)
 
-        print('Информация для расчета изменения промотки: pos1 %s / line_current %s, pos2 %s / lines_all %s' % (pos1, line_current, pos2, lines_all))
+        #print('Информация для расчета изменения промотки: pos1 %s / line_current %s, pos2 %s / lines_all %s' % (pos1, line_current, pos2, lines_all))
 
         self.adjust_scrollbar_position_at_editor(main_window.textBrowser_Note, line_current, lines_all)
 
@@ -3343,6 +3343,14 @@ class Notelist():
             # Текущая позиция - должна быть с курсором
             img_src = 'resources/icons/notelist/arrow130_h11.png'
             self.items_cursor_url = 'note?' + filename
+            # Проверяем наличие указания номера строки с найденным текстом
+            if one_item['found_line_number']:
+                # Это найденный текст внутри заметки
+                line = one_item['found_line_text']
+                line_i = one_item['found_line_number']
+                # Добавляем позицию с найденным текстом
+                self.items_cursor_url += '?' + str(line_i)
+
             self.items_cursor_cutename = self.make_cute_name(filename)
         else:
             # Позиция без курсора.
@@ -3575,11 +3583,17 @@ class Notelist():
 
 
 
-    def link_action(self, url):
+    def link_action(self, url=None):
         # Обрабатываем клик по линку в списке заметок
-        # Определяем - клик перехда на заметку или на мультидействие по ней
+        # Определяем - клик перехода на заметку или на мультидействие по ней
         # Format: multiaction / note :|: note_filename
-        link_attributes = url.toString().split('?')
+        if not url:
+            # Нажали Enter в списке заметок. Надо получить url из Notelist
+            url_string = self.items_cursor_url
+        else:
+            # Кликнули мышкой на ссылке в списке заметок
+            url_string = url.toString()
+        link_attributes = url_string.split('?')
         link_type = link_attributes[0] 
         link_filename = link_attributes[1]
         founded_i = 0
@@ -3590,13 +3604,13 @@ class Notelist():
         if link_type == 'multiaction':
             note.show_note_multiaction_win(link_filename)
 
-    def open_selected_url(self):
-        print('DEBUG: open_selected_url("self.items_cursor_url=%s")' % self.items_cursor_url)
-        link_type, link_filename = self.items_cursor_url.split('?')
-        if link_type == 'note':
-            main_window.open_file_in_editor(link_filename)
-        if link_type == 'multiaction':
-            note.show_note_multiaction_win(link_filename)
+    #def open_selected_url(self):
+    #    print('DEBUG: open_selected_url("self.items_cursor_url=%s")' % self.items_cursor_url)
+    #    link_type, link_filename = self.items_cursor_url.split('?')
+    #    if link_type == 'note':
+    #        main_window.open_file_in_editor(link_filename)
+    #    if link_type == 'multiaction':
+    #        note.show_note_multiaction_win(link_filename)
     
     '''
     def switch_show_note_content(self)
@@ -3622,7 +3636,8 @@ class Notelist():
         main_window.textBrowser_Listnotes.anchorClicked.connect(self.link_action)
         # QtCore.QObject.connect(main_window.lineNotelist_Filter, QtCore.SIGNAL("returnPressed ()"),
                                # self.open_selected_url)
-        main_window.lineNotelist_Filter.returnPressed.connect(self.open_selected_url)
+        #main_window.lineNotelist_Filter.returnPressed.connect(self.open_selected_url)
+        main_window.lineNotelist_Filter.returnPressed.connect(self.link_action)
         
         # QtCore.QObject.connect(main_window.textBrowser_Listnotes, QtCore.SIGNAL("anchorClicked (const QUrl&)"),
         # self.link_action)
