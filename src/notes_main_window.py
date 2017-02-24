@@ -2885,7 +2885,8 @@ class Notelist():
     timer_update = QtCore.QTimer()
     update_timeout = 350 # 420
 
-    update_progress = 0  # Счетчик прогресса обновлений
+    progress_count_files = 0  # Счетчик прогресса поиска файлов
+    progress_count_items = 0  # Счетчик прогресса формирования элементов
 
 
     # class DB():
@@ -3050,21 +3051,56 @@ class Notelist():
 
         main_window.lbSearchParam.setText(self.search_param_message())
 
-        main_window.lbSearchAction.setText('Элементов в обработке:')
-        self.update_progress = 0
-        main_window.lbSearchProgress.setText(str(self.update_progress))
+        main_window.lbSearchFiles.setText('Файлов в обработке: ')
+        main_window.lbSearchItems.setText('Элементов найдено: ')
+        main_window.lbFormatItems.setText('Элементов оформлено: ')
+        main_window.progressBar_Notelist.setMaximum(0)
+        self.progress_count_files = 0
+        self.progress_count_items = 0
+        main_window.lbSearchFilesProgress.setText(str(self.progress_count_files))
+        main_window.lbSearchItemsProgress.setText('0')
+        main_window.lbFormatItemsProgress.setText('0')
 
-        main_window.textBrowser_Listnotes.update()
-        main_window.update()
+        main_window.Search_Progressbar_Panel.show()
+        main_window.Search_Progressbar_Panel.update()
+        main_window.Search_Progressbar_Panel.repaint()
+        #main_window.textBrowser_Listnotes.update()
+        #main_window.update()
 
-    def search_progress_indicator_add(self, add=1):
-        self.update_progress += add
-        main_window.lbSearchProgress.setText(str(self.update_progress))
-        main_window.textBrowser_Listnotes.update()
-        main_window.update()
+    def search_progress_indicator_add(self, files=False, items=False, add=1):
+        if files:
+            self.progress_count_files += add
+            main_window.lbSearchFilesProgress.setText(str(self.progress_count_files))
+            main_window.lbSearchFilesProgress.update()
+            main_window.lbSearchFilesProgress.repaint()
+        if items:
+            self.progress_count_items += add
+            if not main_window.progressBar_Notelist.maximum():
+                main_window.progressBar_Notelist.setMaximum(len(self.items))
+                main_window.lbSearchItemsProgress.setText(str(len(self.items)))
+                main_window.lbSearchItemsProgress.update()
+                main_window.lbSearchItemsProgress.repaint()
+            else:
+                main_window.progressBar_Notelist.setValue(self.progress_count_items)
+            main_window.lbFormatItemsProgress.setText(str(self.progress_count_items))
+            main_window.progressBar_Notelist.update()
+            main_window.progressBar_Notelist.repaint()
+            main_window.lbFormatItemsProgress.update()
+            main_window.lbFormatItemsProgress.repaint()
+        
+        #main_window.lbSearchItems.setText('Элементов найдено: ')
+        #print('progress: files %s, found %s, items %s' % ( self.progress_count_files, 
+        #                 len(self.items),
+        #                 self.progress_count_items, )
+        #      )
+        
+        #main_window.textBrowser_Listnotes.update()
+        #main_window.update()
     
     def search_progress_indicator_hide(self):
-        self.Search_Progressbar_Panel.hide()
+        main_window.Search_Progressbar_Panel.hide()
+        #pass
+
 
     def set_visible(self, visible=True):
         # Переключение видимости всего что связано со списком заметок
@@ -3396,7 +3432,7 @@ class Notelist():
 
         for row in file_recs_rows:
             rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
-            self.search_progress_indicator_add()
+            self.search_progress_indicator_add(files=True)
             # Проверка файла из истории на существование 
             if not os.path.isfile(rec_filename):
                 # Файл не существует или это каталог, а не файл.
@@ -3420,7 +3456,7 @@ class Notelist():
 
         for root, dirs, files in os.walk(path_to_notes):
             for file in files:
-                self.search_progress_indicator_add()
+                self.search_progress_indicator_add(files=True)
                 # print('Найдено во время обхода: %s' % os.path.join(root, file))
                 # Проверяем - разрешенное ли расширение у файла
                 if os.path.splitext(file)[-1] in self.allowed_note_files_extensions:
@@ -3613,6 +3649,7 @@ class Notelist():
         header_element_string = '<p id=notelist_header>%s</p>'
 
         for one_item in self.items:
+            self.search_progress_indicator_add(items=True)
             if not first_history_item_done and not one_item['history']:
                 # У нас отсутствует история - ещё не обработали первый элемент истории, а уже обычная заметка
                 first_history_item_done = True
@@ -3692,6 +3729,7 @@ class Notelist():
     def rescan_files_in_notes_path(self):
         # Обновляем список заметок в зависимости от фильтров
         self.get_and_display_filters()
+        notelist.set_visible()
 
         if self.need_rescan:
             # Если требуется рескан файлов - проводим его
@@ -3714,8 +3752,9 @@ class Notelist():
         
         main_window.notelist_source.setHtml(html_string)
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
+        self.search_progress_indicator_hide()
         self.move_textbrowser_cursor()
-        notelist.set_visible()
+        
 
 
 
