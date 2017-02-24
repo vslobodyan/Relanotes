@@ -493,6 +493,16 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionShow_note_HTML_source.triggered.connect(self.show_html_source)
         self.plainTextEdit_Note_Ntml_Source.setVisible(False)
 
+        ## Устанавливаем стили текстовых редакторов
+        #texteditor_style = '''
+        #                        font-family: Sans;
+        #                        font-size: 17px;
+        #                        color: #1a1a1a;
+        #                        white-space: pre-wrap;
+        #                        '''
+        #self.textBrowser_Listnotes.setStyleSheet(texteditor_style)
+        #self.textBrowser_Note.setStyleSheet(texteditor_style)
+
         # QtGui.QFileDialog.windowFilePath(self)
         global path_to_notes
         print("path_to_notes: %s" % path_to_notes)
@@ -1029,7 +1039,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # print('Текст заметки изменен')
         pass
    
-    def open_file_in_editor(self, filename, founded_i=0):
+    def open_file_in_editor(self, filename, founded_i=0, line_number=None, found_text=None):
+        # founded_i - старая переменная промотки на нужную строку
+        # line_number - новая переменная промотки редактора на нужную строку
+        # found_text - искомый текст, который надо подсветить
+
         self.statusbar.showMessage('Загружается файл ' + filename)
         print('open_file_in_editor("filename=%s", "founded_i=%s")' % (filename, founded_i) )
         #print('DEBUG: open_file_in_editor("filename=%s")' % filename)
