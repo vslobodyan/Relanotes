@@ -1365,14 +1365,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.statusbar.showMessage('Заметка загружена')
         self.current_open_note_link = filename
 
+        # Получаем копию текущего курсора
+        cursor = main_window.textBrowser_Note.textCursor()
+
         # Проверяем - делали ли промотку на нужную позицию найденного текста
         if line_number:
            print('Перемещение курсора на последнюю сохраненную позицию не нужно - у нас был переход на позицию найденного текста.')
         elif rec_current_position:
             # Восстанавливаем позицию предыдущую позицию курсора, если она была сохранена
             print('Перемещаем курсор в заметке на позицию %s' % rec_current_position)
-            # Получаем копию текущего курсора
-            cursor = main_window.textBrowser_Note.textCursor()
             # Устанавливаем копии нужное положение
             cursor.setPosition(rec_current_position)
             # Делаем копию основным курсором текстового редактора с новой позицией
