@@ -2841,7 +2841,7 @@ class Notelist():
  
                 'name' : 'Enter <span style="color: #008066;"><b>name</b></span>',
                 'text' : 'Enter <span style="color: #008066;"><b>any text</b></span>',
-                'html_begin' : '<p style="font-size: 15px;">',
+                'html_begin' : '<p style="font-size: 15px;">&nbsp;',
                 'html_end' : '</p>',
                 }
 
