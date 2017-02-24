@@ -3603,9 +3603,9 @@ class Notelist():
         notelist_search_param_message = ''
 
         if self.filter_name:
-            description_filter_name = ('Show notes with a name containing <b>"%s"</b>' % self.filter_name)
+            description_filter_name = ('  Show notes with a name containing <b>"%s"</b>' % self.filter_name)
         else:
-            description_filter_name = 'Show notes with any name'
+            description_filter_name = '  Show notes with any name'
         if self.filter_text:
             description_filter_text = ('containing the text <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;'))
         else:
@@ -3619,7 +3619,7 @@ class Notelist():
         html_source = '''<html>
                          <body id=notelist_body>
                          %s
-                         %s
+                         <span style="font-size: 6px;"> </span>%s
                          %s
                          <div id=notelist>%s</div>
                          </body>
