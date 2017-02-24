@@ -1060,6 +1060,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 
+
     def open_file_in_editor(self, filename, line_number=None, found_text=None):
         # line_number - новая переменная промотки редактора на нужную строку
         # found_text - искомый текст, который надо подсветить
@@ -1276,20 +1277,20 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             main_window.textBrowser_Note.setTextCursor(cursor)
             main_window.textBrowser_Note.ensureCursorVisible()
+                        
+            ## Надо промотать скроллбокс немного ниже или выше, чтобы отобразить курсор примерно в середине окна
+            ## Надо получить положение текущего курсора в тексте с учетом переносов строк
+            ##cursor = self.textBrowser_Note.textCursor()
+            #pos1 = cursor.position()
+            #line_current = note.format.getLineAtPosition3(pos1)
             
-            # Надо промотать скроллбокс немного ниже или выше, чтобы отобразить курсор примерно в середине окна
-            # Надо получить положение текущего курсора в тексте с учетом переносов строк
-            #cursor = self.textBrowser_Note.textCursor()
-            pos1 = cursor.position()
-            line_current = note.format.getLineAtPosition3(pos1)
-            
-            cursor.movePosition(QtGui.QTextCursor.End)
-            pos2 = cursor.position()
-            lines_all = note.format.getLineAtPosition3(pos2)
+            #cursor.movePosition(QtGui.QTextCursor.End)
+            #pos2 = cursor.position()
+            #lines_all = note.format.getLineAtPosition3(pos2)
 
-            print('Информация для расчета изменения промотки: pos1 %s / line_current %s, pos2 %s / lines_all %s' % (pos1, line_current, pos2, lines_all))
+            #print('Информация для расчета изменения промотки: pos1 %s / line_current %s, pos2 %s / lines_all %s' % (pos1, line_current, pos2, lines_all))
 
-            self.adjust_scrollbar_position_at_editor(main_window.textBrowser_Note, line_current, lines_all)
+            #self.adjust_scrollbar_position_at_editor(main_window.textBrowser_Note, line_current, lines_all)
 
         # self.textBrowser_Note.setTextCursor(cursor)
 
@@ -1324,6 +1325,23 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # rec = [ 'note' / 'list', 'filename' / 'filter', datetime ]
         # if history_position==0:
         #    history_recs.append(['note', filename, datetime.now()])
+
+        # Надо промотать скроллбокс немного ниже или выше, чтобы отобразить курсор примерно в середине окна
+        # Надо получить положение текущего курсора в тексте с учетом переносов строк
+        #cursor = self.textBrowser_Note.textCursor()
+        pos1 = cursor.position()
+        line_current = note.format.getLineAtPosition3(pos1)
+            
+        cursor.movePosition(QtGui.QTextCursor.End)
+        pos2 = cursor.position()
+        lines_all = note.format.getLineAtPosition3(pos2)
+
+        print('Информация для расчета изменения промотки: pos1 %s / line_current %s, pos2 %s / lines_all %s' % (pos1, line_current, pos2, lines_all))
+
+        self.adjust_scrollbar_position_at_editor(main_window.textBrowser_Note, line_current, lines_all)
+
+
+
 
     def loadfile2(self, url):
         # self.ui.listView.
