@@ -438,6 +438,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Скрываем текст о текущем фильтре заметок
         self.label_DisplayFilters.hide()
 
+        # Скрываем панель прогресса поиска заметок
+        self.Search_Progressbar_Panel.hide()
+
         # if self.dockHistory.isVisible():
             # self.actionShowHistoryWindow.setChecked(True)
         # else:
@@ -2882,6 +2885,8 @@ class Notelist():
     timer_update = QtCore.QTimer()
     update_timeout = 350 # 420
 
+    update_progress = 0  # Счетчик прогресса обновлений
+
 
     # class DB():
     #     """ Основной класс работы со списками заметок, историей их использования,кешем заметок
@@ -3000,6 +3005,66 @@ class Notelist():
 
 
 
+    def search_param_message(self):
+        # Получаем сообщение для верха списка заметок о текущих фильтрах для него
+        notelist_search_param_string = '<div id=notelist_search_param_message>%s</div>'
+        notelist_search_param_message = ''
+
+        if self.filter_name:
+            description_filter_name = ('  Show notes with a name containing <b>"%s"</b>' % self.filter_name)
+        else:
+            description_filter_name = '  Show notes with any name'
+        if self.filter_text:
+            description_filter_text = ('containing the text <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;'))
+        else:
+            description_filter_text = 'containing any text'
+
+        notelist_search_param_message_text = description_filter_name + ' and ' + description_filter_text
+        return notelist_search_param_string % notelist_search_param_message_text
+
+
+    def html_body(self, empty_message='', html_source=''):
+        # Основной шаблон списка заметок
+            return '''<html>
+                      <body id=notelist_body>
+                      %s
+                      <span style="font-size: 6px;"> </span>%s
+                      %s
+                      <div id=notelist>%s</div>
+                      </body>
+                      </html>''' % (Theme.html_theme_head,
+                                    self.search_param_message(),
+                                    empty_message,
+                                    html_source,)
+
+
+    def search_progress_indicator_init(self):
+        # Будем показывать индикатор прямо в списке заметок
+        #html_source = self.html_body() # html_source=html_source
+        #main_window.notelist_source.setHtml(html_source)
+        #main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
+        #main_window.textBrowser_Listnotes.moveCursor(QtGui.QTextCursor.Start)
+        #main_window.textBrowser_Listnotes.ensureCursorVisible()
+        #main_window.textBrowser_Listnotes.clear()
+        #main_window.textBrowser_Listnotes.append(self.search_param_message())
+
+        main_window.lbSearchParam.setText(self.search_param_message())
+
+        main_window.lbSearchAction.setText('Элементов в обработке:')
+        self.update_progress = 0
+        main_window.lbSearchProgress.setText(str(self.update_progress))
+
+        main_window.textBrowser_Listnotes.update()
+        main_window.update()
+
+    def search_progress_indicator_add(self, add=1):
+        self.update_progress += add
+        main_window.lbSearchProgress.setText(str(self.update_progress))
+        main_window.textBrowser_Listnotes.update()
+        main_window.update()
+    
+    def search_progress_indicator_hide(self):
+        self.Search_Progressbar_Panel.hide()
 
     def set_visible(self, visible=True):
         # Переключение видимости всего что связано со списком заметок
@@ -3331,6 +3396,7 @@ class Notelist():
 
         for row in file_recs_rows:
             rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
+            self.search_progress_indicator_add()
             # Проверка файла из истории на существование 
             if not os.path.isfile(rec_filename):
                 # Файл не существует или это каталог, а не файл.
@@ -3354,6 +3420,7 @@ class Notelist():
 
         for root, dirs, files in os.walk(path_to_notes):
             for file in files:
+                self.search_progress_indicator_add()
                 # print('Найдено во время обхода: %s' % os.path.join(root, file))
                 # Проверяем - разрешенное ли расширение у файла
                 if os.path.splitext(file)[-1] in self.allowed_note_files_extensions:
@@ -3598,35 +3665,25 @@ class Notelist():
         else:
             notelist_empty_message = ''
 
-        # Получение информации о текущей установке фильтров списка заметок
-        notelist_search_param_string = '<div id=notelist_search_param_message>%s</div>'
-        notelist_search_param_message = ''
+        ## Получение информации о текущей установке фильтров списка заметок
+        #notelist_search_param_string = '<div id=notelist_search_param_message>%s</div>'
+        #notelist_search_param_message = ''
 
-        if self.filter_name:
-            description_filter_name = ('  Show notes with a name containing <b>"%s"</b>' % self.filter_name)
-        else:
-            description_filter_name = '  Show notes with any name'
-        if self.filter_text:
-            description_filter_text = ('containing the text <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;'))
-        else:
-            description_filter_text = 'containing any text'
+        #if self.filter_name:
+        #    description_filter_name = ('  Show notes with a name containing <b>"%s"</b>' % self.filter_name)
+        #else:
+        #    description_filter_name = '  Show notes with any name'
+        #if self.filter_text:
+        #    description_filter_text = ('containing the text <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;'))
+        #else:
+        #    description_filter_text = 'containing any text'
 
-        notelist_search_param_message_text = description_filter_name + ' and ' + description_filter_text
-        notelist_search_param_message = notelist_search_param_string % notelist_search_param_message_text
-
+        #notelist_search_param_message_text = description_filter_name + ' and ' + description_filter_text
+        #notelist_search_param_message = notelist_search_param_string % notelist_search_param_message_text
 
         # Используем настройки темы для оформления списка элементов
-        html_source = '''<html>
-                         <body id=notelist_body>
-                         %s
-                         <span style="font-size: 6px;"> </span>%s
-                         %s
-                         <div id=notelist>%s</div>
-                         </body>
-                         </html>''' % (Theme.html_theme_head,
-                                       notelist_search_param_message,
-                                       notelist_empty_message,
-                                       html_source,)
+        html_source = self.html_body(empty_message=notelist_empty_message,
+                                       html_source=html_source)
         #print('html_source of notelist: ###%s###' % html_source)
         return html_source
 
@@ -3640,6 +3697,7 @@ class Notelist():
             # Если требуется рескан файлов - проводим его
             # print('Требуется рескан файлов')
             self.clear_items()
+            self.search_progress_indicator_init()
             self.collect_history_items_list()
             self.collect_other_items_list()
             self.need_rescan = False
