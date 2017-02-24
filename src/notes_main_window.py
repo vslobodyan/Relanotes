@@ -435,6 +435,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Скрываем поле поиска по тексту внутри заметок и текст рядом с ним
         self.label_6.hide()
         self.lineEdit_Filter_Note_Text.hide()
+        # Скрываем текст о текущем фильтре заметок
+        self.label_DisplayFilters.hide()
 
         # if self.dockHistory.isVisible():
             # self.actionShowHistoryWindow.setChecked(True)
@@ -612,15 +614,18 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             # Курсор стоит на имени
             if right_part:
                 # Есть правая часть от имени
-                self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['name'])
+                tip_text_html = notelist.filter_editing_tips['name']
             else:
                 # Правой части фильтра от курсора на имени нет
-                self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['empty'])
+                tip_text_html = notelist.filter_editing_tips['empty']
         else:
             # Курсор стоит на тексте
-            self.labelNotelistFilterTip.setText(notelist.filter_editing_tips['text'])
+            tip_text_html = notelist.filter_editing_tips['text']
 
-            
+        tip_html = '%s%s%s' % (notelist.filter_editing_tips['html_begin'],
+                                tip_text_html,
+                                notelist.filter_editing_tips['html_end'])
+        self.labelNotelistFilterTip.setText(tip_html)
 
 
     def notelist_filter_selectionChanged(self):
@@ -656,8 +661,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                 )
             #main_window.lineNotelist_Filter.selectAll()
             #main_window.lineNotelist_Filter.cursor
-            self.lineNotelist_Filter.setCursorPosition(0)
             notelist.filter_in_change = False
+            # Переносим вне блока "служебного изменения поля фильтров", чтобы сработала реакция на изменение положения курсора и прописала нужную подсказку в стороне от поля
+            self.lineNotelist_Filter.setCursorPosition(0)
             
             if notelist.filter_is_empty:
                 # Признак того, что фильтр пуст уже стоял - это инициирущий запуск функции для обновления внешнего вида
@@ -2829,9 +2835,14 @@ class Notelist():
     filter_tip_for_using = 'Name␣Text' # &blank;
 
     filter_editing_tips = { 
-                'empty' : 'Enter name or press Space to enter text', 
-                'name' : 'Enter name',
-                'text' : 'Enter any text'
+                'empty' : '''Enter <span style="color: #008066;"><b>name</b></span>
+                or press <span style="color: #9c2b2b;">Space</span>
+                to enter <span style="color: #008066;"><b>text</b></span>''',
+ 
+                'name' : 'Enter <span style="color: #008066;"><b>name</b></span>',
+                'text' : 'Enter <span style="color: #008066;"><b>any text</b></span>',
+                'html_begin' : '<p style="font-size: 15px;">',
+                'html_end' : '</p>',
                 }
 
     # opened_url = None # Ссылка на открытую заметку
@@ -3137,21 +3148,21 @@ class Notelist():
             self.filter_name = filter_words[0]
             self.filter_text = ' '.join(filter_words[1:])
         
-        if self.filter_text or self.filter_name:
-            # Отображаем в интерфейсе полученные указания по фильтрам
-            if self.filter_name:
-                description_filter_name = ('Name contains <b>"%s"</b>' % self.filter_name)
-            else:
-                description_filter_name = 'Any name'
-            if self.filter_text:
-                description_filter_text = ('text contains <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;'))
-            else:
-                description_filter_text = 'any text contains'
+        #if self.filter_text or self.filter_name:
+        #    # Отображаем в интерфейсе полученные указания по фильтрам
+        #    if self.filter_name:
+        #        description_filter_name = ('Name contains <b>"%s"</b>' % self.filter_name)
+        #    else:
+        #        description_filter_name = 'Any name'
+        #    if self.filter_text:
+        #        description_filter_text = ('text contains <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;'))
+        #    else:
+        #        description_filter_text = 'any text contains'
 
-            main_window.label_DisplayFilters.setText(description_filter_name + ' and ' + description_filter_text)
-        else:
-            # main_window.label_DisplayFilters.setText('Example: "proj ninja"')
-            main_window.label_DisplayFilters.setText('<html><head></head><body>Example: <b>proj ninja</b></body></html>')
+        #    main_window.label_DisplayFilters.setText(description_filter_name + ' and ' + description_filter_text)
+        #else:
+        #    # main_window.label_DisplayFilters.setText('Example: "proj ninja"')
+        #    main_window.label_DisplayFilters.setText('<html><head></head><body>Example: <b>proj ninja</b></body></html>')
                 
         # print('Filters: notelist.filter_name=%s, notelist.filter_text=%s' % (self.filter_name, self.filter_text) )
 
