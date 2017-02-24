@@ -3095,10 +3095,10 @@ class Notelist():
         main_window.lbSearchItemsProgress.repaint()
         
         ##main_window.lbSearchItems.setText('Элементов найдено: ')
-        print('progress: files %s, found %s, items %s' % ( self.progress_count_files, 
-                         len(self.items),
-                         self.progress_count_items, )
-              )
+        #print('progress: files %s, found %s, items %s' % ( self.progress_count_files, 
+        #                 len(self.items),
+        #                 self.progress_count_items, )
+        #      )
         
         #main_window.textBrowser_Listnotes.repaint()
         #main_window.textBrowser_Listnotes.update()
