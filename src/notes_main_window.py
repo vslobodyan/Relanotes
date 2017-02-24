@@ -591,6 +591,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if notelist.filter_is_empty:
             # Надо пресечь изменение положения курсора
             self.lineNotelist_Filter.setCursorPosition(0)
+        else:
+            # Выводим подсказку по текущему положению курсора
+            filter_string = main_window.lineNotelist_Filter.text()
+            # Получаем строку до курсора
+            filter_string_begin = filter_string[:new]
+            # Строка после курсора
+            filter_string_end = filter_string[new:]
+            print('filter_string #%s#%s#' % (filter_string_begin, filter_string_end) )
+
 
     def notelist_filter_selectionChanged(self):
         if notelist.filter_is_empty:
@@ -2793,6 +2802,12 @@ class Notelist():
     filter_in_change = False # Признак того, что фильтр сейчас преднамеренно меняется в другом участке кода. Чтобы не было ложных срабатываний на внутренние изменения пустоты на подсказки и наоборот.
     filter_tip_for_using = 'Name␣Text' # &blank;
 
+    filter_editing_tips = { 
+                'empty' : 'Enter name or press Space to enter text', 
+                'name' : 'Enter name',
+                'text' : 'Enter any text'
+                }
+
     # opened_url = None # Ссылка на открытую заметку
 
     allowed_note_files_extensions = ['.txt']
@@ -2828,7 +2843,7 @@ class Notelist():
     # file_recs = []
 
     timer_update = QtCore.QTimer()
-    update_timeout = 420  # было 350
+    update_timeout = 350 # 420
 
 
     # class DB():
