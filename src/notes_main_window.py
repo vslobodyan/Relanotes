@@ -3062,8 +3062,8 @@ class Notelist():
         main_window.lbFormatItemsProgress.setText('0')
 
         main_window.Search_Progressbar_Panel.show()
-        main_window.Search_Progressbar_Panel.update()
-        main_window.Search_Progressbar_Panel.repaint()
+        #main_window.Search_Progressbar_Panel.update()
+        #main_window.Search_Progressbar_Panel.repaint()
         #main_window.textBrowser_Listnotes.update()
         #main_window.update()
 
@@ -3071,35 +3071,42 @@ class Notelist():
         if files:
             self.progress_count_files += add
             main_window.lbSearchFilesProgress.setText(str(self.progress_count_files))
-            main_window.lbSearchFilesProgress.update()
+            #main_window.lbSearchFilesProgress.update()
             main_window.lbSearchFilesProgress.repaint()
         if items:
             self.progress_count_items += add
             if not main_window.progressBar_Notelist.maximum():
                 main_window.progressBar_Notelist.setMaximum(len(self.items))
-                main_window.lbSearchItemsProgress.setText(str(len(self.items)))
-                main_window.lbSearchItemsProgress.update()
-                main_window.lbSearchItemsProgress.repaint()
             else:
                 main_window.progressBar_Notelist.setValue(self.progress_count_items)
             main_window.lbFormatItemsProgress.setText(str(self.progress_count_items))
-            main_window.progressBar_Notelist.update()
             main_window.progressBar_Notelist.repaint()
-            main_window.lbFormatItemsProgress.update()
+            #main_window.progressBar_Notelist.ensurePolished()
+            #main_window.progressBar_Notelist.update()
+
+            #main_window.lbFormatItemsProgress.update()
             main_window.lbFormatItemsProgress.repaint()
+            #main_window.lbFormatItemsProgress.ensurePolished()
+            #main_window.lbFormatItemsProgress.update()
+
+
+        main_window.lbSearchItemsProgress.setText(str(len(self.items)))
+        #main_window.lbSearchItemsProgress.update()
+        main_window.lbSearchItemsProgress.repaint()
         
-        #main_window.lbSearchItems.setText('Элементов найдено: ')
-        #print('progress: files %s, found %s, items %s' % ( self.progress_count_files, 
-        #                 len(self.items),
-        #                 self.progress_count_items, )
-        #      )
+        ##main_window.lbSearchItems.setText('Элементов найдено: ')
+        print('progress: files %s, found %s, items %s' % ( self.progress_count_files, 
+                         len(self.items),
+                         self.progress_count_items, )
+              )
         
+        #main_window.textBrowser_Listnotes.repaint()
         #main_window.textBrowser_Listnotes.update()
+        #main_window.repaint()
         #main_window.update()
     
     def search_progress_indicator_hide(self):
         main_window.Search_Progressbar_Panel.hide()
-        #pass
 
 
     def set_visible(self, visible=True):
@@ -3752,8 +3759,8 @@ class Notelist():
         
         main_window.notelist_source.setHtml(html_string)
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
-        self.search_progress_indicator_hide()
         self.move_textbrowser_cursor()
+        self.search_progress_indicator_hide()
         
 
 
