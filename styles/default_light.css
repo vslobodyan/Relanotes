@@ -206,7 +206,7 @@ font-size: 13px;
 
 #code {
 	font-family: Mono;
-	font-size: 17px;
+	font-size: 17px; /* Менять размер и в Note.Format.editor_code_span */
 	/*color: #501616;*/
 	color: #9c2b2b;
 }

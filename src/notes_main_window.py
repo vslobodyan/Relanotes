@@ -1116,7 +1116,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 
-
     def open_file_in_editor(self, filename, line_number=None, found_text=None):
         # line_number - новая переменная промотки редактора на нужную строку
         # found_text - искомый текст, который надо подсветить
@@ -1208,58 +1207,46 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         lines = fileObj.read()        
         fileObj.close()
 
+        ### Получаем реальные стили из редактора с тестовой заметкой ###
+        # Это позволяет изменяя стили в CSS получать их измененное форматирование в редакторе, чтобы потом с ними в нем оперировать, и иметь возможность конвертировать текст из редактора в wiki, markdown и т.д.
         self.textBrowser_TestNote = QtWidgets.QTextBrowser()
+        # Чтобы не оказалось переноса
+        self.textBrowser_TestNote.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
         self.test_doc_source = QtGui.QTextDocument()
-        testnote = 'empty text\n' \
-                 '====== T ======\n' \
-                 '===== T =====\n' \
-                 '==== T ====\n' \
-                 '=== T ===\n' \
-                 '== T ==\n' \
-                 '= T =\n'
+        testnote = ' \n' \
+                 'default text\n' \
+                 '====== Header level 1 ======\n' \
+                 '===== Header level 2 =====\n' \
+                 '==== Header level 3 ====\n' \
+                 '=== Header level 4 ===\n' \
+                 '== Header level 5 ==\n' \
+                 '= Header level 6 =\n' \
+                 '\'\'code text\'\' \n' \
+                 '~~striked text~~ \n' \
+                 '__marked text__ \n' \
+                 'http://link_text' 
+
         test_note_source = note.convert_zim_text_to_html_source(testnote)
         self.test_doc_source.setHtml(test_note_source)
         self.textBrowser_TestNote.setDocument(self.test_doc_source)
 
-        # В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
-        # lines += '====== T ======\n' \
-        #         '===== T =====\n' \
-        #         '==== T ====\n' \
-        #         '=== T ===\n' \
-        #         '== T ==\n' \
-        #         '= T =\n'
+        # Новая функция получения стилей через перемещение курсора
+        test_cursor = self.textBrowser_TestNote.textCursor()
+        test_cursor.movePosition(QtGui.QTextCursor.Start)
+        
+        def move_down_and_get_span(cursor, only_style=False):
+            cursor.movePosition(QtGui.QTextCursor.Down)
+            cursor.movePosition(QtGui.QTextCursor.StartOfLine)
+            return note.get_span_under_cursor(test_cursor, only_style)
 
-        # Translate plain text to html and set as doc source
-        note_source = note.convert_zim_text_to_html_source(lines)
-        self.doc_source.setHtml(note_source)
-        self.textBrowser_Note.setDocument(self.doc_source)
+        note.format.editor_default_font_span = note.get_span_under_cursor(test_cursor)
+        note.format.editor_h1_span = move_down_and_get_span(test_cursor)
+        note.format.editor_h2_span = move_down_and_get_span(test_cursor)
+        note.format.editor_h3_span = move_down_and_get_span(test_cursor)
+        note.format.editor_h4_span = move_down_and_get_span(test_cursor)
+        note.format.editor_h5_span = move_down_and_get_span(test_cursor)
+        note.format.editor_h6_span = move_down_and_get_span(test_cursor)
 
-        # Получаем реальные стили заголовков. И удаляем их из документа
-        # tmp_html_source = self.textBrowser_Note.toHtml()
-        tmp_html_source = self.textBrowser_TestNote.toHtml()
-
-        # print('=== tmp_html_source ===: %s' % tmp_html_source)
-
-        l_a_name = len('<a name="head1"></a>')
-        pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1') - 1
-        for i in range(1, 7):
-            pos_font_begin = tmp_html_source.find('<a name="head', pos_font_end)
-            pos_font_end = tmp_html_source.find('>T<', pos_font_begin) + 1
-            tmp_str = tmp_html_source[pos_font_begin + l_a_name:pos_font_end]
-            if i == 1:
-                note.format.editor_h1_span = tmp_str
-            if i == 2:
-                note.format.editor_h2_span = tmp_str
-            if i == 3:
-                note.format.editor_h3_span = tmp_str
-            if i == 4:
-                note.format.editor_h4_span = tmp_str
-            if i == 5:
-                note.format.editor_h5_span = tmp_str
-            if i == 6:
-                note.format.editor_h6_span = tmp_str
-
-            # print('str:', tmp_str)
 
         note.format.editor_h_span = ['0-empty', note.format.editor_h1_span,
                                     note.format.editor_h2_span,
@@ -1267,6 +1254,49 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                     note.format.editor_h4_span,
                                     note.format.editor_h5_span,
                                     note.format.editor_h6_span]
+
+        note.format.editor_code_span = move_down_and_get_span(test_cursor)
+        note.format.editor_strikethrough_span = move_down_and_get_span(test_cursor)
+        note.format.editor_mark_span = move_down_and_get_span(test_cursor)
+        note.format.editor_link_external_style = move_down_and_get_span(test_cursor, only_style=True)
+
+        # Translate plain text to html and set as doc source
+        note_source = note.convert_zim_text_to_html_source(lines)
+        self.doc_source.setHtml(note_source)
+        self.textBrowser_Note.setDocument(self.doc_source)
+
+        ## Получаем реальные стили заголовков и других элементов
+        #tmp_html_source = self.textBrowser_TestNote.toHtml()
+
+        ## print('=== tmp_html_source ===: %s' % tmp_html_source)
+
+        #l_a_name = len('<a name="head1"></a>')
+        #pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1') - 1
+        #for i in range(1, 7):
+        #    pos_font_begin = tmp_html_source.find('<a name="head', pos_font_end)
+        #    pos_font_end = tmp_html_source.find('>T<', pos_font_begin) + 1
+        #    tmp_str = tmp_html_source[pos_font_begin + l_a_name:pos_font_end]
+        #    if i == 1:
+        #        note.format.editor_h1_span = tmp_str
+        #    if i == 2:
+        #        note.format.editor_h2_span = tmp_str
+        #    if i == 3:
+        #        note.format.editor_h3_span = tmp_str
+        #    if i == 4:
+        #        note.format.editor_h4_span = tmp_str
+        #    if i == 5:
+        #        note.format.editor_h5_span = tmp_str
+        #    if i == 6:
+        #        note.format.editor_h6_span = tmp_str
+
+        #    # print('str:', tmp_str)
+
+        #note.format.editor_h_span = ['0-empty', note.format.editor_h1_span,
+        #                            note.format.editor_h2_span,
+        #                            note.format.editor_h3_span,
+        #                            note.format.editor_h4_span,
+        #                            note.format.editor_h5_span,
+        #                            note.format.editor_h6_span]
 
         # print('Найденные стили заголовков: %s' % note.format.editor_h_span)
         # tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
@@ -1506,26 +1536,26 @@ class Note():
         editor_h_span = ['0-empty', editor_h1_span, editor_h2_span, editor_h3_span, editor_h4_span, editor_h5_span, editor_h6_span]
 
         # FIXME: Цвет текста подходит для светлой темы. Не подходит для темной.
-        editor_default_font_span = '<span style=" font-family:\'Sans\'; font-size:15px; font-weight:0; color:#1a1a1a;">'
+        editor_default_font_span = '<span style=" font-family:\'Sans\'; font-size:17px; font-weight:0; color:#1a1a1a;">'
         # editor_default_font_span = '<span>'
         
         # editor_italic_span =
         editor_strikethrough_span = \
-            '<span style=" font-family:\'Sans\'; font-size:15px; text-decoration: line-through; color:#aaaaaa;">'
+            '<span style=" font-family:\'Sans\'; font-size:17px; text-decoration: line-through; color:#aaaaaa;">'
         # editor_bold_span =
         # FIXME: Цвет кода подходит для светлой темы. Не подходит для темной.
         # editor_code_span = '<span style=" font-family:\'Mono\'; font-size:16px; color:#501616;">'
-        editor_code_span = '<span style=" font-family:\'Mono\'; font-size:16px; color:#9c2b2b;">'
+        editor_code_span = '<span style=" font-family:\'Mono\'; font-size:17px; color:#9c2b2b;">'
 
         editor_mark_span = \
-            '<span style=" font-family:\'Sans\'; font-size:15px; color:#1a1a1a; background-color:#ffccaa;">'
+            '<span style=" font-family:\'Sans\'; font-size:17px; color:#1a1a1a; background-color:#ffccaa;">'
         editor_li_span = \
-            '<li style=" font-family:\'Sans\'; font-size:15px;" style=" margin-top:6px; margin-bottom:6px; ' \
+            '<li style=" font-family:\'Sans\'; font-size:17px;" style=" margin-top:6px; margin-bottom:6px; ' \
             'margin-left:-20px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">'
         
         # FIXME: Цвет ссылок подходит для светлой темы. Не подходит для темной.
         # editor_link_external_style = 'style=" font-size:15px; color:#004455; text-decoration: none;"'
-        editor_link_external_style = 'style=" font-size:15px; color:#0089ab; text-decoration: none;"'
+        editor_link_external_style = 'style=" font-size:17px; color:#0089ab; text-decoration: none;"'
 
         # editor_link_local_span =
         # editor_link_wiki_span =
@@ -1534,7 +1564,7 @@ class Note():
         # editor_default_font.setStyle(QFont.Normal)
         # editor_default_font.setBold(False)
         editor_default_font.setFamily('Sans')
-        editor_default_font.setPixelSize(15)
+        editor_default_font.setPixelSize(17)
                  
         editor_default_format = QtGui.QTextCharFormat()
         editor_default_format.setFont(editor_default_font)
@@ -1564,6 +1594,7 @@ class Note():
         '''
 
         # FIXME: . набираемые и вставляемые текстом ссылки не подсвечиваются сразу-же
+
 
         def adaptate_alien_html_styles(self, html_source):
             # Адаптируем чужие стили html к стилям текущей темы span
@@ -2140,6 +2171,34 @@ class Note():
         else:
             return False
 
+    def get_span_under_cursor(self, cursor, only_style=False):
+        # Функция извлечения очищенного html-кода под курсором
+        cursor.movePosition(QtGui.QTextCursor.Right, QtGui.QTextCursor.KeepAnchor)
+        html_under_cursor = cursor.selection().toHtml()
+        clear_html_under_cursor = self.clear_selection_html_cover(html_under_cursor)
+        #print('clear_html_under_cursor ##%s##' % clear_html_under_cursor)
+        html_span = clear_html_under_cursor.partition('<span')[2]
+        #print('part <span  ###%s###' % html_span)
+        if only_style:
+            #print('Only style!')
+            html_span = html_span.partition('>')[0].lstrip()
+        else:
+            html_span = '<span' + html_span.partition('>')[0] + '>'
+        #print('html_span ##%s##' % html_span)
+        #print()
+        return html_span
+
+    #def get_style_from_span_under_cursor(self, cursor):
+    #    html_span = self.get_span_under_cursor(cursor)
+    #    print('STYLE html_span  ###%s###' % html_span)
+    #    html_style = html_span.partition('style="')[2]
+    #    print('html_style 1  ###%s###' % html_style)
+    #    html_style = html_span.rpartition('">')[0]
+    #    print('html_style 2  ###%s###' % html_style)
+    #    return html_style
+
+
+
     def union_concat_ident_span(self, note_source):
         # Найти и склеить все одинаковые по стилю span в строчках ( разделение по <p> и <br> ), включая
         # <span> разделенные пробелами
@@ -2405,6 +2464,7 @@ class Note():
         #html_source = re.sub('== (.*?) ==', '<font id=head5>\\1</font>', html_source)
         #html_source = re.sub('= (.*?) =', '<font id=head6>\\1</font>', html_source)
 
+        # Заголовки после переноса строки
         html_source = re.sub('\n====== (.*?) ======', '<div id=head1>\\1</div>', html_source)
         html_source = re.sub('\n===== (.*?) =====', '<div id=head2>\\1</div>', html_source)
         html_source = re.sub('\n==== (.*?) ====', '<div id=head3>\\1</div>', html_source)
@@ -2412,6 +2472,13 @@ class Note():
         html_source = re.sub('\n== (.*?) ==', '<div id=head5>\\1</div>', html_source)
         html_source = re.sub('\n= (.*?) =', '<div id=head6>\\1</div>', html_source)
 
+        # Те-же заголовки но в самом начале заметки
+        html_source = re.sub('^====== (.*?) ======', '<div id=head1>\\1</div>', html_source)
+        html_source = re.sub('^===== (.*?) =====', '<div id=head2>\\1</div>', html_source)
+        html_source = re.sub('^==== (.*?) ====', '<div id=head3>\\1</div>', html_source)
+        html_source = re.sub('^=== (.*?) ===', '<div id=head4>\\1</div>', html_source)
+        html_source = re.sub('^== (.*?) ==', '<div id=head5>\\1</div>', html_source)
+        html_source = re.sub('^= (.*?) =', '<div id=head6>\\1</div>', html_source)
 
         
         # html_source = re.sub('====== (.*?) ======', '--><p id=head1>\\1</p>', html_source)
@@ -2433,6 +2500,11 @@ class Note():
         html_source = re.sub('//(.*?)//', '<i>\\1</i>', html_source)
 
         # 'strike':   Re('~~(?!~)(.+?)~~'),
+        
+
+        # Замена / на альтернативное его обозначение для редактора, чтобы замаскировать ссылку внутри другого форматирования
+        html_source = re.sub('~~(.*?)://(.*?)~~', '<s>\\1:&#x2F;&#x2F;\\2</s>', html_source)
+        
         html_source = re.sub('~~(.*?)~~', '<s>\\1</s>', html_source)
 
         # 'emphasis': Re('//(?!/)(.+?)//'),
@@ -2451,6 +2523,10 @@ class Note():
         # 'code':     Re("''(?!')(.+?)''"),
         # html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
         # html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
+
+        # Замена / на альтернативное его обозначение для редактора, чтобы замаскировать ссылку внутри другого форматирования
+        html_source = re.sub('&#x27;&#x27;(.*?)://(.*?)&#x27;&#x27;', '<font id="code">\\1:&#x2F;&#x2F;\\2</font>', html_source)
+
         html_source = re.sub("&#x27;&#x27;(?!')(.+?)&#x27;&#x27;", '<font id="code">\\1</font>', html_source)
 
 
