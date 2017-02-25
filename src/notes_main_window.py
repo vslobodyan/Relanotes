@@ -2544,7 +2544,7 @@ class Note():
 
         # 'img':      Re('\{\{(?!\{)(.+?)\}\}'),
         html_source = re.sub('\{\{(?!\{)(.+?)\}\}', '<img src="\\1">', html_source)
-        html_source = re.sub('<img src="~', '<img src="' + path_to_home, html_source)
+        #html_source = re.sub('<img src="~', '<img src="' + path_to_home, html_source)
         
         # print()
         # print('После остальной замены:')
