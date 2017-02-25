@@ -4164,7 +4164,8 @@ class App_Tests():
         else:
             print('Готовим тест без смены каталога')
         #return 0
-        path_to_notes = "D:\Test\\Notes"
+        if not path_to_notes:
+            path_to_notes = "D:\Test\\Notes"
         print('Пользователь выбрал для теста каталог %s' % path_to_notes)
 
         for root, dirs, files in os.walk(path_to_notes):
