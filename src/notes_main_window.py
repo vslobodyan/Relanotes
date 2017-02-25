@@ -4148,16 +4148,22 @@ class MyTextBrowser(QtWidgets.QTextBrowser):
 class App_Tests():
     # Класс для внутренних тестов программы. В том числе вызываемых через меню.
     
-    def notes_convertation(self, change_path=True):
+    def notes_convertation(self, change_path=False):
         # Тестовая функция, позволяющая проверить корректность конвертации форматирования при открытии и сохранении заметок
         print('Запускаем функцию тестирования конвертации форматирования при открытии и сохранении заметок')
 
         # Диалог выбора пути для сканирования
         if change_path:
-            path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
+            print('Предлагаем смену каталога для теста')
+            path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(main_window, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
+            print('path_to_notes: ##%s##' % path_to_notes)
+            #return 0
             if not path_to_notes:
                 print('Каталог не выбран.')
                 return 0
+        else:
+            print('Готовим тест без смены каталога')
+        #return 0
         path_to_notes = "D:\Test\\Notes"
         print('Пользователь выбрал для теста каталог %s' % path_to_notes)
 
@@ -4198,14 +4204,16 @@ class App_Tests():
         print()
         print('Тестирование завершено.')
 
-
+    def notes_convertation_change_path(self):
+        self.notes_convertation(change_path=True)
+    
     def __init__(self):
 
         print('Инициализация класса тестов')
 
         main_window.actionRun_test_for_notes_convertation_in_last_directory.triggered.connect(self.notes_convertation)
     
-        main_window.actionSelect_another_directory_and_run_test_for_notes_convertation.triggered.connect(self.notes_convertation) # , change_path=True
+        main_window.actionSelect_another_directory_and_run_test_for_notes_convertation.triggered.connect(self.notes_convertation_change_path)
         
         
         
