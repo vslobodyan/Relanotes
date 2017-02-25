@@ -390,10 +390,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         elif not os.path.exists(app_settings.path_to_notes):
             # Каталога с заметками не существует. Сообщаем о том, что может быть надо выбрать другой.
-            not_exists_message_title = "Ваши заметки были перемещены?"
-            not_exists_message_text = '''RelaNotes не может открыть каталог %s с Вашими заметками. Возможно, он не существует или недоступен программе.
-    Проверьте доступность этого каталога или укажите новый.
-    Открыть другой каталог с заметками?''' % app_settings.path_to_notes
+            message_title = "Ваши заметки были перемещены?"
+            message_text = '''RelaNotes не может открыть каталог %s с Вашими заметками.
+Возможно, он не существует или недоступен программе.
+Проверьте доступность этого каталога или укажите новый.
+Открыть другой каталог с заметками?''' % app_settings.path_to_notes
             reply = QtWidgets.QMessageBox.question(self, 
                                                    message_title,
                                                    message_text,
@@ -409,7 +410,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if select_new:
             # Надо выбрать новый каталог заметок
-                app_settings.path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '123' , QtWidgets.QFileDialog.ShowDirsOnly))
+                app_settings.path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly))
                 app_settings.settings.setValue('path_to_notes', app_settings.path_to_notes)
                 app_settings.settings.sync()
                 print("Выбран новый путь к заметкам:", app_settings.path_to_notes)
@@ -609,7 +610,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionShow_note_HTML_source.triggered.connect(self.show_html_source)
         self.plainTextEdit_Note_Ntml_Source.setVisible(False)
 
-        self.check_path_to_notes_or_select_new()        
 
         ## Устанавливаем стили текстовых редакторов
         #texteditor_style = '''
@@ -4359,6 +4359,10 @@ app.installEventFilter(myFilter)
 
 # Инициируем класс тестов приложения
 app_tests = App_Tests()
+
+
+# Запускаем инициализирующую проверку пути к заметкам
+main_window.check_path_to_notes_or_select_new()        
 
 # history.setVisible()
 notelist.set_visible()  # По-умолчанию встречаем пользователя списком заметок
