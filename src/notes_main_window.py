@@ -763,7 +763,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #    print('Каталог не выбран.')
         #    return 0
         # path_to_notes = "D:\Test\\Notes-test\Linux\Debian"
-        path_to_notes = "D:\Test\\Notes-test\Linux"
+        path_to_notes = "D:\Test\\Notes"
+        #path_to_notes = "D:\Test\\Notes-test\Linux"
         # path_to_notes = "C:\Test\Test_Notes\компьютерное\Python"
         # path_to_notes = "C:\Test\Test_Notes\компьютерное\Linux\Debian"
         print('Пользователь выбрал для теста каталог %s' % path_to_notes)
