@@ -120,15 +120,16 @@ class App_Settings():
     NameOrganization = 'DigiTect'
     NameGlobal = 'Relanotes'
     Name = 'RelaNotes'
-    config_path = '' # Путь к файлам локальных настроек программы
-    settings = None  # ini-хранилище переменных
-    state_db = None  # База данных со списками истории открытия заметок и прочими данными
+    config_path = ''   # Путь к файлам локальных настроек программы
+    path_to_notes = '' # Путь к каталогу с заметками
+    settings = None    # ini-хранилище переменных
+    state_db = None    # База данных со списками истории открытия заметок и прочими данными
     state_db_connection = None
 
     def __init__(self, **kwargs):
         print('Инициализация настроек приложения')
-        QtCore.QCoreApplication.setOrganizationName(NameOrganization)
-        QtCore.QCoreApplication.setApplicationName(NameGlobal)
+        QtCore.QCoreApplication.setOrganizationName(self.NameOrganization)
+        QtCore.QCoreApplication.setApplicationName(self.NameGlobal)
         
         # Получаем путь к каталогу с настройками программы по данным QStandardPaths
         self.config_path = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppDataLocation);
@@ -142,10 +143,10 @@ class App_Settings():
         # print("Полный путь к ini-файлу настроек: %s" % full_ini_filename)
         self.settings = QtCore.QSettings(full_ini_filename, QtCore.QSettings.IniFormat)
 
-        path_to_notes = self.settings.value('path_to_notes')
-        print('DEBUG: path_to_notes from settings: %s' % path_to_notes)
+        self.path_to_notes = self.settings.value('path_to_notes')
+        #print('DEBUG: path_to_notes from settings: %s' % self.path_to_notes)
         # Проверяем БАГ, когда в переменную библиотека QT занесла неправильные слеши
-        path_to_notes = give_correct_path_under_win_and_other(path_to_notes)
+        self.path_to_notes = give_correct_path_under_win_and_other(self.path_to_notes)
 
         ## Получаем путь к каталогу, в котором лежат исходники программы
         #path_to_me = os.path.split(os.path.abspath(sys.argv[0]))[0]
@@ -568,12 +569,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #self.textBrowser_Note.setStyleSheet(texteditor_style)
 
         # QtGui.QFileDialog.windowFilePath(self)
-        global path_to_notes
-        print("path_to_notes: %s" % path_to_notes)
-        if not path_to_notes or not os.path.exists(path_to_notes):
+
+        print("path_to_notes: %s" % app_settings.path_to_notes)
+        if not app_settings.path_to_notes or not os.path.exists(app_settings.path_to_notes):
             # print("")
             reply = QtWidgets.QMessageBox.question(self, "Ваши заметки были перемещены?",
-                                         "Каталог " + str(path_to_notes) + " с Вашими заметками не существует.\n"
+                                         "Каталог " + str(app_settings.path_to_notes) + " с Вашими заметками не существует.\n"
                                                                       "Открыть другой каталог с заметками?",
                                          QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel)
             if reply == QtWidgets.QMessageBox.Cancel:
@@ -581,12 +582,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 exit()
             elif reply == QtWidgets.QMessageBox.Yes:
                 # print("Выбираем новый путь к заметкам")
-                # path_to_notes = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes") )
+                # app_settings.path_to_notes = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes") )
                 # raw_path_to_notes = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly)
-                path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly))
-                app_settings.settings.setValue('path_to_notes', path_to_notes)
+                app_settings.path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly))
+                app_settings.settings.setValue('path_to_notes', app_settings.path_to_notes)
                 app_settings.settings.sync()
-                print("Выбран новый путь к заметкам:", path_to_notes)
+                print("Выбран новый путь к заметкам:", app_settings.path_to_notes)
 
 
     def minimize(self):
@@ -1006,14 +1007,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # for file_rec in filenames:
             # self.listWidget.addItem(file_rec)
-            # file_rec = path_to_notes + file_rec
+            # file_rec = app_settings.path_to_notes + file_rec
             
             # if type_rec == 'note':
         
             file_rec = give_correct_path_under_win_and_other(file_rec)
             
-            # if file_rec.rpartition('/')[0]+'/' == path_to_notes:
-            if file_rec.rpartition(os.path.sep)[0] + os.path.sep == path_to_notes:
+            # if file_rec.rpartition('/')[0]+'/' == app_settings.path_to_notes:
+            if file_rec.rpartition(os.path.sep)[0] + os.path.sep == app_settings.path_to_notes:
                 # У нас корневая заметка
                 file_parent = ''
             else:
@@ -1388,7 +1389,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def loadfile2(self, url):
         # self.ui.listView.
-        # path_to_notes + filenames[self.ui.listWidget.currentRow()]
+        # app_settings.path_to_notes + filenames[self.ui.listWidget.currentRow()]
         # filenames[self.ui.listWidget.currentRow()]
         # self.textEdit.setPlainText(url.toString())
         
@@ -3398,7 +3399,7 @@ class Notelist():
     def make_cute_name(self, filename):
         # Создаем симпатичное длинное имя заметки из имени файла
         # 1. Убираем из пути каталог до заметок
-        cute_filename = filename.replace(path_to_notes + os.path.sep, '')
+        cute_filename = filename.replace(app_settings.path_to_notes + os.path.sep, '')
         # 2. Убираем расширение файла
         # 2.1 Разрезаем на отдельные слова - папки и имя файла
         list_of_words = cute_filename.split(os.path.sep)
@@ -3580,7 +3581,7 @@ class Notelist():
         # subdirectories
         # http://stackoverflow.com/questions/2225564/get-a-filtered-list-of-files-in-a-directory
 
-        for root, dirs, files in os.walk(path_to_notes):
+        for root, dirs, files in os.walk(app_settings.path_to_notes):
             for file in files:
                 self.search_progress_indicator_add(files=True)
                 # print('Найдено во время обхода: %s' % os.path.join(root, file))
@@ -3867,7 +3868,7 @@ class Notelist():
             self.need_rescan = False
 
         # Обновляем информацию в статусной строке главного окна
-        main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count) + ' notes (' + hbytes(self.all_found_files_size) + ') at ' + path_to_notes + 
+        main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count) + ' notes (' + hbytes(self.all_found_files_size) + ') at ' + app_settings.path_to_notes + 
                                             ', showed ' + str(self.items_notes_count) + ' notes (' + hbytes(self.items_notes_size) + ') in list.')
 
         if self.items_notes_count and not self.items_cursor_position:
@@ -4203,20 +4204,20 @@ class App_Tests():
         # Диалог выбора пути для сканирования
         if change_path:
             print('Предлагаем смену каталога для теста')
-            path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(main_window, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
-            print('path_to_notes: ##%s##' % path_to_notes)
+            app_settings.path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(main_window, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
+            print('path_to_notes: ##%s##' % app_settings.path_to_notes)
             #return 0
-            if not path_to_notes:
+            if not app_settings.path_to_notes:
                 print('Каталог не выбран.')
                 return 0
         else:
             print('Готовим тест без смены каталога')
         #return 0
-        if not path_to_notes:
-            path_to_notes = "D:\Test\\Notes"
-        print('Пользователь выбрал для теста каталог %s' % path_to_notes)
+        if not app_settings.path_to_notes:
+            app_settings.path_to_notes = "D:\Test\\Notes"
+        print('Пользователь выбрал для теста каталог %s' % app_settings.path_to_notes)
 
-        for root, dirs, files in os.walk(path_to_notes):
+        for root, dirs, files in os.walk(app_settings.path_to_notes):
             for file in files:
                 if file.endswith('.txt'):
                     filename = os.path.join(root, file)
@@ -4305,7 +4306,6 @@ app.installEventFilter(myFilter)
 
 # Инициируем класс тестов приложения
 app_tests = App_Tests()
-print('app_tests: %s' % app_tests)
 
 # history.setVisible()
 notelist.set_visible()  # По-умолчанию встречаем пользователя списком заметок
