@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # __author__ = 'vyacheslav'
-# __version__ = '0.03'
+# __version__ = '0.06'
 
 
 import sys
@@ -30,78 +30,78 @@ from src.routines import *
 
 
 
-settingsNameOrganization = 'DigiTect'
-settingsNameGlobal = 'Relanotes'
-QtCore.QCoreApplication.setOrganizationName(settingsNameOrganization)
-QtCore.QCoreApplication.setApplicationName(settingsNameGlobal)
+#settingsNameOrganization = 'DigiTect'
+#settingsNameGlobal = 'Relanotes'
+#QtCore.QCoreApplication.setOrganizationName(settingsNameOrganization)
+#QtCore.QCoreApplication.setApplicationName(settingsNameGlobal)
 
-# Получаем путь к каталогу с настройками программы по данным QStandardPaths
-app_config_path = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppDataLocation);
-# Подробнее о выборе пути: http://doc.qt.io/qt-5/qstandardpaths.html
-# config_homePath = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppConfigLocation);
-# config_homePath = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppLocalDataLocation);
+## Получаем путь к каталогу с настройками программы по данным QStandardPaths
+#app_config_path = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppDataLocation);
+## Подробнее о выборе пути: http://doc.qt.io/qt-5/qstandardpaths.html
+## config_homePath = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppConfigLocation);
+## config_homePath = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppLocalDataLocation);
 
-app_config_path = give_correct_path_under_win_and_other(app_config_path)
+#app_config_path = give_correct_path_under_win_and_other(app_config_path)
 
-print("Каталог с настройками программы: %s" % app_config_path)
-# Если не существует - создаем.
-if not os.path.exists(app_config_path):
-    os.makedirs(app_config_path)
+#print("Каталог с настройками программы: %s" % app_config_path)
+## Если не существует - создаем.
+#if not os.path.exists(app_config_path):
+#    os.makedirs(app_config_path)
 
-full_ini_filename = os.path.join(app_config_path, 'settings.ini')
-# print("Полный путь к ini-файлу настроек: %s" % full_ini_filename)
+#full_ini_filename = os.path.join(app_config_path, 'settings.ini')
+## print("Полный путь к ini-файлу настроек: %s" % full_ini_filename)
 
-settings = QtCore.QSettings(full_ini_filename, QtCore.QSettings.IniFormat)
-# settings.setFallbacksEnabled(False)    # File only, no fallback to registry or or.
+#settings = QtCore.QSettings(full_ini_filename, QtCore.QSettings.IniFormat)
+## settings.setFallbacksEnabled(False)    # File only, no fallback to registry or or.
 
-# settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
-#     settingsNameOrganization, settingsNameGlobal)
+## settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,
+##     settingsNameOrganization, settingsNameGlobal)
     
 
-path_to_notes = settings.value('path_to_notes')
-print('DEBUG: path_to_notes from settings: %s' % path_to_notes)
-# Проверяем БАГ, когда в переменную библиотека QT занесла неправильные слеши
-path_to_notes = give_correct_path_under_win_and_other(path_to_notes)
+#path_to_notes = settings.value('path_to_notes')
+#print('DEBUG: path_to_notes from settings: %s' % path_to_notes)
+## Проверяем БАГ, когда в переменную библиотека QT занесла неправильные слеши
+#path_to_notes = give_correct_path_under_win_and_other(path_to_notes)
 
-#path_to_test_converting_notes = settings.value('path_to_test_converting_notes')
-#path_to_test_converting_notes = give_correct_path_under_win_and_other(path_to_test_converting_notes)
+##path_to_test_converting_notes = settings.value('path_to_test_converting_notes')
+##path_to_test_converting_notes = give_correct_path_under_win_and_other(path_to_test_converting_notes)
 
-# Основные переменные
+## Основные переменные
 
-# Получаем путь к каталогу, в котором лежат файлы и подкаталоги программы
-path_to_me = os.path.split(os.path.abspath(sys.argv[0]))[0]
-print("path_to_me:", path_to_me)
-# '/home/vchsnr/Dropbox/Projects/Relanotes/Relanotes-next/'
-# Переходим в свой каталог, чтобы относительные пути до настроек и прочих файлов оказались
-# корректными при запуске из любого каталога.
-os.chdir(path_to_me)
+## Получаем путь к каталогу, в котором лежат файлы и подкаталоги программы
+#path_to_me = os.path.split(os.path.abspath(sys.argv[0]))[0]
+#print("path_to_me:", path_to_me)
+## '/home/vchsnr/Dropbox/Projects/Relanotes/Relanotes-next/'
+## Переходим в свой каталог, чтобы относительные пути до настроек и прочих файлов оказались
+## корректными при запуске из любого каталога.
+#os.chdir(path_to_me)
 
-path_to_home = os.path.expanduser("~")
-print("path_to_home:", path_to_home)
+#path_to_home = os.path.expanduser("~")
+#print("path_to_home:", path_to_home)
 
-prog_name = 'Relanotes'
+#prog_name = 'Relanotes'
 
-# path_to_notes = '/home/rat/Dropbox/Data/s_zim/Notes/'
-# path_to_notes = path_to_me+'Notes/'
-# print("path_to_notes:", path_to_notes)
+## path_to_notes = '/home/rat/Dropbox/Data/s_zim/Notes/'
+## path_to_notes = path_to_me+'Notes/'
+## print("path_to_notes:", path_to_notes)
 
-# FIXME: . При зачеркивании (или другом выделении) текста дальнейшая печать идет в таком-же новом стиле. Надо сделать
-# чтобы шла как обычный текст. Пример - зачеркивание старого пароля и запись после него нового.
+## FIXME: . При зачеркивании (или другом выделении) текста дальнейшая печать идет в таком-же новом стиле. Надо сделать
+## чтобы шла как обычный текст. Пример - зачеркивание старого пароля и запись после него нового.
 
-# Список истории
-# rec = [ 'note' / 'list', 'filename' / 'filter', datetime ]
-# history_recs = [ rec1, rec2, .. ]
+## Список истории
+## rec = [ 'note' / 'list', 'filename' / 'filter', datetime ]
+## history_recs = [ rec1, rec2, .. ]
 
-# history_recs = []
-history_position = 0
+## history_recs = []
+#history_position = 0
 
-full_state_db_filename = os.path.join(app_config_path, 'state.db')
-state_db = sqlite3.connect(full_state_db_filename)
-state_db_connection = state_db.cursor()
+#full_state_db_filename = os.path.join(app_config_path, 'state.db')
+#app_settings.state_db = sqlite3.connect(full_state_db_filename)
+#app_settings.state_db_connection = state_db.cursor()
 
-# full_notelist_db_filename = os.path.join(app_config_path, 'notelist.db')
-# notelist_db = sqlite3.connect(full_notelist_db_filename)
-# notelist_db_connection = notelist_db.cursor()
+## full_notelist_db_filename = os.path.join(app_config_path, 'notelist.db')
+## notelist_db = sqlite3.connect(full_notelist_db_filename)
+## notelist_db_connection = notelist_db.cursor()
 
 
 """
@@ -117,10 +117,56 @@ file_recs = []
 class App_Settings():
     # Основные настройки программы
 
-    pass
+    NameOrganization = 'DigiTect'
+    NameGlobal = 'Relanotes'
+    Name = 'RelaNotes'
+    config_path = '' # Путь к файлам локальных настроек программы
+    settings = None  # ini-хранилище переменных
+    state_db = None  # База данных со списками истории открытия заметок и прочими данными
+    state_db_connection = None
 
     def __init__(self, **kwargs):
         print('Инициализация настроек приложения')
+        QtCore.QCoreApplication.setOrganizationName(NameOrganization)
+        QtCore.QCoreApplication.setApplicationName(NameGlobal)
+        
+        # Получаем путь к каталогу с настройками программы по данным QStandardPaths
+        self.config_path = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppDataLocation);
+        self.config_path = give_correct_path_under_win_and_other(self.config_path)
+        print("Каталог с настройками программы: %s" % self.config_path)
+        # Если не существует - создаем.
+        if not os.path.exists(self.config_path):
+            os.makedirs(self.config_path)
+        # Инициируем хранение настроек в ini-файле
+        full_ini_filename = os.path.join(self.config_path, 'settings.ini')
+        # print("Полный путь к ini-файлу настроек: %s" % full_ini_filename)
+        self.settings = QtCore.QSettings(full_ini_filename, QtCore.QSettings.IniFormat)
+
+        path_to_notes = self.settings.value('path_to_notes')
+        print('DEBUG: path_to_notes from settings: %s' % path_to_notes)
+        # Проверяем БАГ, когда в переменную библиотека QT занесла неправильные слеши
+        path_to_notes = give_correct_path_under_win_and_other(path_to_notes)
+
+        ## Получаем путь к каталогу, в котором лежат исходники программы
+        #path_to_me = os.path.split(os.path.abspath(sys.argv[0]))[0]
+        #print("path_to_me:", path_to_me)
+        ## '/home/vchsnr/Dropbox/Projects/Relanotes/Relanotes-next/'
+        ## Переходим в свой каталог, чтобы относительные пути до настроек и прочих файлов оказались
+        ## корректными при запуске из любого каталога.
+        #os.chdir(path_to_me)
+        
+        #path_to_home = os.path.expanduser("~")
+        #print("path_to_home:", path_to_home)
+
+        
+        # Инициируем доступ к базе данных, в которой хранится состояние программы:
+        # история открытия заметок, позиции в них и другая информация
+        full_state_db_filename = os.path.join(self.config_path, 'state.db')
+        self.state_db = sqlite3.connect(full_state_db_filename)
+        self.state_db_connection = self.state_db.cursor()
+
+
+
         return super().__init__(**kwargs)
 
 
@@ -328,8 +374,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             # self.restoreGeometry(self.layoutSettings.value("mainWindow/geometry"))
             # self.restoreState(self.layoutSettings.value("mainWindow/windowState"))
 
-            self.restoreGeometry(settings.value("mainWindow/geometry"))
-            self.restoreState(settings.value("mainWindow/windowState"))
+            self.restoreGeometry(app_settings.settings.value("mainWindow/geometry"))
+            self.restoreState(app_settings.settings.value("mainWindow/windowState"))
         except:
             pass
 
@@ -538,8 +584,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 # path_to_notes = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes") )
                 # raw_path_to_notes = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly)
                 path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly))
-                settings.setValue('path_to_notes', path_to_notes)
-                settings.sync()
+                app_settings.settings.setValue('path_to_notes', path_to_notes)
+                app_settings.settings.sync()
                 print("Выбран новый путь к заметкам:", path_to_notes)
 
 
@@ -778,9 +824,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             # Если есть - сохраняем для неё последнюю позицию курсора
 
             # Обновляем запись в базе
-            state_db_connection.execute("UPDATE file_recs SET current_position=?  WHERE filename=?",
+            app_settings.state_db_connection.execute("UPDATE file_recs SET current_position=?  WHERE filename=?",
                                         (current_position, filename))
-            state_db.commit()                        
+            app_settings.state_db.commit()                        
         else:
             #print('Открытой заметки нет.')
             pass
@@ -794,9 +840,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Сохраняем позицию заметки, если она была открыта
         self.save_note_cursor_position()
 
-        settings.setValue("mainWindow/geometry", self.saveGeometry())
-        settings.setValue("mainWindow/windowState", self.saveState())
-        settings.sync()
+        app_settings.settings.setValue("mainWindow/geometry", self.saveGeometry())
+        app_settings.settings.setValue("mainWindow/windowState", self.saveState())
+        app_settings.settings.sync()
 
         # self.settings.setValue('size', self.size())
         # self.settings.setValue('pos', self.pos())
@@ -838,7 +884,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         layout.setAlignment(QtCore.Qt.AlignTop)
 
         # Собираем все элементы истории
-        file_recs_rows = state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
+        file_recs_rows = app_settings.state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
 
         for row in file_recs_rows:
             rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
@@ -847,7 +893,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             # if not os.path.isfile(rec_filename):
             #    # Файл не существует или это каталог, а не файл.
             #    # Удаляем из истории
-            #    state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
+            #    app_settings.state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,) )
             #    continue  # Переходим на следующий виток цикла
 
             history_item = clear_history_win.history_rec.copy()
@@ -866,7 +912,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             for one_item in clear_history_win.history_items:
                 if one_item['checkbox'].isChecked():
                     print(' - %s' % one_item['filename'])
-                    state_db_connection.execute("UPDATE file_recs SET last_open=NULL, count_opens=0 WHERE filename=?", (one_item['filename'],))
+                    app_settings.state_db_connection.execute("UPDATE file_recs SET last_open=NULL, count_opens=0 WHERE filename=?", (one_item['filename'],))
 
         # Удаляем все виджеты и компоновщик
         while layout.count():
@@ -897,7 +943,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # history_recs = [ rec1, rec2, .. ]
 
         try:
-            state_db_connection.execute('''CREATE TABLE history_recs
+            app_settings.state_db_connection.execute('''CREATE TABLE history_recs
                  (type text, value text, datetime integer)''')
         except:
             pass
@@ -907,7 +953,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # file_recs = [ rec1, rec2, rec3, .. ]
 
         try:
-            state_db_connection.execute('''CREATE TABLE file_recs
+            app_settings.state_db_connection.execute('''CREATE TABLE file_recs
              (filename text PRIMARY KEY, cute_name text, parent_id integer, subnotes_count integer,
              last_change integer, last_open integer, count_opens integer, current_position integer)''')
         except:
@@ -920,14 +966,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Списки задач в файлах заметок
 
         # Insert a row of data
-        # state_db_connection.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
+        # app_settings.state_db_connection.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
 
         # Save (commit) the changes
-        state_db.commit()
+        app_settings.state_db.commit()
         
         # We can also close the connection if we are done with it.
         # Just be sure any changes have been committed or they will be lost.
-        # state_db.close()
+        # app_settings.state_db.close()
 
 
     def ShowHistoryWindow(self):
@@ -952,10 +998,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def renew_history_list(self, active_link):
         html_string = '<p id=history_date>Сегодня</p>'
 
-        # state_db_connection.execute('''CREATE TABLE history_recs
+        # app_settings.state_db_connection.execute('''CREATE TABLE history_recs
         #     (type text, value text, datetime integer)''')
 
-        for row in state_db_connection.execute("SELECT * FROM history_recs WHERE type='note' ORDER BY datetime DESC"):
+        for row in app_settings.state_db_connection.execute("SELECT * FROM history_recs WHERE type='note' ORDER BY datetime DESC"):
             type_rec, file_rec, date_rec = row
 
         # for file_rec in filenames:
@@ -991,7 +1037,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             html_string += '<p' + line_style + '><a href="' + file_rec + '" title="'\
                            + file_parent + file_cute_name + '">' + file_parent + file_cute_name + '</a></p>'
-            # state_db.commit()
+            # app_settings.state_db.commit()
 
         html_string += '<p id=history_date>Вчера</p> .....'
         html_string = '<html>%s<body><div id=sidebar>%s</div></body></html>' % (Theme.html_theme_head, html_string,)
@@ -1046,9 +1092,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Проверяем на переход из списка файлов
         if notelist.is_visible():
             # rec = [ 'note' / 'list', 'filename' / 'filter', datetime ]
-            if history_position == 0:
+            if notelist.history_position == 0:
                 # history_recs.append(['list', self.lineNotelist_Filter.text(), datetime.now()])
-                # state_db_connection.execute('''CREATE TABLE history_recs
+                # app_settings.state_db_connection.execute('''CREATE TABLE history_recs
                 # (type text, value text, datetime integer)''')
                 # rec = [ 'note' / 'list', 'filename' / 'filter' ]
                 # new_recs = []
@@ -1066,20 +1112,20 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Перед добавлением новой записи проверяем - нет-ли записи с такими-же значениями уже в списке
                 for rec in new_recs_sel:
                     # print ( 'rec: '+str(rec) + ' len:' + str(len(rec)) )
-                    state_db_connection.execute("SELECT * FROM history_recs WHERE type=? AND value=?", rec)
-                    existed_rec = state_db_connection.fetchall()
+                    app_settings.state_db_connection.execute("SELECT * FROM history_recs WHERE type=? AND value=?", rec)
+                    existed_rec = app_settings.state_db_connection.fetchall()
                     if len(existed_rec) > 0:
                         # print (existed_rec)
                         # Запись уже есть. Прописываем ей новое время открытия.
-                        state_db_connection.execute("UPDATE history_recs SET datetime=? WHERE type=? AND value=?",
+                        app_settings.state_db_connection.execute("UPDATE history_recs SET datetime=? WHERE type=? AND value=?",
                                                     (datetime.now(), rec[0], rec[1]))
-                        state_db.commit()                        
+                        app_settings.state_db.commit()                        
                     else:
                         # Записи нет. Создаем новую.
                         # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
-                        state_db_connection.execute("INSERT INTO history_recs VALUES (?,?,?)",
+                        app_settings.state_db_connection.execute("INSERT INTO history_recs VALUES (?,?,?)",
                                                     (rec[0], rec[1], datetime.now()))
-                        state_db.commit()
+                        app_settings.state_db.commit()
 
 
                 #print('FILE_RECS for %s starting here' % filename)
@@ -1090,13 +1136,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     #print('FILE_RECS: для файла %s запись в базе есть. Обновляем.' % filename)
                     # Запись уже есть. Прописываем ей новое время открытия и увеличиваем счетчик открытий
                     # Получаем количество открытий данного файла
-                    state_db_connection.execute("SELECT count_opens, current_position FROM file_recs WHERE filename=?", (filename,))
-                    rec_count_opens, rec_current_position = state_db_connection.fetchone()
+                    app_settings.state_db_connection.execute("SELECT count_opens, current_position FROM file_recs WHERE filename=?", (filename,))
+                    rec_count_opens, rec_current_position = app_settings.state_db_connection.fetchone()
                     print('Количество открытий заметки: %s, последняя позиция курсора: %s' % (rec_count_opens, rec_current_position))
                     # Обновляем запись в базе
-                    state_db_connection.execute("UPDATE file_recs SET last_open=?, count_opens=?  WHERE filename=?",
+                    app_settings.state_db_connection.execute("UPDATE file_recs SET last_open=?, count_opens=?  WHERE filename=?",
                                                 (datetime.now(), rec_count_opens + 1, filename))
-                    state_db.commit()                        
+                    app_settings.state_db.commit()                        
                 else:
                     # Записи нет. Создаем новую.
                     # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
@@ -1104,9 +1150,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     rec_current_position = None
                     #print('FILE_RECS: для файла %s записи нет. Создаем новую.' % filename)
                     # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
-                    state_db_connection.execute("INSERT INTO file_recs (filename, last_open, count_opens) VALUES (?,?,?)",
+                    app_settings.state_db_connection.execute("INSERT INTO file_recs (filename, last_open, count_opens) VALUES (?,?,?)",
                                                     (filename, datetime.now(), 1))
-                    state_db.commit()
+                    app_settings.state_db.commit()
 
 
         # f = open(filename, "r")
@@ -1300,7 +1346,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # file_cute_name = file_cute_name.rpartition('.txt')[0]
         file_cute_name = notelist.make_cute_name(filename)
 
-        self.setWindowTitle(prog_name + ' - ' + file_cute_name)
+        self.setWindowTitle(app_settings.Name + ' - ' + file_cute_name)
         self.renew_history_list(filename)
         self.statusbar.showMessage('Заметка загружена')
         self.current_open_note_link = filename
@@ -1348,14 +1394,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         # Переход совершен из списка, сбрасываем позицию перемещения
         # в списке истории.
-        history_position = 0
+        notelist.history_position = 0
         self.open_file_in_editor(url.toString())
 
     def loadfile_from_history(self, url):
         # Переход совершен из истории, сбрасываем позицию перемещения
         # в списке истории, а также скрываем поле фильтрам списка
         # заметок по названию
-        history_position = 0
+        notelist.history_position = 0
         # self.frameNotelist_Filter.setVisible(False)
         # self.actionFast_jump_to_file_or_section.setChecked(False)
         self.open_file_in_editor(url.toString())
@@ -2626,9 +2672,9 @@ class Note():
         print('Сохраняем файл %s' % filename)
         
         # Обновляем запись в базе
-        state_db_connection.execute("UPDATE file_recs SET last_change=?  WHERE filename=?",
+        app_settings.state_db_connection.execute("UPDATE file_recs SET last_change=?  WHERE filename=?",
                                     (datetime.now(), filename))
-        state_db.commit()                        
+        app_settings.state_db.commit()                        
         
         # Добавляем суффикс к имени файла, при этом сохраняя оригинальное его расширение
         filename_wo_ext = os.path.splitext(filename)[0]
@@ -2888,6 +2934,8 @@ class Notelist():
     items_cursor_cutename = None  # Красивое имя под курсором
     items_notes_size = 0  # Общий объём данных в заметках из списка
     items_notes_count = 0  # Количество отдельных заметок в списке элементов
+
+    history_position = 0 # Некая переменная, которая была задумана для обозначения позиции в истории. Зачем - уже забыто. Но сохранена для будущего развития программы.
 
     # Информация обо всех подходящих под заметки файлах, найденных в процессе обхода, но, часть из которых может быть впоследствии может быть отфильтрована
     all_found_files_count = 0
@@ -3368,8 +3416,8 @@ class Notelist():
 
     def file_in_history(self, filename):
         # Проверяем - есть ли файл в списке истории
-        state_db_connection.execute("SELECT * FROM file_recs WHERE filename=? AND last_open NOT NULL", (filename,))
-        existed_rec = state_db_connection.fetchall()
+        app_settings.state_db_connection.execute("SELECT * FROM file_recs WHERE filename=? AND last_open NOT NULL", (filename,))
+        existed_rec = app_settings.state_db_connection.fetchall()
         if len(existed_rec) > 0:
             # print('Файл обнаружен в истории: ', filename)
             return True
@@ -3378,8 +3426,8 @@ class Notelist():
 
     def file_in_state_db(self, filename):
         # Проверяем - есть ли файл в списке истории
-        state_db_connection.execute("SELECT * FROM file_recs WHERE filename=?", (filename,))
-        existed_rec = state_db_connection.fetchall()
+        app_settings.state_db_connection.execute("SELECT * FROM file_recs WHERE filename=?", (filename,))
+        existed_rec = app_settings.state_db_connection.fetchall()
         if len(existed_rec) > 0:
             # print('Файл обнаружен в базе: ', filename)
             return True
@@ -3506,7 +3554,7 @@ class Notelist():
     def collect_history_items_list(self):
         # Собираем элементы (заметки) из истории при рескане файлов в переменную self.items[]
 
-        file_recs_rows = state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
+        file_recs_rows = app_settings.state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
 
         for row in file_recs_rows:
             rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
@@ -3515,7 +3563,7 @@ class Notelist():
             if not os.path.isfile(rec_filename):
                 # Файл не существует или это каталог, а не файл.
                 # Удаляем из истории
-                state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,))
+                app_settings.state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,))
                 continue  # Переходим на следующий виток цикла
 
             self.work_with_found_note(filename=rec_filename,
