@@ -2320,7 +2320,21 @@ class Note():
         return note_source
     
 
+    def health_bad_links(self, text):
+        # Лечение ссылок, испорченных ранее в самых первых версиях RelaNotes
+        # [[http://webcast.emg.fm:55655/keks128.mp3.m3u|http://webcast.emg.fm:55655/]]keks128.mp3.m3u
+        
+        # html_source = re.sub('[[(.*?)|(.*?)]](.*?)', '\\1', html_source)
+        # re.sub('\[\[(?!\[)(.+?)\]\]', '\\1', text)
+        
+        html_source = re.sub('\[\[(.+?)\|(.+?)\]\](.+?)', '\\2', html_source)
 
+        BadLinksRegex = re.compile('\[\[(.+?)\|(.+?)\]\](.+?)')
+        NoteSelectedText = BadLinksRegex.search(text)
+        if NoteSelectedText:
+            # html_source = html_source + ' ### ' + NoteSelectedText.group(1)
+            health_link = NoteSelectedText.group(1)
+            print('Исправленный линк: ##%s##' % health_link)
 
 
     def convert_zim_text_to_html_source(self, text):
@@ -2432,9 +2446,7 @@ class Note():
 
         # html_source = urllib.request.quote(html_source)
 
-        # Лечение ссылок, испорченных ранее в самых первых версиях RelaNotes
-        # [[http://webcast.emg.fm:55655/keks128.mp3.m3u|http://webcast.emg.fm:55655/]]keks128.mp3.m3u
-
+        self.health_bad_links(html_source)
 
         # print()
         # print('После удаления служебных полей Zim:')
