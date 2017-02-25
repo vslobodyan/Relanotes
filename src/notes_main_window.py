@@ -2432,6 +2432,10 @@ class Note():
 
         # html_source = urllib.request.quote(html_source)
 
+        # Лечение ссылок, испорченных ранее в самых первых версиях RelaNotes
+        # [[http://webcast.emg.fm:55655/keks128.mp3.m3u|http://webcast.emg.fm:55655/]]keks128.mp3.m3u
+
+
         # print()
         # print('После удаления служебных полей Zim:')
         # print(html_source)
