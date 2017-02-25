@@ -1160,7 +1160,8 @@ p, li { white-space: pre-wrap; }
     <addaction name="separator"/>
     <addaction name="actionShow_note_HTML_source"/>
     <addaction name="actionSave_also_note_HTML_source"/>
-    <addaction name="actionSelect_dir_and_run_test_open_save_notes"/>
+    <addaction name="actionRun_test_for_notes_convertation_in_last_directory"/>
+    <addaction name="actionSelect_another_directory_and_run_test_for_notes_convertation"/>
    </widget>
    <widget class="QMenu" name="menuNotelist">
     <property name="title">
@@ -1500,7 +1501,7 @@ p, li { white-space: pre-wrap; }
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Show note HTML source</string>
+    <string>&amp;Show HTML source of selection in note editor</string>
    </property>
   </action>
   <action name="actionAdd_Link">
@@ -1853,7 +1854,7 @@ p, li { white-space: pre-wrap; }
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Save also &amp;note HTML source</string>
+    <string>Save copy HTML source of note when saving</string>
    </property>
   </action>
   <action name="action_ClearFormat">
@@ -1997,9 +1998,17 @@ p, li { white-space: pre-wrap; }
     <string>Show hide &amp;Note content table window</string>
    </property>
   </action>
-  <action name="actionSelect_dir_and_run_test_open_save_notes">
+  <action name="actionRun_test_for_notes_convertation_in_last_directory">
    <property name="text">
-    <string>Select dir and run test &quot;open-save notes&quot;</string>
+    <string>Run test for notes convertation in last directory</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </action>
+  <action name="actionSelect_another_directory_and_run_test_for_notes_convertation">
+   <property name="text">
+    <string>Select another directory and run test for notes convertation..</string>
    </property>
   </action>
  </widget>

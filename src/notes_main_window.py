@@ -63,8 +63,8 @@ print('DEBUG: path_to_notes from settings: %s' % path_to_notes)
 # Проверяем БАГ, когда в переменную библиотека QT занесла неправильные слеши
 path_to_notes = give_correct_path_under_win_and_other(path_to_notes)
 
-path_to_test_converting_notes = settings.value('path_to_test_converting_notes')
-path_to_test_converting_notes = give_correct_path_under_win_and_other(path_to_test_converting_notes)
+#path_to_test_converting_notes = settings.value('path_to_test_converting_notes')
+#path_to_test_converting_notes = give_correct_path_under_win_and_other(path_to_test_converting_notes)
 
 # Основные переменные
 
@@ -505,9 +505,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionFind_next_in_cur_note.triggered.connect(self.find_next_in_cur_note)
         # QtCore.QObject.connect(self.lineTextToFind, QtCore.SIGNAL("returnPressed()"), self.find_next_in_cur_note)
         self.lineTextToFind.returnPressed.connect(self.find_next_in_cur_note)
-        
-        self.actionSelect_dir_and_run_test_open_save_notes.triggered.connect(self.select_dir_and_run_test_open_save_notes)
 
+        
         self.actionShow_note_HTML_source.triggered.connect(self.show_html_source)
         self.plainTextEdit_Note_Ntml_Source.setVisible(False)
 
@@ -766,110 +765,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.plainTextEdit_Note_Ntml_Source.setVisible(True)
 
 
-    def select_dir_and_run_test_open_save_notes(self):
-        # Тестовая функция, позволяющая проверить корректность конвертации форматирования при открытии и сохранении заметок
-        print('Запускаем функцию тестирования конвертации форматирования при открытии и сохранении заметок')
-
-        # Диалог выбора пути для сканирования
-        # path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
-        # if not path_to_notes:
-        #    print('Каталог не выбран.')
-        #    return 0
-        # path_to_notes = "D:\Test\\Notes-test\Linux\Debian"
-        path_to_notes = "D:\Test\\Notes"
-        #path_to_notes = "D:\Test\\Notes-test\Linux"
-        # path_to_notes = "C:\Test\Test_Notes\компьютерное\Python"
-        # path_to_notes = "C:\Test\Test_Notes\компьютерное\Linux\Debian"
-        print('Пользователь выбрал для теста каталог %s' % path_to_notes)
-
-        for root, dirs, files in os.walk(path_to_notes):
-            for file in files:
-                if file.endswith('.txt'):
-                    filename = os.path.join(root, file)
-                    # Читаем файл в память
-                    fileObj = codecs.open(filename, "r", "utf-8")
-                    original_text = fileObj.read()
-                    fileObj.close()
-
-                    # Загружаем файл в окно редактора
-                    self.open_file_in_editor(filename)
-
-
-                    # tmp_text = original_text
-                    # # Решаем проблему с разными символами переноса строки - заменяем все на Linux-формат
-                    # #original_text = original_text.replace('\r\n', '\n')
-
-                    # # В конец добавляем образцы заголовков, чтобы снять реальный стиль, созданный им в редакторе
-                    # tmp_text += '====== T ======\n' \
-                    #        '===== T =====\n' \
-                    #        '==== T ====\n' \
-                    #        '=== T ===\n' \
-                    #        '== T ==\n' \
-                    #        '= T =\n'
-                
-                    # # Translate plain text to html and set as doc source
-                    # self.doc_source.setHtml(note.convert_zim_text_to_html_source(tmp_text))                    
-                    # self.textBrowser_Note.setDocument(self.doc_source)
-                
-                    # # Получаем реальные стили заголовков. И удаляем их из документа
-                    # tmp_html_source = self.textBrowser_Note.toHtml()
-                
-                    # # print(tmp_html_source, '=============')
-                
-                    # l_a_name = len('<a name="head1"></a>')
-                    # pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1')-1
-                    # for i in range(1,7):
-                    #    pos_font_begin = tmp_html_source.find('<a name="head', pos_font_end)
-                    #    pos_font_end = tmp_html_source.find('>T<', pos_font_begin)+1
-                    #    tmp_str = tmp_html_source[pos_font_begin+l_a_name:pos_font_end]
-                    #    if i == 1:
-                    #        note.format.editor_h1_span = tmp_str
-                    #    if i == 2:
-                    #        note.format.editor_h2_span = tmp_str
-                    #    if i == 3:
-                    #        note.format.editor_h3_span = tmp_str
-                    #    if i == 4:
-                    #        note.format.editor_h4_span = tmp_str
-                    #    if i == 5:
-                    #        note.format.editor_h5_span = tmp_str
-                    #    if i == 6:
-                    #        note.format.editor_h6_span = tmp_str
-                
-                    #   # print('str:', tmp_str)
-                
-                    # note.format.editor_h_span = ['0-empty', note.format.editor_h1_span, note.format.editor_h2_span,
-                    #                             note.format.editor_h3_span, note.format.editor_h4_span,
-                    #                             note.format.editor_h5_span, note.format.editor_h6_span]
-                
-                    # tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
-                    # self.textBrowser_Note.setHtml(tmp_html_source)
-                
-
-
-                    # Конвертируем zim text в html для редактора
-                    html_source = note.convert_zim_text_to_html_source(original_text)
-                    # Устанавливаем html-исходник для редактора
-                    self.doc_source.setHtml(html_source)
-                    self.textBrowser_Note.setDocument(self.doc_source)
-
-
-                    # Конвертируем файл как-бы для сохранения на диск
-                    note_source = self.textBrowser_Note.toHtml()
-                    saved_text = note.convert_html_source_to_zim_text(note_source)
-
-                    # Сравниваем оригинал и "сохраненный" вариант
-                    diff_result = get_diff_text(original_text, saved_text, filename, filename + '-saved')
-                    if diff_result:
-                        print()
-                        # print('Результат сравнения:')
-                        print(diff_result)
-                        # for line in diff_result:
-                        #    print(line)
-                    else:
-                        print('.', end="", flush=True)
-
-        print()
-        print('Тестирование завершено.')
 
     def save_note_cursor_position(self):
         #print('Проверка необходимости сохранить позицию открытой заметки')
@@ -4249,9 +4144,76 @@ class MyTextBrowser(QtWidgets.QTextBrowser):
             self.insertHtml(note.format.adaptate_alien_html_styles(source_html))
             
 
+def App_Tests():
+    # Класс для внутренних тестов программы. В том числе вызываемых через меню.
+    
+    def notes_convertation(self, change_path=False):
+        # Тестовая функция, позволяющая проверить корректность конвертации форматирования при открытии и сохранении заметок
+        print('Запускаем функцию тестирования конвертации форматирования при открытии и сохранении заметок')
+
+        # Диалог выбора пути для сканирования
+        if change_path:
+            path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
+            if not path_to_notes:
+                print('Каталог не выбран.')
+                return 0
+        path_to_notes = "D:\Test\\Notes"
+        print('Пользователь выбрал для теста каталог %s' % path_to_notes)
+
+        for root, dirs, files in os.walk(path_to_notes):
+            for file in files:
+                if file.endswith('.txt'):
+                    filename = os.path.join(root, file)
+                    # Читаем файл в память
+                    fileObj = codecs.open(filename, "r", "utf-8")
+                    original_text = fileObj.read()
+                    fileObj.close()
+
+                    # Загружаем файл в окно редактора
+                    main_window.open_file_in_editor(filename)
+
+                    # Конвертируем zim text в html для редактора
+                    html_source = note.convert_zim_text_to_html_source(original_text)
+                    # Устанавливаем html-исходник для редактора
+                    main_window.doc_source.setHtml(html_source)
+                    main_window.textBrowser_Note.setDocument(main_window.doc_source)
+
+
+                    # Конвертируем файл как-бы для сохранения на диск
+                    note_source = main_window.textBrowser_Note.toHtml()
+                    saved_text = note.convert_html_source_to_zim_text(note_source)
+
+                    # Сравниваем оригинал и "сохраненный" вариант
+                    diff_result = get_diff_text(original_text, saved_text, filename, filename + '-saved')
+                    if diff_result:
+                        print()
+                        # print('Результат сравнения:')
+                        print(diff_result)
+                        # for line in diff_result:
+                        #    print(line)
+                    else:
+                        print('.', end="", flush=True)
+
+        print()
+        print('Тестирование завершено.')
+
+
+    def __init__(self):
+        
+        main_window.actionRun_test_for_notes_convertation_in_last_directory.triggered.connect(self.notes_convertation)
+        
+        main_window.actionSelect_another_directory_and_run_test_for_notes_convertation.triggered.connect(self.notes_convertation(change_path=True))
+        
+
+
+
+
 # if __name__ == "__main__":
 app = QtWidgets.QApplication(sys.argv)
 # myapp = MyForm()
+
+# Инициируем класс настроек приложения
+app_settings = App_Settings()
 
 # theme = Theme()
 
@@ -4278,6 +4240,9 @@ notemultiaction_win = NoteMultiactionWindow()
 clear_history_win = ClearHistoryDialog()
 
 app.installEventFilter(myFilter)
+
+# Инициируем класс тестов приложения
+app_tests = App_Tests()
 
 # history.setVisible()
 notelist.set_visible()  # По-умолчанию встречаем пользователя списком заметок
