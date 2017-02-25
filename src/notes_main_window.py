@@ -120,6 +120,7 @@ class App_Settings():
     pass
 
     def __init__(self, **kwargs):
+        print('Инициализация настроек приложения')
         return super().__init__(**kwargs)
 
 
@@ -2228,17 +2229,17 @@ class Note():
         return note_source
     
 
-    def health_bad_links(self, text):
+    def health_bad_links(self, html_source):
         # Лечение ссылок, испорченных ранее в самых первых версиях RelaNotes
         # [[http://webcast.emg.fm:55655/keks128.mp3.m3u|http://webcast.emg.fm:55655/]]keks128.mp3.m3u
         
         # html_source = re.sub('[[(.*?)|(.*?)]](.*?)', '\\1', html_source)
-        # re.sub('\[\[(?!\[)(.+?)\]\]', '\\1', text)
+        # re.sub('\[\[(?!\[)(.+?)\]\]', '\\1', html_source)
         
         html_source = re.sub('\[\[(.+?)\|(.+?)\]\](.+?)', '\\2', html_source)
 
         BadLinksRegex = re.compile('\[\[(.+?)\|(.+?)\]\](.+?)')
-        NoteSelectedText = BadLinksRegex.search(text)
+        NoteSelectedText = BadLinksRegex.search(html_source)
         if NoteSelectedText:
             # html_source = html_source + ' ### ' + NoteSelectedText.group(1)
             health_link = NoteSelectedText.group(1)
@@ -4144,10 +4145,10 @@ class MyTextBrowser(QtWidgets.QTextBrowser):
             self.insertHtml(note.format.adaptate_alien_html_styles(source_html))
             
 
-def App_Tests():
+class App_Tests():
     # Класс для внутренних тестов программы. В том числе вызываемых через меню.
     
-    def notes_convertation(self, change_path=False):
+    def notes_convertation(self, change_path=True):
         # Тестовая функция, позволяющая проверить корректность конвертации форматирования при открытии и сохранении заметок
         print('Запускаем функцию тестирования конвертации форматирования при открытии и сохранении заметок')
 
@@ -4199,10 +4200,14 @@ def App_Tests():
 
 
     def __init__(self):
-        
+
+        print('Инициализация класса тестов')
+
         main_window.actionRun_test_for_notes_convertation_in_last_directory.triggered.connect(self.notes_convertation)
+    
+        main_window.actionSelect_another_directory_and_run_test_for_notes_convertation.triggered.connect(self.notes_convertation) # , change_path=True
         
-        main_window.actionSelect_another_directory_and_run_test_for_notes_convertation.triggered.connect(self.notes_convertation(change_path=True))
+        
         
 
 
@@ -4243,6 +4248,7 @@ app.installEventFilter(myFilter)
 
 # Инициируем класс тестов приложения
 app_tests = App_Tests()
+print('app_tests: %s' % app_tests)
 
 # history.setVisible()
 notelist.set_visible()  # По-умолчанию встречаем пользователя списком заметок
