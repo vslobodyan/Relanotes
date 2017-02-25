@@ -2512,7 +2512,19 @@ class Note():
 
         # html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
         #html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
-        html_source = re.sub('\n\* ([^\n]*)', '<ul><li>\\1</li></ul>', html_source)
+        
+        # Меняем астериски в начале строки на li
+        html_source = re.sub('\n\* ([^\n]*)', '\n<ul><li>\\1</li></ul>', html_source)
+        # Объединяем соседние ul
+        #print('</ul><ul>: %s' % html_source.find('</ul>\n<ul>') )
+        html_source = html_source.replace('</ul>\n<ul>', '')
+        # Финальная очистка вокруг ul
+        # Удаляем перенос строки перед ul
+        #print('\n<ul>: %s' % html_source.find('\n<ul>') )
+        html_source = html_source.replace('\n<ul>', '<ul>')
+        # Удаляем перенос строки после ul
+        #print('</ul>\n: %s' % html_source.find('</ul>\n') )
+        html_source = html_source.replace('</ul>\n', '</ul>')
 
         # Замена переноса строк в конце ul
         #html_source = re.sub('</ul>\n\n', '</ul>\n', html_source)
@@ -2650,7 +2662,9 @@ class Note():
         # <ul style="..."><li style="..."><span style="..">Пункт 1</span></li></ul> 
         # text = re.sub('<ul .*?><li .*?>(.*?)</li></ul>', '* \\1<br />', text)
         text = re.sub('<li .*?>(.*?)</li>', '* \\1<br />', text)
-        text = re.sub('<ul .*?>(.*?)</ul>', '\\1', text)
+        #text = re.sub('<ul .*?>(.*?)</ul>', '\\1', text)
+
+        text = re.sub('<ul .*?>(.*?)</ul>', '\\1', text, re.MULTILINE)
 
         # Чистим остатки
         # profiler.checkpoint('Чистим остатки html разметки')
