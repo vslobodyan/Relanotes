@@ -415,6 +415,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 app_settings.settings.sync()
                 print("Выбран новый путь к заметкам:", app_settings.path_to_notes)
 
+    def open_notes(self):
+        # Открываем другой каталог с заметками
+        self.check_path_to_notes_or_select_new(select_new=True)
+        notelist.update()
 
 
     def __init__(self, parent=None):
@@ -610,6 +614,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionShow_note_HTML_source.triggered.connect(self.show_html_source)
         self.plainTextEdit_Note_Ntml_Source.setVisible(False)
 
+        self.actionOpenNotes.triggered.connect(self.open_notes)
 
         ## Устанавливаем стили текстовых редакторов
         #texteditor_style = '''

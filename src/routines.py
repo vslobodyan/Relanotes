@@ -26,7 +26,7 @@ def give_correct_path_under_win_and_other(path_to_check):
             # Обнаружен признак отсутствия правильного разделителя в пути к заметкам
             # Разбиваем путь по обратному слешу и собираем обратно правильным образом
             correct_path = os.path.sep.join( path_to_check.split('/') )
-            print ('DEBUG: путь был исправлен с %s на %s' % (path_to_check, correct_path) )
+            #print ('DEBUG: путь был исправлен с %s на %s' % (path_to_check, correct_path) )
     return correct_path
 
 
