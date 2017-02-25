@@ -350,6 +350,7 @@ def hbytes(num):
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
+    # Главное окно приложения.
     doc_source = QtGui.QTextDocument()
     sidebar_source = QtGui.QTextDocument()
     notelist_source = QtGui.QTextDocument()
@@ -364,6 +365,56 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     note_editor_actions = None
     # Какие действия выводить в панели справа от редактора заметки
     note_editor_toolbar_actions = None
+
+
+    def check_path_to_notes_or_select_new(self, select_new=False):
+        # Функция проверки пути к заметкам из настроек или путем выбора каталога в диалоге
+        #new_message_title = "Выбор каталога с заметками"
+        #new_message_text = "Выберите каталог, в котором хранятся файлы с заметками. Включенные расширения файлов: %s" % notelist.allowed_note_files_extensions
+
+        #message_title = message_text = None
+        #print("path_to_notes: %s" % app_settings.path_to_notes)
+
+        if not app_settings.path_to_notes:
+            # Первый запуск программы. Приветствуем пользователя и предлагаем ему выбрать каталог с заметками
+
+            message_title = "RelaNotes приветствует Вас!"
+            message_text = '''Вы запустили отличную программу работы с заметками и знаниями.
+Теперь Вам надо выбрать каталог с файлами заметок.
+Включенные расширения файлов: %s''' % notelist.allowed_note_files_extensions
+            reply = QtWidgets.QMessageBox.question(self, 
+                                                   message_title,
+                                                   message_text,
+                                         QtWidgets.QMessageBox.Ok)
+            select_new = True
+
+        elif not os.path.exists(app_settings.path_to_notes):
+            # Каталога с заметками не существует. Сообщаем о том, что может быть надо выбрать другой.
+            not_exists_message_title = "Ваши заметки были перемещены?"
+            not_exists_message_text = '''RelaNotes не может открыть каталог %s с Вашими заметками. Возможно, он не существует или недоступен программе.
+    Проверьте доступность этого каталога или укажите новый.
+    Открыть другой каталог с заметками?''' % app_settings.path_to_notes
+            reply = QtWidgets.QMessageBox.question(self, 
+                                                   message_title,
+                                                   message_text,
+                                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel)
+            if reply == QtWidgets.QMessageBox.Cancel:
+                # print("Заметки по указанному пути отсутствуют. Пользователь не хочет продолжать работу.")
+                exit()
+            elif reply == QtWidgets.QMessageBox.Yes:
+                select_new = True
+                # print("Выбираем новый путь к заметкам")
+                # app_settings.path_to_notes = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes") )
+                # raw_path_to_notes = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly)
+
+        if select_new:
+            # Надо выбрать новый каталог заметок
+                app_settings.path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '123' , QtWidgets.QFileDialog.ShowDirsOnly))
+                app_settings.settings.setValue('path_to_notes', app_settings.path_to_notes)
+                app_settings.settings.sync()
+                print("Выбран новый путь к заметкам:", app_settings.path_to_notes)
+
+
 
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
@@ -558,6 +609,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionShow_note_HTML_source.triggered.connect(self.show_html_source)
         self.plainTextEdit_Note_Ntml_Source.setVisible(False)
 
+        self.check_path_to_notes_or_select_new()        
+
         ## Устанавливаем стили текстовых редакторов
         #texteditor_style = '''
         #                        font-family: Sans;
@@ -570,24 +623,24 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # QtGui.QFileDialog.windowFilePath(self)
 
-        print("path_to_notes: %s" % app_settings.path_to_notes)
-        if not app_settings.path_to_notes or not os.path.exists(app_settings.path_to_notes):
-            # print("")
-            reply = QtWidgets.QMessageBox.question(self, "Ваши заметки были перемещены?",
-                                         "Каталог " + str(app_settings.path_to_notes) + " с Вашими заметками не существует.\n"
-                                                                      "Открыть другой каталог с заметками?",
-                                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel)
-            if reply == QtWidgets.QMessageBox.Cancel:
-                # print("Заметки по указанному пути отсутствуют. Пользователь не хочет продолжать работу.")
-                exit()
-            elif reply == QtWidgets.QMessageBox.Yes:
-                # print("Выбираем новый путь к заметкам")
-                # app_settings.path_to_notes = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes") )
-                # raw_path_to_notes = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly)
-                app_settings.path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly))
-                app_settings.settings.setValue('path_to_notes', app_settings.path_to_notes)
-                app_settings.settings.sync()
-                print("Выбран новый путь к заметкам:", app_settings.path_to_notes)
+        #print("path_to_notes: %s" % app_settings.path_to_notes)
+        #if not app_settings.path_to_notes or not os.path.exists(app_settings.path_to_notes):
+        #    # print("")
+        #    reply = QtWidgets.QMessageBox.question(self, "Ваши заметки были перемещены?",
+        #                                 "Каталог " + str(app_settings.path_to_notes) + " с Вашими заметками не существует.\n"
+        #                                                              "Открыть другой каталог с заметками?",
+        #                                 QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel)
+        #    if reply == QtWidgets.QMessageBox.Cancel:
+        #        # print("Заметки по указанному пути отсутствуют. Пользователь не хочет продолжать работу.")
+        #        exit()
+        #    elif reply == QtWidgets.QMessageBox.Yes:
+        #        # print("Выбираем новый путь к заметкам")
+        #        # app_settings.path_to_notes = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes") )
+        #        # raw_path_to_notes = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly)
+        #        app_settings.path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory with your Notes", '' , QtWidgets.QFileDialog.ShowDirsOnly))
+        #        app_settings.settings.setValue('path_to_notes', app_settings.path_to_notes)
+        #        app_settings.settings.sync()
+        #        print("Выбран новый путь к заметкам:", app_settings.path_to_notes)
 
 
     def minimize(self):
