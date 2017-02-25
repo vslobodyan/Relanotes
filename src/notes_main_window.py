@@ -63,6 +63,9 @@ print('DEBUG: path_to_notes from settings: %s' % path_to_notes)
 # Проверяем БАГ, когда в переменную библиотека QT занесла неправильные слеши
 path_to_notes = give_correct_path_under_win_and_other(path_to_notes)
 
+path_to_test_converting_notes = settings.value('path_to_test_converting_notes')
+path_to_test_converting_notes = give_correct_path_under_win_and_other(path_to_test_converting_notes)
+
 # Основные переменные
 
 # Получаем путь к каталогу, в котором лежат файлы и подкаталоги программы
@@ -109,6 +112,15 @@ rec = [ id, filename, cute_name, parent_id, subnotes_count, size, favorite, hidd
 file_recs = [ rec1, rec2, rec3, .. ]
 file_recs = []
 """
+
+
+class App_Settings():
+    # Основные настройки программы
+
+    pass
+
+    def __init__(self, **kwargs):
+        return super().__init__(**kwargs)
 
 
 
@@ -481,6 +493,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         self.actionHistoryClear.triggered.connect(self.history_clear)
 
+        self.actionOpenNotes.triggered.connect(self.previous_note)
 
         self.actionPrevious_note.triggered.connect(self.previous_note)
         self.actionNext_note.triggered.connect(self.next_note)

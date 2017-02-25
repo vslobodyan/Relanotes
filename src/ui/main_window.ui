@@ -1049,8 +1049,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionSave_note"/>
     <addaction name="actionReopen_note"/>
     <addaction name="separator"/>
-    <addaction name="actionOpen"/>
-    <addaction name="actionClose"/>
+    <addaction name="actionOpenNotes"/>
     <addaction name="separator"/>
     <addaction name="actionQuit_from_programm"/>
    </widget>
@@ -1374,9 +1373,9 @@ p, li { white-space: pre-wrap; }
     </layout>
    </widget>
   </widget>
-  <action name="actionOpen">
+  <action name="actionOpenNotes">
    <property name="text">
-    <string>&amp;Open notebook</string>
+    <string>&amp;Open notes from another directory..</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -1412,11 +1411,6 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+C</string>
-   </property>
-  </action>
-  <action name="actionClose">
-   <property name="text">
-    <string>&amp;Close notebook</string>
    </property>
   </action>
   <action name="actionReopen_note">
