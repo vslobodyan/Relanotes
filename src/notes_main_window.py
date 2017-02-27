@@ -355,7 +355,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     doc_source = QtGui.QTextDocument()
     sidebar_source = QtGui.QTextDocument()
     notelist_source = QtGui.QTextDocument()
-    current_open_note_link = ''
+    current_open_note_link = ''    # Ссылка на текущую открытую заметку
     timer_lock_ui = QtCore.QTimer()
     lock_ui_timeout = 10000
     locked = False
@@ -420,6 +420,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Открываем другой каталог с заметками
         self.check_path_to_notes_or_select_new(select_new=True)
         notelist.update()
+
+    def reopen_note(self):
+        # Перезагружаем заметку из её файла
+        if self.current_open_note_link:
+            self.open_file_in_editor(self.current_open_note_link)
 
 
     def __init__(self, parent=None):
@@ -616,6 +621,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.plainTextEdit_Note_Ntml_Source.setVisible(False)
 
         self.actionOpenNotes.triggered.connect(self.open_notes)
+
+        self.actionReopen_note.triggered.connect(self.reopen_note)
 
         ## Устанавливаем стили текстовых редакторов
         #texteditor_style = '''
@@ -1527,7 +1534,7 @@ class Note():
     
     paste_as_text_once = False
 
-    filename = ''
+    filename = ''        # Ссылка на файл открытой заметки. Внутренняя тема для класса Notes. Повсеместно для определения урла открытой заметки используется main_window.current_open_note_link
     format_type = 'zim'  # zim, md, ...
     metadata_lines_before_note = ''  # Специальные поля заметки, например, от Zim, которые надо сохранить и записать при сохранении
 
