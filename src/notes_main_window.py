@@ -424,6 +424,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def reopen_note(self):
         # Перезагружаем заметку из её файла
         if self.current_open_note_link:
+            self.save_note_cursor_position()
             self.open_file_in_editor(self.current_open_note_link)
 
 
@@ -1198,11 +1199,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 
-    def open_file_in_editor(self, filename, line_number=-1, found_text=None):
+    def open_file_in_editor(self, filename, line_number=None, found_text=None):
         # line_number - новая переменная промотки редактора на нужную строку
         # found_text - искомый текст, который надо подсветить
 
-        self.statusbar.showMessage('Загружается файл ' + filename)
+        print('Загружается файл %s с номером строки %s и поиском текста %s' % (filename, line_number, found_text) )
+        self.statusbar.showMessage('Загружается файл %s' % filename)
+
         #print('open_file_in_editor("filename=%s", "line_number=%s")' % (filename, line_number) )
         #print('DEBUG: open_file_in_editor("filename=%s")' % filename)
         filename = get_correct_filename_from_url(filename)
@@ -1272,11 +1275,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                                     (filename, datetime.now(), 1))
                     app_settings.state_db.commit()
 
-
-        # f = open(filename, "r")
-        # lines = f.read()
-        # f.close()
-
         fileObj = codecs.open(filename, "r", "utf-8")
         lines = fileObj.read()        
         fileObj.close()
@@ -1292,7 +1290,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Передвигаем курсор на нужную позицию
         self.textBrowser_Note.moveCursor(QtGui.QTextCursor.Start)
         
-        if line_number > -1:  # Используем -1 а не None - чтобы Питон не делал из None-переменной 0
+        if not line_number == None:  # Используем -1 а не None - чтобы Питон не делал из None-переменной 0
             # У нас указано - на какую строку перематывать
             print('Выполняется промотка на линию "%s" и поиск текста "%s"' % (line_number, found_text) )
 
@@ -1305,40 +1303,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             # Учитываем в количестве переходов по строкам количество удаленных служебных строк в начале заметки
             lines_to_skip = int(line_number)-len(note.metadata_lines_before_note)-1
             cursor.movePosition( QtGui.QTextCursor.Down, n=lines_to_skip )
-
-            #i = 1
-            #while i < int(line_number)-len(note.metadata_lines_before_note):
-            #    # Перемещаем курсор на следующую линию (не строку, в понимании человека, видящего текст с переносом)
-            #    #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.EndOfLine)
-            #    #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.Right)
-
-            #    cursor.movePosition(QtGui.QTextCursor.StartOfLine)
-            #    cursor.movePosition(QtGui.QTextCursor.Down)
-            #    #pos1 = cursor.position()
-            #    #cursor.movePosition(QtGui.QTextCursor.Right)
-            #    #pos2 = cursor.position()
-            #    #cursor.movePosition( (QtGui.QTextCursor.EndOfLine | QtGui.QTextCursor.Right), n=1)
-                
-            #    #cursor.LineUnderCursor
-
-            #    #print('iteration %s, position 1: %s, position 2: %s' % (i, pos1, pos2) )
-            #    #print('line under cursor: ###%s###' % line)
-
-            #    #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.EndOfLine)
-            #    #self.textBrowser_Note.moveCursor(QtGui.QTextCursor.Down)
-            #    #self.textBrowser_Note.moveCursor(
-            #    # text_to_find = self.lineEdit_Filter_Note_Text.text()
-            #    #text_to_find = notelist.filter_text
-            #    #self.textBrowser_Note.find(text_to_find)
-            #    # print ('Выполняем поиск')
-            #    # cursor.movePosition(QtGui.QTextCursor.Down)
-            #    i += 1
-            # Ищем нужный текст
-            #self.textBrowser_Note.find(found_text)
-
-            # Устанавливаем копии нужное положение
-            #cursor.setPosition(line=line_number)
-            # Делаем копию основным курсором текстового редактора с новой позицией
 
             # Восстанавливаем перенос по словам
             self.textBrowser_Note.setLineWrapMode(QtWidgets.QTextEdit.WidgetWidth)
@@ -1381,7 +1345,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         cursor = main_window.textBrowser_Note.textCursor()
 
         # Проверяем - делали ли промотку на нужную позицию найденного текста
-        if line_number > -1:
+        if not line_number == None:
            print('Перемещение курсора на последнюю сохраненную позицию не нужно - у нас был переход на позицию найденного текста.')
         elif rec_current_position:
             # Восстанавливаем позицию предыдущую позицию курсора, если она была сохранена
@@ -3927,7 +3891,7 @@ class Notelist():
         link_attributes = self.action_link_items(url_string)
         link_type = link_attributes[0] 
         link_filename = link_attributes[1]
-        founded_i = 0
+        founded_i = None
         if len(link_attributes) > 2:
             founded_i = link_attributes[2]
         if link_type == 'note':
