@@ -424,8 +424,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def reopen_note(self):
         # Перезагружаем заметку из её файла
         if self.current_open_note_link:
-            self.save_note_cursor_position()
-            self.open_file_in_editor(self.current_open_note_link)
+            self.open_file_in_editor(self.current_open_note_link, reload=True)
 
 
     def __init__(self, parent=None):
@@ -1199,11 +1198,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 
-    def open_file_in_editor(self, filename, line_number=None, found_text=None):
+    def open_file_in_editor(self, filename, line_number=None, found_text=None, reload=False):
         # line_number - новая переменная промотки редактора на нужную строку
         # found_text - искомый текст, который надо подсветить
 
-        print('Загружается файл %s с номером строки %s и поиском текста %s' % (filename, line_number, found_text) )
+        print('Загружается файл %s с номером строки %s и поиском текста %s. Перезагрузка: ' % (filename, line_number, found_text, reload) )
         self.statusbar.showMessage('Загружается файл %s' % filename)
 
         #print('open_file_in_editor("filename=%s", "line_number=%s")' % (filename, line_number) )
@@ -1218,8 +1217,17 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # TODO: .. Профилировать скорость загрузки файла и отображения его текста
         
         rec_current_position = None
+        
+        if reload:
+            # У нас указана внутренняя перезагрузка заметки на то-же место
+            if notelist.file_in_state_db(filename):
+                # Запись о файле уже есть. Получаем из неё последнюю позицию
+                app_settings.state_db_connection.execute("SELECT count_opens, current_position FROM file_recs WHERE filename=?", (filename,))
+                rec_count_opens, rec_current_position = app_settings.state_db_connection.fetchone()
+                print('Количество открытий заметки: %s, последняя позиция курсора: %s' % (rec_count_opens, rec_current_position))
+
         # Проверяем на переход из списка файлов
-        if notelist.is_visible():
+        elif notelist.is_visible():
             # rec = [ 'note' / 'list', 'filename' / 'filter', datetime ]
             if notelist.history_position == 0:
                 new_recs_sel = []
