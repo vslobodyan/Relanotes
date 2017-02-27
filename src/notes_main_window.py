@@ -887,7 +887,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         filename = main_window.current_open_note_link
         if filename:
             current_position = main_window.textBrowser_Note.textCursor().position()
-            #print('Файл открытой заметки %s и позиция курсора %s' % (filename, current_position))
+            print('Файл открытой заметки %s и позиция курсора %s' % (filename, current_position))
             # Если есть - сохраняем для неё последнюю позицию курсора
 
             # Обновляем запись в базе
@@ -895,7 +895,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                         (current_position, filename))
             app_settings.state_db.commit()                        
         else:
-            #print('Открытой заметки нет.')
+            print('Открытой заметки нет.')
             pass
 
 
@@ -1139,7 +1139,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 
-    def open_file_in_editor(self, filename, line_number=None, found_text=None):
+
+
+
+    def open_file_in_editor(self, filename, line_number=-1, found_text=None):
         # line_number - новая переменная промотки редактора на нужную строку
         # found_text - искомый текст, который надо подсветить
 
@@ -1160,19 +1163,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if notelist.is_visible():
             # rec = [ 'note' / 'list', 'filename' / 'filter', datetime ]
             if notelist.history_position == 0:
-                # history_recs.append(['list', self.lineNotelist_Filter.text(), datetime.now()])
-                # app_settings.state_db_connection.execute('''CREATE TABLE history_recs
-                # (type text, value text, datetime integer)''')
-                # rec = [ 'note' / 'list', 'filename' / 'filter' ]
-                # new_recs = []
                 new_recs_sel = []
                 
                 if self.lineNotelist_Filter.text() != '':
-                    # Фильтр есть, записываем его в историю
-                    # new_recs = [ ( 'list', self.lineNotelist_Filter.text(), datetime.now() ),]
                     new_recs_sel = [('list', self.lineNotelist_Filter.text(),), ]
                 # Пишем открытие заметки
-                # new_recs += [ ( 'note', filename, datetime.now() ), ]
                 new_recs_sel += [('note', filename,), ]
                 
                 ######### history_recs
@@ -1288,54 +1283,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.doc_source.setHtml(note_source)
         self.textBrowser_Note.setDocument(self.doc_source)
 
-        ## Получаем реальные стили заголовков и других элементов
-        #tmp_html_source = self.textBrowser_TestNote.toHtml()
-
-        ## print('=== tmp_html_source ===: %s' % tmp_html_source)
-
-        #l_a_name = len('<a name="head1"></a>')
-        #pos_added_fonts = pos_font_end = tmp_html_source.rfind('<a name="head1') - 1
-        #for i in range(1, 7):
-        #    pos_font_begin = tmp_html_source.find('<a name="head', pos_font_end)
-        #    pos_font_end = tmp_html_source.find('>T<', pos_font_begin) + 1
-        #    tmp_str = tmp_html_source[pos_font_begin + l_a_name:pos_font_end]
-        #    if i == 1:
-        #        note.format.editor_h1_span = tmp_str
-        #    if i == 2:
-        #        note.format.editor_h2_span = tmp_str
-        #    if i == 3:
-        #        note.format.editor_h3_span = tmp_str
-        #    if i == 4:
-        #        note.format.editor_h4_span = tmp_str
-        #    if i == 5:
-        #        note.format.editor_h5_span = tmp_str
-        #    if i == 6:
-        #        note.format.editor_h6_span = tmp_str
-
-        #    # print('str:', tmp_str)
-
-        #note.format.editor_h_span = ['0-empty', note.format.editor_h1_span,
-        #                            note.format.editor_h2_span,
-        #                            note.format.editor_h3_span,
-        #                            note.format.editor_h4_span,
-        #                            note.format.editor_h5_span,
-        #                            note.format.editor_h6_span]
-
-        # print('Найденные стили заголовков: %s' % note.format.editor_h_span)
-        # tmp_html_source = tmp_html_source[:pos_added_fonts-len('--&gt;</span>')]
-        
-        # self.textBrowser_Note.setHtml(tmp_html_source)
-
-
-        # self.textBrowser_Note.setHtml(tmp_html_source)
-
-
 
         # Передвигаем курсор на нужную позицию
         self.textBrowser_Note.moveCursor(QtGui.QTextCursor.Start)
-        if not line_number == None:
+        
+        if line_number > -1:  # Используем -1 а не None - чтобы Питон не делал из None-переменной 0
             # У нас указано - на какую строку перематывать
-            print('Выполняется промотка на линию %s и поиск текста "%s"' % (line_number, found_text) )
+            print('Выполняется промотка на линию "%s" и поиск текста "%s"' % (line_number, found_text) )
 
             # Отключаем перенос строк в редакторе
             self.textBrowser_Note.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
@@ -1431,6 +1385,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             cursor.setPosition(rec_current_position)
             # Делаем копию основным курсором текстового редактора с новой позицией
             main_window.textBrowser_Note.setTextCursor(cursor)
+        else:
+            print('Информации по позиции курсора в заметке не найдено.')
 
         # rec = [ 'note' / 'list', 'filename' / 'filter', datetime ]
         # if history_position==0:
