@@ -1202,7 +1202,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # line_number - новая переменная промотки редактора на нужную строку
         # found_text - искомый текст, который надо подсветить
 
-        print('Загружается файл %s с номером строки %s и поиском текста %s. Перезагрузка: ' % (filename, line_number, found_text, reload) )
+        print('Загружается файл %s с номером строки %s и поиском текста %s. Перезагрузка: %s' % (filename, line_number, found_text, reload) )
         self.statusbar.showMessage('Загружается файл %s' % filename)
 
         #print('open_file_in_editor("filename=%s", "line_number=%s")' % (filename, line_number) )
