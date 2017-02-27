@@ -1138,6 +1138,62 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         textbrowser.verticalScrollBar().setValue(scrollbar_set_pos)
 
 
+    def extract_real_styles_note_format(self):
+        # Функция извлечения реальных стилей из редактора с помощью тестовой заметки
+
+        ### Получаем реальные стили из редактора с тестовой заметкой ###
+        # Это позволяет изменяя стили в CSS получать их измененное форматирование в редакторе, чтобы потом с ними в нем оперировать, и иметь возможность конвертировать текст из редактора в wiki, markdown и т.д.
+        self.textBrowser_TestNote = QtWidgets.QTextBrowser()
+        # Чтобы не оказалось переноса
+        self.textBrowser_TestNote.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
+        self.test_doc_source = QtGui.QTextDocument()
+        testnote = ' \n' \
+                 'default text\n' \
+                 '====== Header level 1 ======\n' \
+                 '===== Header level 2 =====\n' \
+                 '==== Header level 3 ====\n' \
+                 '=== Header level 4 ===\n' \
+                 '== Header level 5 ==\n' \
+                 '= Header level 6 =\n' \
+                 '\'\'code text\'\' \n' \
+                 '~~striked text~~ \n' \
+                 '__marked text__ \n' \
+                 'http://link_text' 
+
+        test_note_source = note.convert_zim_text_to_html_source(testnote)
+        self.test_doc_source.setHtml(test_note_source)
+        self.textBrowser_TestNote.setDocument(self.test_doc_source)
+
+        # Новая функция получения стилей через перемещение курсора
+        test_cursor = self.textBrowser_TestNote.textCursor()
+        test_cursor.movePosition(QtGui.QTextCursor.Start)
+        
+        def move_down_and_get_span(cursor, only_style=False):
+            cursor.movePosition(QtGui.QTextCursor.Down)
+            cursor.movePosition(QtGui.QTextCursor.StartOfLine)
+            return note.get_span_under_cursor(test_cursor, only_style)
+
+        note.format.editor_default_font_span = note.get_span_under_cursor(test_cursor)
+        note.format.editor_h1_span = move_down_and_get_span(test_cursor)
+        note.format.editor_h2_span = move_down_and_get_span(test_cursor)
+        note.format.editor_h3_span = move_down_and_get_span(test_cursor)
+        note.format.editor_h4_span = move_down_and_get_span(test_cursor)
+        note.format.editor_h5_span = move_down_and_get_span(test_cursor)
+        note.format.editor_h6_span = move_down_and_get_span(test_cursor)
+
+
+        note.format.editor_h_span = ['0-empty', note.format.editor_h1_span,
+                                    note.format.editor_h2_span,
+                                    note.format.editor_h3_span,
+                                    note.format.editor_h4_span,
+                                    note.format.editor_h5_span,
+                                    note.format.editor_h6_span]
+
+        note.format.editor_code_span = move_down_and_get_span(test_cursor)
+        note.format.editor_strikethrough_span = move_down_and_get_span(test_cursor)
+        note.format.editor_mark_span = move_down_and_get_span(test_cursor)
+        note.format.editor_link_external_style = move_down_and_get_span(test_cursor, only_style=True)
+
 
 
 
@@ -1225,58 +1281,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         lines = fileObj.read()        
         fileObj.close()
 
-        ### Получаем реальные стили из редактора с тестовой заметкой ###
-        # Это позволяет изменяя стили в CSS получать их измененное форматирование в редакторе, чтобы потом с ними в нем оперировать, и иметь возможность конвертировать текст из редактора в wiki, markdown и т.д.
-        self.textBrowser_TestNote = QtWidgets.QTextBrowser()
-        # Чтобы не оказалось переноса
-        self.textBrowser_TestNote.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
-        self.test_doc_source = QtGui.QTextDocument()
-        testnote = ' \n' \
-                 'default text\n' \
-                 '====== Header level 1 ======\n' \
-                 '===== Header level 2 =====\n' \
-                 '==== Header level 3 ====\n' \
-                 '=== Header level 4 ===\n' \
-                 '== Header level 5 ==\n' \
-                 '= Header level 6 =\n' \
-                 '\'\'code text\'\' \n' \
-                 '~~striked text~~ \n' \
-                 '__marked text__ \n' \
-                 'http://link_text' 
-
-        test_note_source = note.convert_zim_text_to_html_source(testnote)
-        self.test_doc_source.setHtml(test_note_source)
-        self.textBrowser_TestNote.setDocument(self.test_doc_source)
-
-        # Новая функция получения стилей через перемещение курсора
-        test_cursor = self.textBrowser_TestNote.textCursor()
-        test_cursor.movePosition(QtGui.QTextCursor.Start)
-        
-        def move_down_and_get_span(cursor, only_style=False):
-            cursor.movePosition(QtGui.QTextCursor.Down)
-            cursor.movePosition(QtGui.QTextCursor.StartOfLine)
-            return note.get_span_under_cursor(test_cursor, only_style)
-
-        note.format.editor_default_font_span = note.get_span_under_cursor(test_cursor)
-        note.format.editor_h1_span = move_down_and_get_span(test_cursor)
-        note.format.editor_h2_span = move_down_and_get_span(test_cursor)
-        note.format.editor_h3_span = move_down_and_get_span(test_cursor)
-        note.format.editor_h4_span = move_down_and_get_span(test_cursor)
-        note.format.editor_h5_span = move_down_and_get_span(test_cursor)
-        note.format.editor_h6_span = move_down_and_get_span(test_cursor)
-
-
-        note.format.editor_h_span = ['0-empty', note.format.editor_h1_span,
-                                    note.format.editor_h2_span,
-                                    note.format.editor_h3_span,
-                                    note.format.editor_h4_span,
-                                    note.format.editor_h5_span,
-                                    note.format.editor_h6_span]
-
-        note.format.editor_code_span = move_down_and_get_span(test_cursor)
-        note.format.editor_strikethrough_span = move_down_and_get_span(test_cursor)
-        note.format.editor_mark_span = move_down_and_get_span(test_cursor)
-        note.format.editor_link_external_style = move_down_and_get_span(test_cursor, only_style=True)
+        self.extract_real_styles_note_format()
 
         # Translate plain text to html and set as doc source
         note_source = note.convert_zim_text_to_html_source(lines)
@@ -1376,7 +1381,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         cursor = main_window.textBrowser_Note.textCursor()
 
         # Проверяем - делали ли промотку на нужную позицию найденного текста
-        if line_number:
+        if line_number > -1:
            print('Перемещение курсора на последнюю сохраненную позицию не нужно - у нас был переход на позицию найденного текста.')
         elif rec_current_position:
             # Восстанавливаем позицию предыдущую позицию курсора, если она была сохранена
