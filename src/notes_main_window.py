@@ -122,6 +122,7 @@ class App_Settings():
     Name = 'RelaNotes'
     config_path = ''   # Путь к файлам локальных настроек программы
     path_to_notes = '' # Путь к каталогу с заметками
+    path_to_app = ''   # Путь к исходникам (или выполняемым файлам) приложения
     settings = None    # ini-хранилище переменных
     state_db = None    # База данных со списками истории открытия заметок и прочими данными
     state_db_connection = None
@@ -148,13 +149,13 @@ class App_Settings():
         # Проверяем БАГ, когда в переменную библиотека QT занесла неправильные слеши
         self.path_to_notes = give_correct_path_under_win_and_other(self.path_to_notes)
 
-        ## Получаем путь к каталогу, в котором лежат исходники программы
-        #path_to_me = os.path.split(os.path.abspath(sys.argv[0]))[0]
-        #print("path_to_me:", path_to_me)
-        ## '/home/vchsnr/Dropbox/Projects/Relanotes/Relanotes-next/'
-        ## Переходим в свой каталог, чтобы относительные пути до настроек и прочих файлов оказались
-        ## корректными при запуске из любого каталога.
-        #os.chdir(path_to_me)
+        # Получаем путь к каталогу, в котором лежат исходники программы
+        self.path_to_app = os.path.split(os.path.abspath(sys.argv[0]))[0]
+        print("path_to_app:", self.path_to_app)
+        # '/home/vchsnr/Dropbox/Projects/Relanotes/Relanotes-next/'
+        # Переходим в свой каталог, чтобы относительные пути до настроек и прочих файлов оказались
+        # корректными при запуске из любого каталога.
+        os.chdir(self.path_to_app)
         
         #path_to_home = os.path.expanduser("~")
         #print("path_to_home:", path_to_home)
