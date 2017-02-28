@@ -1207,7 +1207,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #print('DEBUG: open_file_in_editor("filename=%s")' % filename)
         filename = get_correct_filename_from_url(filename)
 
-        print('Загружается файл %s с номером строки %s и поиском текста %s. Перезагрузка: %s' % (filename, line_number, found_text, reload) )
+        #print('Загружается файл %s с номером строки %s и поиском текста %s. Перезагрузка: %s' % (filename, line_number, found_text, reload) )
         
         # Сохраняем позицию предыдущей заметки, если она была открыта
         self.save_note_cursor_position()
@@ -1223,7 +1223,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Запись о файле уже есть. Получаем из неё последнюю позицию
                 app_settings.state_db_connection.execute("SELECT count_opens, current_position FROM file_recs WHERE filename=?", (filename,))
                 rec_count_opens, rec_current_position = app_settings.state_db_connection.fetchone()
-                print('Количество открытий заметки: %s, последняя позиция курсора: %s' % (rec_count_opens, rec_current_position))
+                #print('Количество открытий заметки: %s, последняя позиция курсора: %s' % (rec_count_opens, rec_current_position))
 
         # Проверяем на переход из списка файлов
         elif notelist.is_visible():
@@ -1266,7 +1266,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     # Получаем количество открытий данного файла
                     app_settings.state_db_connection.execute("SELECT count_opens, current_position FROM file_recs WHERE filename=?", (filename,))
                     rec_count_opens, rec_current_position = app_settings.state_db_connection.fetchone()
-                    print('Количество открытий заметки: %s, последняя позиция курсора: %s' % (rec_count_opens, rec_current_position))
+                    #print('Количество открытий заметки: %s, последняя позиция курсора: %s' % (rec_count_opens, rec_current_position))
                     # Обновляем запись в базе
                     app_settings.state_db_connection.execute("UPDATE file_recs SET last_open=?, count_opens=?  WHERE filename=?",
                                                 (datetime.now(), rec_count_opens + 1, filename))
@@ -1299,7 +1299,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
         if not line_number == None:  # Используем -1 а не None - чтобы Питон не делал из None-переменной 0
             # У нас указано - на какую строку перематывать
-            print('Выполняется промотка на линию "%s" и поиск текста "%s"' % (line_number, found_text) )
+            #print('Выполняется промотка на линию "%s" и поиск текста "%s"' % (line_number, found_text) )
 
             # Отключаем перенос строк в редакторе
             self.textBrowser_Note.setLineWrapMode(QtWidgets.QTextEdit.NoWrap)
@@ -1353,16 +1353,18 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Проверяем - делали ли промотку на нужную позицию найденного текста
         if not line_number == None:
-           print('Перемещение курсора на последнюю сохраненную позицию не нужно - у нас был переход на позицию найденного текста.')
+           #print('Перемещение курсора на последнюю сохраненную позицию не нужно - у нас был переход на позицию найденного текста.')
+           pass
         elif rec_current_position:
             # Восстанавливаем позицию предыдущую позицию курсора, если она была сохранена
-            print('Перемещаем курсор в заметке на позицию %s' % rec_current_position)
+            #print('Перемещаем курсор в заметке на позицию %s' % rec_current_position)
             # Устанавливаем копии нужное положение
             cursor.setPosition(rec_current_position)
             # Делаем копию основным курсором текстового редактора с новой позицией
             main_window.textBrowser_Note.setTextCursor(cursor)
         else:
-            print('Информации по позиции курсора в заметке не найдено.')
+            #print('Информации по позиции курсора в заметке не найдено.')
+            pass
 
         # rec = [ 'note' / 'list', 'filename' / 'filter', datetime ]
         # if history_position==0:
