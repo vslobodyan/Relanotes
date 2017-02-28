@@ -4148,7 +4148,7 @@ class NoteMultiactionWindow(QtWidgets.QDialog, note_multiaction.Ui_DialogNoteMul
         # full_filename = note_path+'/'+new_filename
         full_filename = note_path + os.path.sep + new_filename
         self.make_new_note_file(full_filename, new_note_name)
-        main_window.open_file_in_editor(full_filename)
+        main_window.open_file_in_editor(full_filename, line_number=3)
         main_window.statusbar.showMessage('New note created: ' + full_filename)
         self.close()
 
@@ -4164,7 +4164,7 @@ class NoteMultiactionWindow(QtWidgets.QDialog, note_multiaction.Ui_DialogNoteMul
             # Создаем каталог нужный
             os.makedirs(note_path)
         self.make_new_note_file(full_filename, new_note_name)
-        main_window.open_file_in_editor(full_filename)
+        main_window.open_file_in_editor(full_filename, line_number=3)
         main_window.statusbar.showMessage('New note created: ' + full_filename)
         self.close()
     
