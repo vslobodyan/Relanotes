@@ -4112,18 +4112,31 @@ class NoteMultiactionWindow(QtWidgets.QDialog, note_multiaction.Ui_DialogNoteMul
         # self.lineEdit.setFocus()
 
     def make_new_note_file(self, filename, notename):
-        note_source = '''Content-Type: text/x-zim-wiki
-Wiki-Format: zim 0.4
-Creation-Date: 2012-09-02T11:16:31+04:00
+        # Создание новой пустой заметки
 
-''' + '====== ' + notename + ''' ======
+#        note_source = '''Content-Type: text/x-zim-wiki
+#Wiki-Format: zim 0.4
+#Creation-Date: 2012-09-02T11:16:31+04:00
+
+#''' + '====== ' + notename + ''' ======
+
+
+#'''
+        note_source = '====== ' + notename + ''' ======
 
 
 '''
 
-        f = open(filename, "w")
-        f.writelines(note_source)
-        f.close()
+        #f = open(filename, "w")
+        #f.writelines(note_source)
+        #f.close()
+        # Новое сохранение в UTF
+        fileObj = codecs.open(filename, "w", "utf-8")
+        for one_line in note_source:
+            fileObj.write(one_line)
+        fileObj.close()
+
+
 
     def add_note_nearly(self):
         # Создаем новый файл рядом с указанным, с заданным именем
