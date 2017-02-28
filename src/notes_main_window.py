@@ -4213,15 +4213,43 @@ class App_Tests():
     path_to_notes_convertation = ''  # Путь к каталогу, в котором надо проводить тесты
     items = []      # Массив элементов, для которого надо провести тесты
 
-    def collect_items(self, from_directory=False, from_notelist=False):
+    def collect_items(self, from_directory=False, change_path = False, from_notelist=False):
         # Собираем элементы для последующего тестирования
         self.items = []
         if from_notelist:
             for one_item in notelist.items:
                 self.items.append(one_item['filename'])
                 #print('one_item %s' % one_item['filename'])
+
         if from_directory:
-            pass
+            # Диалог выбора пути для сканирования
+            if change_path or not self.path_to_notes_convertation:
+                print('Предлагаем смену каталога для теста')
+                new_path = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(main_window, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
+                print('path_to_notes_convertation: ##%s##' % new_path)
+                #return 0
+                if not new_path:
+                    print('Каталог не выбран.')
+                    return 0
+                else:
+                    print('Выбран новый каталог для тестов: %s' % new_path)
+                    self.update_path_info_for_notes_convertation(new_path, save=True)
+            else:
+                print('Готовим тест без смены каталога')
+            #return 0
+            #if not app_settings.path_to_notes:
+            #    app_settings.path_to_notes = "D:\Test\\Notes"
+            print('Пользователь выбрал для теста каталог %s' % self.path_to_notes_convertation)
+
+            for root, dirs, files in os.walk(self.path_to_notes_convertation):
+                for file in files:
+                    if file.endswith('.txt'):
+                        filename = os.path.join(root, file)
+                        self.items.append(filename)
+                        print('filename %s' % filename)
+
+
+
 
     def update_path_info_for_notes_convertation(self, new_path, save=False):
         # Обновляем информацию о новом каталоге для теста
@@ -4244,7 +4272,7 @@ class App_Tests():
 
     def notes_convertation_for_directory(self, change_path=False):
         # Выполняем тест для директории из настроек
-        self.collect_items(from_directory=True)
+        self.collect_items(from_directory=True, change_path=change_path)
         pass
 
 
