@@ -95,7 +95,7 @@ from src.routines import *
 ## history_recs = []
 #history_position = 0
 
-#full_state_db_filename = os.path.join(app_config_path, 'state.db')
+#full_state_db_name = os.path.join(app_config_path, 'state.db')
 #app_settings.state_db = sqlite3.connect(full_state_db_filename)
 #app_settings.state_db_connection = state_db.cursor()
 
@@ -1201,14 +1201,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def open_file_in_editor(self, filename, line_number=None, found_text=None, reload=False):
         # line_number - новая переменная промотки редактора на нужную строку
         # found_text - искомый текст, который надо подсветить
-
-        print('Загружается файл %s с номером строки %s и поиском текста %s. Перезагрузка: %s' % (filename, line_number, found_text, reload) )
         self.statusbar.showMessage('Загружается файл %s' % filename)
 
         #print('open_file_in_editor("filename=%s", "line_number=%s")' % (filename, line_number) )
         #print('DEBUG: open_file_in_editor("filename=%s")' % filename)
         filename = get_correct_filename_from_url(filename)
-        #print('DEBUG: open_file_in_editor(" after unquote =%s")' % filename)
+
+        print('Загружается файл %s с номером строки %s и поиском текста %s. Перезагрузка: %s' % (filename, line_number, found_text, reload) )
         
         # Сохраняем позицию предыдущей заметки, если она была открыта
         self.save_note_cursor_position()
@@ -4195,28 +4194,47 @@ class MyTextBrowser(QtWidgets.QTextBrowser):
 
 class App_Tests():
     # Класс для внутренних тестов программы. В том числе вызываемых через меню.
-    
+    path_to_notes_convertation = ''
+
+    def update_path_info_for_notes_convertation(self, new_path, save=False):
+        # Обновляем информацию о новом каталоге для теста
+        self.path_to_notes_convertation = give_correct_path_under_win_and_other(self.new_path)
+        # Обновляем текст в действии с запуском в последнем каталоге, чтобы там отображался наш новый путь
+        if self.path_to_notes_convertation:
+            main_window.actionRun_test_for_notes_convertation_in_last_directory.setText('Run test for notes convertation in %s' % self.path_to_notes_convertation)
+        else:
+            main_window.actionRun_test_for_notes_convertation_in_last_directory.setText('Run test for notes convertation in last directory')
+        if save:
+            # Сохраняем переменную с новым каталогом
+            app_settings.settings.setValue('path_to_notes_convertation_test', self.path_to_notes_convertation)
+            app_settings.settings.sync()
+                    
+
+
     def notes_convertation(self, change_path=False):
         # Тестовая функция, позволяющая проверить корректность конвертации форматирования при открытии и сохранении заметок
         print('Запускаем функцию тестирования конвертации форматирования при открытии и сохранении заметок')
 
         # Диалог выбора пути для сканирования
-        if change_path:
+        if change_path or not self.path_to_notes_convertation:
             print('Предлагаем смену каталога для теста')
-            app_settings.path_to_notes = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(main_window, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
-            print('path_to_notes: ##%s##' % app_settings.path_to_notes)
+            new_path = give_correct_path_under_win_and_other(QtWidgets.QFileDialog.getExistingDirectory(main_window, "Select Directory with your Notes for Test", '' , QtWidgets.QFileDialog.ShowDirsOnly))
+            print('path_to_notes_convertation: ##%s##' % new_path)
             #return 0
-            if not app_settings.path_to_notes:
+            if not new_path:
                 print('Каталог не выбран.')
                 return 0
+            else:
+                print('Выбран новый каталог для тестов: %s' % new_path)
+                self.update_path_info_for_notes_convertation(new_path, save=True)
         else:
             print('Готовим тест без смены каталога')
         #return 0
-        if not app_settings.path_to_notes:
-            app_settings.path_to_notes = "D:\Test\\Notes"
-        print('Пользователь выбрал для теста каталог %s' % app_settings.path_to_notes)
+        #if not app_settings.path_to_notes:
+        #    app_settings.path_to_notes = "D:\Test\\Notes"
+        print('Пользователь выбрал для теста каталог %s' % self.path_to_notes_convertation)
 
-        for root, dirs, files in os.walk(app_settings.path_to_notes):
+        for root, dirs, files in os.walk(self.path_to_notes_convertation):
             for file in files:
                 if file.endswith('.txt'):
                     filename = os.path.join(root, file)
@@ -4257,8 +4275,11 @@ class App_Tests():
         self.notes_convertation(change_path=True)
     
     def __init__(self):
-
         print('Инициализация класса тестов')
+
+        # Получение из настроек пути к каталогу тестов
+        new_path = app_settings.settings.value('path_to_notes_convertation_test')
+        self.update_path_info_for_notes_convertation(new_path)
 
         main_window.actionRun_test_for_notes_convertation_in_last_directory.triggered.connect(self.notes_convertation)
     
