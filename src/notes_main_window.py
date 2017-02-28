@@ -4198,7 +4198,7 @@ class App_Tests():
 
     def update_path_info_for_notes_convertation(self, new_path, save=False):
         # Обновляем информацию о новом каталоге для теста
-        self.path_to_notes_convertation = give_correct_path_under_win_and_other(self.new_path)
+        self.path_to_notes_convertation = give_correct_path_under_win_and_other(new_path)
         # Обновляем текст в действии с запуском в последнем каталоге, чтобы там отображался наш новый путь
         if self.path_to_notes_convertation:
             main_window.actionRun_test_for_notes_convertation_in_last_directory.setText('Run test for notes convertation in %s' % self.path_to_notes_convertation)
