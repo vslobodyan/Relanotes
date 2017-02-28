@@ -4196,7 +4196,19 @@ class MyTextBrowser(QtWidgets.QTextBrowser):
 
 class App_Tests():
     # Класс для внутренних тестов программы. В том числе вызываемых через меню.
-    path_to_notes_convertation = ''
+
+    path_to_notes_convertation = ''  # Путь к каталогу, в котором надо проводить тесты
+    items = []      # Массив элементов, для которого надо провести тесты
+
+    def collect_items(self, from_directory=False, from_notelist=False):
+        # Собираем элементы для последующего тестирования
+        self.items = []
+        if from_notelist:
+            for one_item in notelist.items:
+                self.items.append(one_item['filename'])
+                #print('one_item %s' % one_item['filename'])
+        if from_directory:
+            pass
 
     def update_path_info_for_notes_convertation(self, new_path, save=False):
         # Обновляем информацию о новом каталоге для теста
@@ -4210,7 +4222,17 @@ class App_Tests():
             # Сохраняем переменную с новым каталогом
             app_settings.settings.setValue('path_to_notes_convertation_test', self.path_to_notes_convertation)
             app_settings.settings.sync()
-                    
+    
+                            
+    def notes_convertation_for_notelist(self):
+        # Выполняем тест для текущего списка заметок
+        self.collect_items(from_notelist=True)
+        pass
+
+    def notes_convertation_for_directory(self, change_path=False):
+        # Выполняем тест для директории из настроек
+        self.collect_items(from_directory=True)
+        pass
 
 
     def notes_convertation(self, change_path=False):
@@ -4274,7 +4296,7 @@ class App_Tests():
         print('Тестирование завершено.')
 
     def notes_convertation_change_path(self):
-        self.notes_convertation(change_path=True)
+        self.notes_convertation_for_directory(change_path=True)
     
     def __init__(self):
         print('Инициализация класса тестов')
@@ -4283,7 +4305,8 @@ class App_Tests():
         new_path = app_settings.settings.value('path_to_notes_convertation_test')
         self.update_path_info_for_notes_convertation(new_path)
 
-        main_window.actionRun_test_for_notes_convertation_in_last_directory.triggered.connect(self.notes_convertation)
+        main_window.actionRun_test_for_notes_convertation_in_last_directory.triggered.connect(self.notes_convertation_for_directory)
+        main_window.actionRun_test_notes_convertation_for_notelist.triggered.connect(self.notes_convertation_for_notelist)
     
         main_window.actionSelect_another_directory_and_run_test_for_notes_convertation.triggered.connect(self.notes_convertation_change_path)
         
