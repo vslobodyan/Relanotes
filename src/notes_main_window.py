@@ -3689,7 +3689,7 @@ class Notelist():
 
 
         # 5. найти положение заметки, у которой стоял курсор, и обновить положение курсора в классе
-        new_cursor_position = 0
+        new_cursor_position = 1  # Да, позиция тут начинается с единицы
         for one_item in self.items:
             if one_item['filename'] == cursor_filename:
                 # Нашли новое положение курсора
