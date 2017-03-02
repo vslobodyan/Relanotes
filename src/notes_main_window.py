@@ -3665,11 +3665,10 @@ class Notelist():
         # Проходим по старым айтемам и те, что не история или не в новой истории - добавляем к новому массиву
         print('Добавляем элементы, которые не были и не есть в истории')
         for one_item in items_copy:
-            if not one_item['history']:
-                # Не был в истории
-                if not one_item['filename'] in new_history_items:
-                    # И не есть в истории
-                    self.items.append(one_item.copy())
+            if not one_item['filename'] in new_history_items:
+                # Нету в новой истории
+                one_item['history'] = False # Даже если был в истории - теперь он обычный элемент
+                self.items.append(one_item.copy())
 
         #print('Удаляем новую историю из старых айтемов')
         ## 3. пройтись по айтемам из истории и выкинуть их из копии
