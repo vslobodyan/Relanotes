@@ -1071,7 +1071,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Оформление для элементов "на неделе"
         # Оформление для более ранних элементов
 
+        html_string = notelist.make_html_source_for_items_list_in_history_sidebar()
 
+        self.sidebar_source.setHtml(html_string)
+        self.textBrowser_History.setDocument(self.sidebar_source)
+
+        return 0
 
         html_string = '<p id=history_date>Сегодня</p>'
 
@@ -2939,6 +2944,7 @@ class Notelist():
     allowed_note_files_extensions = ['.txt']
 
     items = []  # Элементы списка заметок
+    
     items_cursor_position = 0  # Положение курсора в списке элементов, который можно открыть по нажатию Enter
     # move_cursor_direction = None # Признак того - куда надо передвинуть реальный курсор в QTextBrowser вслед за виртуальным
     items_cursor_url = None  # Ссылка под курсором, которая откроется при нажатии Enter
@@ -2946,6 +2952,7 @@ class Notelist():
     items_notes_size = 0  # Общий объём данных в заметках из списка
     items_notes_count = 0  # Количество отдельных заметок в списке элементов
 
+    history_items = []   # Копия элементов только с типом "история"
     history_position = 0 # Некая переменная, которая была задумана для обозначения позиции в истории. Зачем - уже забыто. Но сохранена для будущего развития программы.
 
     # Информация обо всех подходящих под заметки файлах, найденных в процессе обхода, но, часть из которых может быть впоследствии может быть отфильтрована
@@ -3477,6 +3484,12 @@ class Notelist():
         
         # Добавляем элемент во внутренний список элементов
         self.items.append(rec_item)
+        if history:
+            # Добавляем и в отдельный список для истории, если это она
+            # Переводим дату из строки в datetime
+            rec_item_copy = rec_item.copy()
+            rec_item_copy['last_open']= datetime.strptime(rec_item['last_open'], '%Y-%m-%d %H:%M:%S.%f')
+            self.history_items.append(rec_item_copy)
         
     def delete_item(self, item_filename=None, items_array=[]):
         # Удаляем элемент списка из указанного массива (это может быть и не items)
@@ -3510,6 +3523,9 @@ class Notelist():
         self.items = []
         self.items_notes_size = 0
         self.items_notes_count = 0
+        
+        # Копия данных об истории
+        self.history_items = []
 
         # Данные о курсоре
         # self.items_cursor_url = None
@@ -3553,6 +3569,7 @@ class Notelist():
                       history=history,
                       last_open=last_open,
                       size=size)
+
         # Увеличиваем счетчик количества заметок в списке
         self.items_notes_count += 1
 
@@ -3785,7 +3802,7 @@ class Notelist():
     def make_html_source_for_item_history_sidebar(self, one_item):
         # Создаем html для элемента истории в сайдбаре
 
-        pass
+        return '<p>%s</p>' % one_item['filename']
 
 
 
@@ -3878,43 +3895,43 @@ class Notelist():
         # Создаем html исходник для всего сайдбара истории
 
         html_source = ''
-        collect_history_is_done = False  # Признак завершения обработки всех элементов истории
-        first_history_item_done = False  # Признак завершения обработки первого элемента истории
         item_number = 0  # Порядковый номер элемента в списке
+        headers = [
+            ['Сегодня', 0, False],
+            ['Вчера', 1, False],
+            ['На неделе',2, False],
+            ['Раньше', 7, False],
+            ]  # Число- количество дней от сегодняшнего дня, старше которых наступает данный раздел
 
         #header_element_string = '<div id=notelist_header>%s</div>'
-        header_element_string = '<p id=notelist_header>%s</p>'
+        header_element_string = '<p id=history_date>%s</p>'
+        current_header_ndx = 0
+        current_header_ndx_max = 3
 
-        for one_item in self.items:
-            self.search_progress_indicator_add(items=True)
-            if not first_history_item_done and not one_item['history']:
-                # У нас отсутствует история - ещё не обработали первый элемент истории, а уже обычная заметка
-                first_history_item_done = True
-            elif not first_history_item_done and one_item['history']:
-                # У нас первый элемент истории. Добавляем заголовк для этого блока
-                first_history_item_done = True
-                if self.filter_name or self.filter_text:
-                    header_string = "Найдено в истории обращений к заметкам:"
-                else:
-                    header_string = "История обращений к заметкам"
-                html_source += header_element_string % header_string
+        time_period_begin = datetime.today() - timedelta(days=headers[current_header_ndx][1])
+        time_period_end = datetime.today() + timedelta(days=999)
 
-            if not collect_history_is_done and not one_item['history']:
-                # У нас первый элемент, который не связан с историей. Надо внести новый заголовок
-                collect_history_is_done = True
-                if self.filter_name or self.filter_text:
-                    header_string = "Найдено в списке неоткрытых заметок:"
-                else:
-                    header_string = "Список неоткрытых заметок"
-                html_source += header_element_string % header_string
+        header, days_delta, header_switch = headers[current_header_ndx]
+
+        for one_item in self.history_items:
+            while not (current_header_ndx > current_header_ndx_max) or (time_period_begin < one_item['last_open'] < time_period_end):                
+                time_period_begin = datetime.today() - timedelta(days=headers[current_header_ndx][1])
+                time_period_end = datetime.today() - timedelta(days=headers[current_header_ndx-1][1])
+                current_header_ndx += 1
+
+            # В какой заголовок добавлять, текущий или следующий?
+            if not (current_header_ndx > current_header_ndx_max) and not headers[current_header_ndx][2]:
+                html_source += header_element_string % headers[current_header_ndx][0]
+                headers[current_header_ndx][2] = True
 
             # Увеличиваем порядковый номер элемента
             item_number += 1
             # print('Создаем html-код для элемента %s' % item_number)
 
             # Добавляем собственно сам элемент в html-обертке
-            html_source += self.make_html_source_for_item(one_item, item_number)
-
+            #html_source += self.make_html_source_for_item(one_item, item_number)
+            html_source += self.make_html_source_for_item_history_sidebar(one_item)
+            
 
         # Проверка на пустой список элементов
         if len(self.items)<1:
@@ -3938,22 +3955,6 @@ class Notelist():
                 notelist_empty_message = notelist_empty_string % notelist_empty_by_filter
         else:
             notelist_empty_message = ''
-
-        ## Получение информации о текущей установке фильтров списка заметок
-        #notelist_search_param_string = '<div id=notelist_search_param_message>%s</div>'
-        #notelist_search_param_message = ''
-
-        #if self.filter_name:
-        #    description_filter_name = ('  Show notes with a name containing <b>"%s"</b>' % self.filter_name)
-        #else:
-        #    description_filter_name = '  Show notes with any name'
-        #if self.filter_text:
-        #    description_filter_text = ('containing the text <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;'))
-        #else:
-        #    description_filter_text = 'containing any text'
-
-        #notelist_search_param_message_text = description_filter_name + ' and ' + description_filter_text
-        #notelist_search_param_message = notelist_search_param_string % notelist_search_param_message_text
 
         # Используем настройки темы для оформления списка элементов
         html_source = self.html_body(empty_message=notelist_empty_message,
@@ -4591,8 +4592,8 @@ main_window.show()
 main_window.statusbar.showMessage('Application initializing..')
 # self.open_file_in_editor(path_to_notes + 'компьютерное.txt')
 main_window.initial_db()
-main_window.renew_history_lists('')
 notelist.update()
+main_window.renew_history_lists('')
 # Делаем инициализацию текста в поле фильтра списка заметок
 main_window.notelist_filter_changed('')
 
