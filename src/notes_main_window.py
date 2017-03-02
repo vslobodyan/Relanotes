@@ -2884,18 +2884,18 @@ class Note():
         main_window.frameSearchInNote.setVisible(False)
 
 
-class History ():
+#class History ():
 
-    def add(self, type_, value):
-        pass
+#    def add(self, type_, value):
+#        pass
     
-    def set_active(self, filename):
-        pass
+#    def set_active(self, filename):
+#        pass
     
-    def setVisible(self, visible=True):
-        # Переключаем соотстветствующее отображению действие
-        # main_window.actionFast_jump_to_file_or_section.setChecked(visible)
-        pass
+#    def setVisible(self, visible=True):
+#        # Переключаем соотстветствующее отображению действие
+#        # main_window.actionFast_jump_to_file_or_section.setChecked(visible)
+#        pass
 
 
 class Notelist():
@@ -4463,7 +4463,7 @@ main_window.horizontalLayout_Note.layout().addWidget(main_window.frame_NoteMinim
 
 note = Note()
 notelist = Notelist()
-history = History()
+#history = History()
 
 table_of_note_contents = Table_of_note_contents()
 calculator_win = calculator.CalculatorWindow()
