@@ -1065,6 +1065,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         preferences_win.show()
 
     def renew_history_lists(self, active_link):
+
+        # Оформление для сегодняшних элементов
+        # Оформление для вчерашних элементов
+        # Оформление для элементов "на неделе"
+        # Оформление для более ранних элементов
+
+
+
         html_string = '<p id=history_date>Сегодня</p>'
 
         # app_settings.state_db_connection.execute('''CREATE TABLE history_recs
@@ -3774,6 +3782,12 @@ class Notelist():
         return item_cursor_source
 
 
+    def make_html_source_for_item_history_sidebar(self, one_item):
+        # Создаем html для элемента истории в сайдбаре
+
+        pass
+
+
 
     def make_html_source_for_item(self, one_item, item_number):
         # Создаем оформление и html-форматирование для представления одного элемента из списка в общем исходнике html
@@ -3858,6 +3872,94 @@ class Notelist():
         # print()
         return html_source
 
+
+
+    def make_html_source_for_items_list_in_history_sidebar(self):
+        # Создаем html исходник для всего сайдбара истории
+
+        html_source = ''
+        collect_history_is_done = False  # Признак завершения обработки всех элементов истории
+        first_history_item_done = False  # Признак завершения обработки первого элемента истории
+        item_number = 0  # Порядковый номер элемента в списке
+
+        #header_element_string = '<div id=notelist_header>%s</div>'
+        header_element_string = '<p id=notelist_header>%s</p>'
+
+        for one_item in self.items:
+            self.search_progress_indicator_add(items=True)
+            if not first_history_item_done and not one_item['history']:
+                # У нас отсутствует история - ещё не обработали первый элемент истории, а уже обычная заметка
+                first_history_item_done = True
+            elif not first_history_item_done and one_item['history']:
+                # У нас первый элемент истории. Добавляем заголовк для этого блока
+                first_history_item_done = True
+                if self.filter_name or self.filter_text:
+                    header_string = "Найдено в истории обращений к заметкам:"
+                else:
+                    header_string = "История обращений к заметкам"
+                html_source += header_element_string % header_string
+
+            if not collect_history_is_done and not one_item['history']:
+                # У нас первый элемент, который не связан с историей. Надо внести новый заголовок
+                collect_history_is_done = True
+                if self.filter_name or self.filter_text:
+                    header_string = "Найдено в списке неоткрытых заметок:"
+                else:
+                    header_string = "Список неоткрытых заметок"
+                html_source += header_element_string % header_string
+
+            # Увеличиваем порядковый номер элемента
+            item_number += 1
+            # print('Создаем html-код для элемента %s' % item_number)
+
+            # Добавляем собственно сам элемент в html-обертке
+            html_source += self.make_html_source_for_item(one_item, item_number)
+
+
+        # Проверка на пустой список элементов
+        if len(self.items)<1:
+            # Проверка на полное отсутствие элементов в списке
+            
+            notelist_empty_string = '<div id=notelist_empty_message>%s</div>'
+            notelist_empty_by_filter = '''<br>
+Нет заметок, удовлетворяющих текущему фильтру.
+
+<small>Всего заметок по текущим настройкам: %s</small>''' % self.all_found_files_count
+
+            notelist_empty_by_settings = '''<br>
+Нет заметок, удовлетворяющих текущим настройкам.
+<small>Проверьте указанный путь к каталогу заметок и настройки выбранных типов файлов заметок.</small>'''
+
+            if self.all_found_files_count<1:
+                # Заметок по указанному пути нет вообще
+                notelist_empty_message = notelist_empty_string % notelist_empty_by_settings
+            else:
+                # Заметки есть, но выставленным фильтрам они не удовлетворяют
+                notelist_empty_message = notelist_empty_string % notelist_empty_by_filter
+        else:
+            notelist_empty_message = ''
+
+        ## Получение информации о текущей установке фильтров списка заметок
+        #notelist_search_param_string = '<div id=notelist_search_param_message>%s</div>'
+        #notelist_search_param_message = ''
+
+        #if self.filter_name:
+        #    description_filter_name = ('  Show notes with a name containing <b>"%s"</b>' % self.filter_name)
+        #else:
+        #    description_filter_name = '  Show notes with any name'
+        #if self.filter_text:
+        #    description_filter_text = ('containing the text <b>"%s"</b>' % self.filter_text.replace(' ', '&nbsp;'))
+        #else:
+        #    description_filter_text = 'containing any text'
+
+        #notelist_search_param_message_text = description_filter_name + ' and ' + description_filter_text
+        #notelist_search_param_message = notelist_search_param_string % notelist_search_param_message_text
+
+        # Используем настройки темы для оформления списка элементов
+        html_source = self.html_body(empty_message=notelist_empty_message,
+                                       html_source=html_source)
+        #print('html_source of notelist: ###%s###' % html_source)
+        return html_source
 
 
 
