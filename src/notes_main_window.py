@@ -980,7 +980,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 if one_item['checkbox'].isChecked():
                     print(' - %s' % one_item['filename'])
                     app_settings.state_db_connection.execute("UPDATE file_recs SET last_open=NULL, count_opens=0 WHERE filename=?", (one_item['filename'],))
-            notelist.update()
+            notelist.update(history_update=True)
 
         # Удаляем все виджеты и компоновщик
         while layout.count():
@@ -3244,7 +3244,7 @@ class Notelist():
             # Показываем список заметок
             self.set_visible()
             # Обновляем список на случай появления новых файлов и для подсветки текущего
-            self.update()
+            self.update(history_update=True)
             # Устанавливаем фокус на поля фильтров ввода
             # При любом раскладе выделяем весь текст в поле имени и ставим на него фокус            
             main_window.lineNotelist_Filter.setFocus()
@@ -3256,9 +3256,9 @@ class Notelist():
             #    main_window.lineEdit_Filter_Note_Text.setFocus()
             #    main_window.lineEdit_Filter_Note_Text.selectAll()
 
-    def update(self):
+    def update(self, history_update=False):
         # Обновляем список заметок
-        self.rescan_files_in_notes_path()
+        self.rescan_files_in_notes_path(history_update)
 
     def cancel_scheduled_update(self):
         # Отменяем отложенное обновление списка элементов
@@ -3669,7 +3669,7 @@ class Notelist():
                 # Не был в истории
                 if not one_item['filename'] in new_history_items:
                     # И не есть в истории
-                    self.items.append(one_item.deepcopy())
+                    self.items.append(one_item.copy())
 
         #print('Удаляем новую историю из старых айтемов')
         ## 3. пройтись по айтемам из истории и выкинуть их из копии
@@ -3954,7 +3954,7 @@ class Notelist():
 
 
 
-    def rescan_files_in_notes_path(self):
+    def rescan_files_in_notes_path(self, history_update=False):
         # Обновляем список заметок в зависимости от фильтров
         print('rescan_files, need_rescan: %s' % self.need_rescan)
 
@@ -3971,7 +3971,8 @@ class Notelist():
             self.need_rescan = False
         else:
             # Обновляем только по статусу истории
-            self.update_items_list_with_history_status()
+            if history_update:
+                self.update_items_list_with_history_status()
 
         # Обновляем информацию в статусной строке главного окна
         main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count) + ' notes (' + hbytes(self.all_found_files_size) + ') at ' + app_settings.path_to_notes + 
