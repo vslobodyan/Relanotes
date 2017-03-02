@@ -3956,7 +3956,7 @@ class Notelist():
 
     def rescan_files_in_notes_path(self, history_update=False):
         # Обновляем список заметок в зависимости от фильтров
-        print('rescan_files, need_rescan: %s' % self.need_rescan)
+        print('rescan_files, need_rescan: %s, history_update: %s' % (self.need_rescan, history_update) )
 
         self.get_and_display_filters()
         notelist.set_visible()
