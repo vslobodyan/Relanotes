@@ -1003,7 +1003,6 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
     def backward_on_history(self):
         self.statusbar.showMessage('Backward on history')
-        notelist.update_items_list_with_history_status()
 
     def initial_db(self):
         self.statusbar.showMessage('First read and indexing of your files..')
@@ -3643,6 +3642,13 @@ class Notelist():
 
         # 1. Копировать айтемы в отдельный список
         items_copy = self.items.copy()
+
+        # Копируем статистику (изменилась история, а не реально найденные элементы)
+        all_found_files_count_copy = self.all_found_files_count
+        all_found_files_size_copy = self.all_found_files_size
+        items_notes_size_copy = self.items_notes_size
+        items_notes_count_copy = self.items_notes_count
+
         # Очистить список элементов notelist
         self.clear_items()
         # А что будет с общей статистикой?
@@ -3671,6 +3677,11 @@ class Notelist():
         print('items: %s' % self.items)
 
         # 6. Обновить информацию об общей статистике найденного и отображенных элементов в Notelist
+        # Восстанавливаем статистику
+        self.all_found_files_count = all_found_files_count_copy
+        self.all_found_files_size = all_found_files_size_copy
+        self.items_notes_size = items_notes_size_copy
+        self.items_notes_count = items_notes_count_copy
 
         
 
