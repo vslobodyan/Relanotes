@@ -980,12 +980,14 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 if one_item['checkbox'].isChecked():
                     print(' - %s' % one_item['filename'])
                     app_settings.state_db_connection.execute("UPDATE file_recs SET last_open=NULL, count_opens=0 WHERE filename=?", (one_item['filename'],))
+            notelist.update()
 
         # Удаляем все виджеты и компоновщик
         while layout.count():
             item = layout.takeAt(0)
             item.widget().deleteLater()
         layout.deleteLater()
+
 
 
 
@@ -1001,6 +1003,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         
     def backward_on_history(self):
         self.statusbar.showMessage('Backward on history')
+        notelist.update_items_list_with_history_status()
 
     def initial_db(self):
         self.statusbar.showMessage('First read and indexing of your files..')
@@ -3468,6 +3471,26 @@ class Notelist():
         # Добавляем элемент во внутренний список элементов
         self.items.append(rec_item)
         
+    def delete_item(self, item_filename=None, items_array=[]):
+        # Удаляем элемент списка из указанного массива (это может быть и не items)
+
+        item_number = 0
+        item_was_found = False # Признак того, что элемент в итоге нашли
+
+        for one_item in items_array:
+            
+            if one_item['filename'] == item_filename:
+                # Нашли нужный item
+                item_was_found = True
+            else:
+                item_number += 1
+        if item_was_found:
+            # Удаляем из указанного списка элемент с указанным номером
+            items_array.pop(item_number)
+            print('Из массива элементов был удален %s' % item_filename)
+        else:
+            print('При поиске в элементах %s для удаления, этого элемента найти не удалось!' % item_filename)
+
     
     def clear_items(self):
         # Очищаем данные об элементах 
@@ -3607,6 +3630,49 @@ class Notelist():
 
                     self.work_with_found_note(filename=filename,
                                               size=size)
+
+    def update_items_list_with_history_status(self):
+        # Обновляем список элементов после изменении истории
+
+        # 0. Запомнить - на какой заметке (по имени файла) должен быть курсор
+        if notelist.items_cursor_position > 0:
+            cursor_filename = notelist.items[notelist.items_cursor_position-1]['filename']
+        else:
+            cursor_filename = ''
+        print('cursor_filename %s' % cursor_filename)
+
+        # 1. Копировать айтемы в отдельный список
+        items_copy = self.items.copy()
+        # Очистить список элементов notelist
+        self.clear_items()
+        # А что будет с общей статистикой?
+
+        # 2. collect_history_items
+        self.collect_history_items_list()
+
+        # 3. пройтись по айтемам из истории и выкинуть их из копии
+        for one_item in self.items:
+            # В элементах только история
+            self.delete_item(one_item['filename'], items_copy)
+
+        # 4. добавить айтемы файлов к айтемам истории
+        for one_item in items_copy:
+            self.items.append(one_item)
+
+        # 5. найти положение заметки, у которой стоял курсор, и обновить положение курсора в классе
+        new_cursor_position = 0
+        for one_item in self.items:
+            if one_item['filename'] == cursor_filename:
+                # Нашли новое положение курсора
+                self.items_cursor_position = new_cursor_position
+            else:
+                new_cursor_position += 1
+
+        print('items: %s' % self.items)
+
+        # 6. Обновить информацию об общей статистике найденного и отображенных элементов в Notelist
+
+        
 
 
     def highlight_found_text_in_html_source(self, item_source, highlight_text):
@@ -3866,6 +3932,9 @@ class Notelist():
             self.collect_history_items_list()
             self.collect_other_items_list()
             self.need_rescan = False
+        else:
+            # Обновляем только по статусу истории
+            self.update_items_list_with_history_status()
 
         # Обновляем информацию в статусной строке главного окна
         main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count) + ' notes (' + hbytes(self.all_found_files_size) + ') at ' + app_settings.path_to_notes + 
