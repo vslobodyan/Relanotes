@@ -1064,7 +1064,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def show_preferences(self):
         preferences_win.show()
 
-    def renew_history_list(self, active_link):
+    def renew_history_lists(self, active_link):
         html_string = '<p id=history_date>Сегодня</p>'
 
         # app_settings.state_db_connection.execute('''CREATE TABLE history_recs
@@ -1346,7 +1346,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         file_cute_name = notelist.make_cute_name(filename)
 
         self.setWindowTitle(app_settings.Name + ' - ' + file_cute_name)
-        self.renew_history_list(filename)
+        self.renew_history_lists(filename)
         self.statusbar.showMessage('Заметка загружена')
         self.current_open_note_link = filename
 
@@ -4489,7 +4489,7 @@ main_window.show()
 main_window.statusbar.showMessage('Application initializing..')
 # self.open_file_in_editor(path_to_notes + 'компьютерное.txt')
 main_window.initial_db()
-main_window.renew_history_list('')
+main_window.renew_history_lists('')
 notelist.update()
 # Делаем инициализацию текста в поле фильтра списка заметок
 main_window.notelist_filter_changed('')
