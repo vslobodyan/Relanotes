@@ -3657,22 +3657,37 @@ class Notelist():
         # 2. collect_history_items
         self.collect_history_items_list()
 
-        print('Удаляем новую историю из старых айтемов')
-        # 3. пройтись по айтемам из истории и выкинуть их из копии
+        # Собираем массив имен файлов из текущей истории
+        new_history_items = []
         for one_item in self.items:
-            # В элементах только история
-            self.delete_item(one_item['filename'], items_copy)
+            new_history_items.append(one_item['filename'])
 
-        print('Удаляем остатки старой истории из старых айтемов')
-        # Выкинуть всю историю из копии
+        # Проходим по старым айтемам и те, что не история или не в новой истории - добавляем к новому массиву
+        print('Добавляем элементы, которые не были и не есть в истории')
         for one_item in items_copy:
-            if one_item['history']:
-                self.delete_item(one_item['filename'], items_copy)
+            if not one_item['history']:
+                # Не был в истории
+                if not one_item['filename'] in new_history_items:
+                    # И не есть в истории
+                    self.items.append(one_item.deepcopy())
+
+        #print('Удаляем новую историю из старых айтемов')
+        ## 3. пройтись по айтемам из истории и выкинуть их из копии
+        #for one_item in self.items:
+        #    # В элементах только история
+        #    self.delete_item(one_item['filename'], items_copy)
+
+        #print('Удаляем остатки старой истории из старых айтемов')
+        ## Выкинуть всю историю из копии
+        #for one_item in items_copy:
+        #    if one_item['history']:
+        #        self.delete_item(one_item['filename'], items_copy)
 
 
-        # 4. добавить айтемы файлов к айтемам истории
-        for one_item in items_copy:
-            self.items.append(one_item)
+        ## 4. добавить айтемы файлов к айтемам истории
+        #for one_item in items_copy:
+        #    self.items.append(one_item)
+
 
         # 5. найти положение заметки, у которой стоял курсор, и обновить положение курсора в классе
         new_cursor_position = 0
