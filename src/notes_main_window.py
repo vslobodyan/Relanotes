@@ -3919,10 +3919,17 @@ class Notelist():
                 time_period_end = datetime.today() - timedelta(days=headers[current_header_ndx-1][1])
                 current_header_ndx += 1
 
+            print('filename: %s, time_period_begin: %s, time_period_end: %s, current_header_ndx: %s' % (one_item['filename'],
+                                         time_period_begin,
+                                         time_period_end,
+                                         current_header_ndx))
+
             # В какой заголовок добавлять, текущий или следующий?
             if not (current_header_ndx > current_header_ndx_max) and not headers[current_header_ndx][2]:
-                html_source += header_element_string % headers[current_header_ndx][0]
+                header_html = header_element_string % headers[current_header_ndx][0]
+                html_source += header_html
                 headers[current_header_ndx][2] = True
+                print('header_html: %s' % header_html)
 
             # Увеличиваем порядковый номер элемента
             item_number += 1
