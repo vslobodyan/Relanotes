@@ -3630,6 +3630,7 @@ class Notelist():
                     self.work_with_found_note(filename=filename,
                                               size=size)
 
+
     def update_items_list_with_history_status(self):
         # Обновляем список элементов после изменении истории
 
@@ -3656,10 +3657,18 @@ class Notelist():
         # 2. collect_history_items
         self.collect_history_items_list()
 
+        print('Удаляем новую историю из старых айтемов')
         # 3. пройтись по айтемам из истории и выкинуть их из копии
         for one_item in self.items:
             # В элементах только история
             self.delete_item(one_item['filename'], items_copy)
+
+        print('Удаляем остатки старой истории из старых айтемов')
+        # Выкинуть всю историю из копии
+        for one_item in items_copy:
+            if one_item['history']:
+                self.delete_item(one_item['filename'], items_copy)
+
 
         # 4. добавить айтемы файлов к айтемам истории
         for one_item in items_copy:
@@ -3673,8 +3682,8 @@ class Notelist():
                 self.items_cursor_position = new_cursor_position
             else:
                 new_cursor_position += 1
-
-        print('items: %s' % self.items)
+        print('cursor_filename: %s, position: %s' % (cursor_filename, self.items_cursor_position))
+        #print('items: %s' % self.items)
 
         # 6. Обновить информацию об общей статистике найденного и отображенных элементов в Notelist
         # Восстанавливаем статистику
@@ -3932,6 +3941,8 @@ class Notelist():
 
     def rescan_files_in_notes_path(self):
         # Обновляем список заметок в зависимости от фильтров
+        print('rescan_files, need_rescan: %s' % self.need_rescan)
+
         self.get_and_display_filters()
         notelist.set_visible()
 
