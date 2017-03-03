@@ -1951,18 +1951,18 @@ class Note():
         # profiler.checkpoint('Заменяем html-теги заголовков на вики-форматирование')
                 
         # Заголовок    
-        text = re.sub(self.format.editor_h1_span + '(.*?)</span>', '====== \\1 ======', text)
-        text = re.sub(self.format.editor_h2_span + '(.*?)</span>', '===== \\1 =====', text)
-        text = re.sub(self.format.editor_h3_span + '(.*?)</span>', '==== \\1 ====', text)         
-        text = re.sub(self.format.editor_h4_span + '(.*?)</span>', '=== \\1 ===', text)
-        text = re.sub(self.format.editor_h5_span + '(.*?)</span>', '== \\1 ==', text)
-        text = re.sub(self.format.editor_h6_span + '(.*?)</span>', '= \\1 =', text)         
+        text = re.sub(text_format.editor_h1_span + '(.*?)</span>', '====== \\1 ======', text)
+        text = re.sub(text_format.editor_h2_span + '(.*?)</span>', '===== \\1 =====', text)
+        text = re.sub(text_format.editor_h3_span + '(.*?)</span>', '==== \\1 ====', text)         
+        text = re.sub(text_format.editor_h4_span + '(.*?)</span>', '=== \\1 ===', text)
+        text = re.sub(text_format.editor_h5_span + '(.*?)</span>', '== \\1 ==', text)
+        text = re.sub(text_format.editor_h6_span + '(.*?)</span>', '= \\1 =', text)         
 
         # Подчеркнутый (выделенный)
-        text = re.sub(self.format.editor_mark_span + '(.*?)</span>', '__\\1__', text)         
+        text = re.sub(text_format.editor_mark_span + '(.*?)</span>', '__\\1__', text)         
         
         # Код
-        text = re.sub(self.format.editor_code_span + '(.*?)</span>', '\'\'\\1\'\'', text)         
+        text = re.sub(text_format.editor_code_span + '(.*?)</span>', '\'\'\\1\'\'', text)         
 
         # profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
 
@@ -2097,18 +2097,18 @@ class Note():
         # # profiler.checkpoint('Заменяем html-теги заголовков на вики-форматирование')
                 
         # # Заголовок    
-        # note_source = re.sub(self.format.editor_h1_span+'(.*?)</span>', '====== \\1 ======', note_source)
-        # note_source = re.sub(self.format.editor_h2_span+'(.*?)</span>', '===== \\1 =====', note_source)
-        # note_source = re.sub(self.format.editor_h3_span+'(.*?)</span>', '==== \\1 ====', note_source)         
-        # note_source = re.sub(self.format.editor_h4_span+'(.*?)</span>', '=== \\1 ===', note_source)
-        # note_source = re.sub(self.format.editor_h5_span+'(.*?)</span>', '== \\1 ==', note_source)
-        # note_source = re.sub(self.format.editor_h6_span+'(.*?)</span>', '= \\1 =', note_source)         
+        # note_source = re.sub(text_format.editor_h1_span+'(.*?)</span>', '====== \\1 ======', note_source)
+        # note_source = re.sub(text_format.editor_h2_span+'(.*?)</span>', '===== \\1 =====', note_source)
+        # note_source = re.sub(text_format.editor_h3_span+'(.*?)</span>', '==== \\1 ====', note_source)         
+        # note_source = re.sub(text_format.editor_h4_span+'(.*?)</span>', '=== \\1 ===', note_source)
+        # note_source = re.sub(text_format.editor_h5_span+'(.*?)</span>', '== \\1 ==', note_source)
+        # note_source = re.sub(text_format.editor_h6_span+'(.*?)</span>', '= \\1 =', note_source)         
 
         # # Подчеркнутый (выделенный)
-        # note_source = re.sub(self.format.editor_mark_span+'(.*?)</span>', '__\\1__', note_source)         
+        # note_source = re.sub(text_format.editor_mark_span+'(.*?)</span>', '__\\1__', note_source)         
         
         # # Код
-        # note_source = re.sub(self.format.editor_code_span+'(.*?)</span>', '\'\'\\1\'\'', note_source)         
+        # note_source = re.sub(text_format.editor_code_span+'(.*?)</span>', '\'\'\\1\'\'', note_source)         
 
         # # profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
 
@@ -2214,28 +2214,28 @@ class Note():
 
     def __init__(self):  # Note class
         # Прописываем реакцию на сигналы
-        # QtCore.QObject.connect(main_window.textBrowser_Note, QtCore.SIGNAL("textChanged()"), self.format.update_ui)
-        main_window.textBrowser_Note.textChanged.connect(self.format.update_ui)
-        # QtCore.QObject.connect(main_window.textBrowser_Note, QtCore.SIGNAL("cursorPositionChanged()"), self.format.update_ui)
-        main_window.textBrowser_Note.cursorPositionChanged.connect(self.format.update_ui)
+        # QtCore.QObject.connect(main_window.textBrowser_Note, QtCore.SIGNAL("textChanged()"), text_format.update_ui)
+        main_window.textBrowser_Note.textChanged.connect(text_format.update_ui)
+        # QtCore.QObject.connect(main_window.textBrowser_Note, QtCore.SIGNAL("cursorPositionChanged()"), text_format.update_ui)
+        main_window.textBrowser_Note.cursorPositionChanged.connect(text_format.update_ui)
         
-        # QtCore.QObject.connect(main_window.doc_source, QtCore.SIGNAL("textChanged()"), self.format.updateUI)
-        # QtCore.QObject.connect(main_window.doc_source, QtCore.SIGNAL("cursorPositionChanged()"), self.format.updateUI)
+        # QtCore.QObject.connect(main_window.doc_source, QtCore.SIGNAL("textChanged()"), text_format.updateUI)
+        # QtCore.QObject.connect(main_window.doc_source, QtCore.SIGNAL("cursorPositionChanged()"), text_format.updateUI)
 
         # Прописываем реакцию на действия
-        main_window.actionBold.triggered.connect(self.format.bold)
-        main_window.actionItalic.triggered.connect(self.format.italic)
-        main_window.actionStrikethrough.triggered.connect(self.format.strikethrough)
-        main_window.actionCode.triggered.connect(self.format.code)
-        main_window.actionMark.triggered.connect(self.format.mark)
+        main_window.actionBold.triggered.connect(text_format.bold)
+        main_window.actionItalic.triggered.connect(text_format.italic)
+        main_window.actionStrikethrough.triggered.connect(text_format.strikethrough)
+        main_window.actionCode.triggered.connect(text_format.code)
+        main_window.actionMark.triggered.connect(text_format.mark)
     
-        main_window.action_ClearFormat.triggered.connect(self.format.clear_format)
-        main_window.actionHeading_1.triggered.connect(self.format.h1)
-        main_window.actionHeading_2.triggered.connect(self.format.h2)
-        main_window.actionHeading_3.triggered.connect(self.format.h3)
-        main_window.actionHeading_4.triggered.connect(self.format.h4)
-        main_window.actionHeading_5.triggered.connect(self.format.h5)
-        main_window.actionHeading_6.triggered.connect(self.format.h6)
+        main_window.action_ClearFormat.triggered.connect(text_format.clear_format)
+        main_window.actionHeading_1.triggered.connect(text_format.h1)
+        main_window.actionHeading_2.triggered.connect(text_format.h2)
+        main_window.actionHeading_3.triggered.connect(text_format.h3)
+        main_window.actionHeading_4.triggered.connect(text_format.h4)
+        main_window.actionHeading_5.triggered.connect(text_format.h5)
+        main_window.actionHeading_6.triggered.connect(text_format.h6)
         
         main_window.actionSave_note.triggered.connect(self.save_note)
         main_window.actionNote_multiaction.triggered.connect(self.show_note_multiaction_win_button)
@@ -4570,6 +4570,7 @@ app_settings = App_Settings()
 # theme = Theme()
 
 myFilter = MyEventFilter()
+text_format = Text_Format()
 main_window = Window()
 
 # Переопределяем класс редактора заметок
@@ -4579,9 +4580,7 @@ main_window.textBrowser_Note = new_textBrowser
 main_window.horizontalLayout_Note.layout().addWidget(main_window.textBrowser_Note)
 main_window.horizontalLayout_Note.layout().addWidget(main_window.frame_NoteMinimap)
 
-
 note = Note()
-text_format = Text_Format()
 
 notelist = Notelist()
 #history = History()
