@@ -1014,11 +1014,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # rec = [ 'note' / 'list', 'filename' / 'filter' ]
         # history_recs = [ rec1, rec2, .. ]
 
-        try:
-            app_settings.state_db_connection.execute('''CREATE TABLE history_recs
-                 (type text, value text, datetime integer)''')
-        except:
-            pass
+        #try:
+        #    app_settings.state_db_connection.execute('''CREATE TABLE history_recs
+        #         (type text, value text, datetime integer)''')
+        #except:
+        #    pass
             
         # Список файлов
         # rec = [ filename, cute_name, parent_id, subnotes_count, last_change, last_open, count_opens, current_position ]
@@ -1198,24 +1198,24 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Пишем открытие заметки
                 new_recs_sel += [('note', filename,), ]
                 
-                ######### history_recs
-                # Перед добавлением новой записи проверяем - нет-ли записи с такими-же значениями уже в списке
-                for rec in new_recs_sel:
-                    # print ( 'rec: '+str(rec) + ' len:' + str(len(rec)) )
-                    app_settings.state_db_connection.execute("SELECT * FROM history_recs WHERE type=? AND value=?", rec)
-                    existed_rec = app_settings.state_db_connection.fetchall()
-                    if len(existed_rec) > 0:
-                        # print (existed_rec)
-                        # Запись уже есть. Прописываем ей новое время открытия.
-                        app_settings.state_db_connection.execute("UPDATE history_recs SET datetime=? WHERE type=? AND value=?",
-                                                    (datetime.now(), rec[0], rec[1]))
-                        app_settings.state_db.commit()                        
-                    else:
-                        # Записи нет. Создаем новую.
-                        # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
-                        app_settings.state_db_connection.execute("INSERT INTO history_recs VALUES (?,?,?)",
-                                                    (rec[0], rec[1], datetime.now()))
-                        app_settings.state_db.commit()
+                ########## history_recs
+                ## Перед добавлением новой записи проверяем - нет-ли записи с такими-же значениями уже в списке
+                #for rec in new_recs_sel:
+                #    # print ( 'rec: '+str(rec) + ' len:' + str(len(rec)) )
+                #    app_settings.state_db_connection.execute("SELECT * FROM history_recs WHERE type=? AND value=?", rec)
+                #    existed_rec = app_settings.state_db_connection.fetchall()
+                #    if len(existed_rec) > 0:
+                #        # print (existed_rec)
+                #        # Запись уже есть. Прописываем ей новое время открытия.
+                #        app_settings.state_db_connection.execute("UPDATE history_recs SET datetime=? WHERE type=? AND value=?",
+                #                                    (datetime.now(), rec[0], rec[1]))
+                #        app_settings.state_db.commit()                        
+                #    else:
+                #        # Записи нет. Создаем новую.
+                #        # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
+                #        app_settings.state_db_connection.execute("INSERT INTO history_recs VALUES (?,?,?)",
+                #                                    (rec[0], rec[1], datetime.now()))
+                #        app_settings.state_db.commit()
 
 
                 #print('FILE_RECS for %s starting here' % filename)
