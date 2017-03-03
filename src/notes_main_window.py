@@ -3914,15 +3914,17 @@ class Notelist():
         header, days_delta, header_switch = headers[current_header_ndx]
 
         for one_item in self.history_items:
-            while not (current_header_ndx > current_header_ndx_max) or (time_period_begin < one_item['last_open'] < time_period_end):                
+            print('filename: %s, last_open: %s' % (one_item['filename'], one_item['last_open']) )
+            while not (current_header_ndx > current_header_ndx_max) or (time_period_begin < one_item['last_open'] < time_period_end):
+                print('Перебираем периоды, ищем подходящий: ndx %s, %s - %s' % (current_header_ndx, time_period_begin, time_period_end) )
                 time_period_begin = datetime.today() - timedelta(days=headers[current_header_ndx][1])
                 time_period_end = datetime.today() - timedelta(days=headers[current_header_ndx-1][1])
                 current_header_ndx += 1
 
-            print('filename: %s, time_period_begin: %s, time_period_end: %s, current_header_ndx: %s' % (one_item['filename'],
-                                         time_period_begin,
-                                         time_period_end,
-                                         current_header_ndx))
+            #print('filename: %s, time_period_begin: %s, time_period_end: %s, current_header_ndx: %s' % (one_item['filename'],
+            #                             time_period_begin,
+            #                             time_period_end,
+            #                             current_header_ndx))
 
             # В какой заголовок добавлять, текущий или следующий?
             if not (current_header_ndx > current_header_ndx_max) and not headers[current_header_ndx][2]:
@@ -3930,6 +3932,8 @@ class Notelist():
                 html_source += header_html
                 headers[current_header_ndx][2] = True
                 print('header_html: %s' % header_html)
+            else:
+                print('Условие для заголовка не удовлетворено. Header: %s' % headers[current_header_ndx][2])
 
             # Увеличиваем порядковый номер элемента
             item_number += 1
