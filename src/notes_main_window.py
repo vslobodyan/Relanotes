@@ -510,7 +510,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # QtCore.QObject.connect(self.webView, QtCore.SIGNAL("linkClicked (const QUrl&)"), self.loadfile2)
         
         # QtCore.QObject.connect(self.textBrowser_History, QtCore.SIGNAL("anchorClicked (const QUrl&)"), self.loadfile_from_history)
-        self.textBrowser_History.anchorClicked.connect(self.loadfile_from_history)
+        
+        #self.textBrowser_History.anchorClicked.connect(self.loadfile_from_history)
+
 
         self.textBrowser_Note.anchorClicked.connect(self.open_url_from_current_note)
 
@@ -1066,16 +1068,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def renew_history_lists(self, active_link):
         # Обновления листов истории - сайдбар, и может быть меню в будущем
+        print('Обновляем UI списков истории')
         html_string = notelist.make_html_source_for_items_list_in_history_sidebar()
         self.sidebar_source.setHtml(html_string)
         self.textBrowser_History.setDocument(self.sidebar_source)
-
-        return 0
-
-        html_string = '<html>%s<body><div id=sidebar>%s</div></body></html>' % (Theme.html_theme_head, html_string,)
-        self.sidebar_source.setHtml(html_string)
-        self.textBrowser_History.setDocument(self.sidebar_source)
-        # self.textBrowser_History.setHtml(html_string)
 
     def note_text_changed(self):
         # self.plainTextEdit_Note_Ntml_Source.setPlainText(self.textBrowser_Note.toHtml())
@@ -1309,9 +1305,9 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         file_cute_name = notelist.make_cute_name(filename)
 
         self.setWindowTitle(app_settings.Name + ' - ' + file_cute_name)
-        self.renew_history_lists(filename)
         self.statusbar.showMessage('Заметка загружена')
         self.current_open_note_link = filename
+        self.renew_history_lists(filename)
 
         # Получаем копию текущего курсора
         cursor = main_window.textBrowser_Note.textCursor()
@@ -3749,11 +3745,12 @@ class Notelist():
         return item_cursor_source
 
 
-    def make_html_source_for_item_history_sidebar(self, one_item, item_number):
+    def make_html_source_for_item_history_sidebar(self, one_item, item_number, active_link):
         # Создаем html для элемента истории в сайдбаре
         html_string = ''
         filename = one_item['filename']
         cute_name = self.make_cute_name(filename)
+        note_link = self.action_link('note', filename)
         if filename == active_link:
             line_style = ' id="note_opened" '
             # img_src = 'resources/icons/notelist/g3-g1.png'
@@ -3761,7 +3758,7 @@ class Notelist():
             # img_src = 'resources/icons/notelist/g3.png'
             line_style = ''
 
-        html_string += '<p' + line_style + '><a href="' + filename + '" title="'\
+        html_string += '<p' + line_style + '><a href="' + note_link + '" title="'\
                         + cute_name + '">' + cute_name + '</a></p>'
 
         return html_string
@@ -3871,38 +3868,39 @@ class Notelist():
         current_header_ndx = 0
         current_header_ndx_max = 3
         history_items_count = 0
+        active_link = main_window.current_open_note_link
 
         header, time_period_begin, time_period_end, tmp_items = headers[current_header_ndx]
 
         for one_item in self.history_items:
             #print('last_open orig: ##%s##' % one_item['last_open'])
             last_open_date = one_item['last_open'].date()
-            print('filename: %s\nlast_open: %s\n' % (one_item['filename'], last_open_date) )
+            #print('filename: %s\nlast_open: %s\n' % (one_item['filename'], last_open_date) )
 
             while not current_header_ndx > current_header_ndx_max:
 
                 if not time_period_end:
-                    print('# Сравниваем без конца')
+                    #print('# Сравниваем без конца')
                     item_in_period = (time_period_begin <= last_open_date)
                 elif not time_period_begin:
-                    print('# Сравниваем без начала')
+                    #print('# Сравниваем без начала')
                     item_in_period = (last_open_date < time_period_end)
                 else:
-                    print('# Просто сравниваем с периодом')
+                    #print('# Просто сравниваем с периодом')
                     item_in_period = (time_period_begin <= last_open_date < time_period_end)
 
                 if item_in_period:
-                    print('Нашли подходящий период: ndx %s, %s - %s, добавляем в массив' % (current_header_ndx, time_period_begin, time_period_end) )
+                    #print('Нашли подходящий период: ndx %s, %s - %s, добавляем в массив' % (current_header_ndx, time_period_begin, time_period_end) )
                     #headers[current_header_ndx][3].append(one_item,)
                     # Обрабатываем и добавляем html-исходник
-                    headers[current_header_ndx][3].append(self.make_html_source_for_item_history_sidebar(one_item, item_number))
+                    headers[current_header_ndx][3].append(self.make_html_source_for_item_history_sidebar(one_item, item_number, active_link))
                     history_items_count += 1
                     break
                 else:
                     current_header_ndx += 1
                     if not current_header_ndx > current_header_ndx_max:
                         header, time_period_begin, time_period_end, tmp_items = headers[current_header_ndx]
-                        print('Период не подходит. Следующий: ndx %s, название %s, интервал %s - %s' % (current_header_ndx, header, time_period_begin, time_period_end) )
+                        #print('Период не подходит. Следующий: ndx %s, название %s, интервал %s - %s' % (current_header_ndx, header, time_period_begin, time_period_end) )
 
             # Увеличиваем порядковый номер элемента
             item_number += 1
@@ -3910,16 +3908,16 @@ class Notelist():
 
             #html_source += self.make_html_source_for_item_history_sidebar(one_item)
             
-        print('headers: %s' % headers)
-        history_items_count = 0 
+        #print('headers: %s' % headers)
+        #history_items_count = 0 
         # Проверка на пустой список элементов
-        if history_items_count<1:            
+        if history_items_count<1:
             sidebar_empty_string = '<div id=notelist_empty_message>%s</div>'
             history_sidebar_is_empty = '''<br>
 История заметок пуста.
 '''
             html_source = sidebar_empty_string % history_sidebar_is_empty
-
+        else:
             # Собираем полный исходник на основе двумерного массива элементов, собранного ранее
             for header_item in headers:
                 if len(header_item[3])>0:
@@ -3929,8 +3927,8 @@ class Notelist():
                         html_source +=  one_item
 
         # Используем настройки темы для оформления списка элементов
-        html_source = self.html_body(empty_message=sidebar_empty_message,
-                                       html_source=html_source)
+        #html_source = self.html_body(empty_message=sidebar_empty_message,
+                                       #html_source=html_source)
 
         html_source = '<html>%s<body><div id=sidebar>%s</div></body></html>' % (Theme.html_theme_head, html_source,)
 
@@ -4033,7 +4031,7 @@ class Notelist():
 
     def rescan_files_in_notes_path(self, history_update=False):
         # Обновляем список заметок в зависимости от фильтров
-        print('rescan_files, need_rescan: %s, history_update: %s' % (self.need_rescan, history_update) )
+        #print('rescan_files, need_rescan: %s, history_update: %s' % (self.need_rescan, history_update) )
 
         self.get_and_display_filters()
         notelist.set_visible()
@@ -4122,6 +4120,9 @@ class Notelist():
         # QtCore.QObject.connect(main_window.textBrowser_Listnotes, QtCore.SIGNAL("anchorClicked (const QUrl&)"),
                                # self.link_action)
         main_window.textBrowser_Listnotes.anchorClicked.connect(self.link_action)
+
+        main_window.textBrowser_History.anchorClicked.connect(self.link_action)
+
         # QtCore.QObject.connect(main_window.lineNotelist_Filter, QtCore.SIGNAL("returnPressed ()"),
                                # self.open_selected_url)
         #main_window.lineNotelist_Filter.returnPressed.connect(self.open_selected_url)
