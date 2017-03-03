@@ -3,7 +3,7 @@
 ''' Модуль рутин  для основной программы '''
 
 import os
-#import sys
+import sys
 import urllib.request
 import difflib
 
@@ -30,6 +30,9 @@ def give_correct_path_under_win_and_other(path_to_check):
     return correct_path
 
 
+def get_path_to_app():
+    # Получаем путь к основным выполняемым файлам приложения
+    return os.path.split(os.path.abspath(sys.argv[0]))[0]
 
 def get_correct_filename_from_url(filename):
     return urllib.request.unquote(filename)

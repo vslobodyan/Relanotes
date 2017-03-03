@@ -150,7 +150,7 @@ class App_Settings():
         self.path_to_notes = give_correct_path_under_win_and_other(self.path_to_notes)
 
         # Получаем путь к каталогу, в котором лежат исходники программы
-        self.path_to_app = os.path.split(os.path.abspath(sys.argv[0]))[0]
+        self.path_to_app = get_path_to_app
         print("path_to_app:", self.path_to_app)
         # '/home/vchsnr/Dropbox/Projects/Relanotes/Relanotes-next/'
         # Переходим в свой каталог, чтобы относительные пути до настроек и прочих файлов оказались
