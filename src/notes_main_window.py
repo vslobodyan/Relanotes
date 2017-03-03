@@ -1160,7 +1160,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 
-    def open_file_in_editor(self, filename, line_number=None, found_text=None, reload=False):
+    def open_file_in_editor(self, filename, line_number=None, found_text=None, reload=False, dont_save_in_history=False):
         # line_number - новая переменная промотки редактора на нужную строку
         # found_text - искомый текст, который надо подсветить
         self.statusbar.showMessage('Загружается файл %s' % filename)
@@ -1229,10 +1229,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     app_settings.state_db_connection.execute("SELECT count_opens, current_position FROM file_recs WHERE filename=?", (filename,))
                     rec_count_opens, rec_current_position = app_settings.state_db_connection.fetchone()
                     #print('Количество открытий заметки: %s, последняя позиция курсора: %s' % (rec_count_opens, rec_current_position))
-                    # Обновляем запись в базе
-                    app_settings.state_db_connection.execute("UPDATE file_recs SET last_open=?, count_opens=?  WHERE filename=?",
-                                                (datetime.now(), rec_count_opens + 1, filename))
-                    app_settings.state_db.commit()
+                    if not dont_save_in_history:
+                        # Обновляем запись в базе
+                        app_settings.state_db_connection.execute("UPDATE file_recs SET last_open=?, count_opens=?  WHERE filename=?",
+                                                    (datetime.now(), rec_count_opens + 1, filename))
+                        app_settings.state_db.commit()
                 else:
                     # Записи нет. Создаем новую.
                     # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
@@ -1240,11 +1241,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     rec_current_position = None
                     #print('FILE_RECS: для файла %s записи нет. Создаем новую.' % filename)
                     # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
-                    app_settings.state_db_connection.execute("INSERT INTO file_recs (filename, last_open, count_opens) VALUES (?,?,?)",
-                                                    (filename, datetime.now(), 1))
-                    app_settings.state_db.commit()
-        # Добавляем элемент к отдельному списку истории
-        notelist.update_history_items_with_one(filename)
+
+                    if not dont_save_in_history:
+                        app_settings.state_db_connection.execute("INSERT INTO file_recs (filename, last_open, count_opens) VALUES (?,?,?)",
+                                                        (filename, datetime.now(), 1))
+                        app_settings.state_db.commit()
+
+        if not dont_save_in_history:
+            # Добавляем элемент к отдельному списку истории
+            notelist.update_history_items_with_one(filename)
 
         fileObj = codecs.open(filename, "r", "utf-8")
         lines = fileObj.read()        
@@ -4493,7 +4498,7 @@ class App_Tests():
             fileObj.close()
 
             # Загружаем файл в окно редактора
-            main_window.open_file_in_editor(filename)
+            main_window.open_file_in_editor(filename, dont_save_in_history=True)
 
             # Конвертируем zim text в html для редактора
             html_source = note.convert_zim_text_to_html_source(original_text)
