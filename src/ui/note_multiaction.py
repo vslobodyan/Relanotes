@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/ui/note_multiaction.ui'
+# Form implementation generated from reading ui file 'C:\Users\vyacheslav.slobodyan\Source\Repos\Relanotes\src\ui\note_multiaction.ui'
 #
 # Created by: PyQt5 UI code generator 5.8
 #

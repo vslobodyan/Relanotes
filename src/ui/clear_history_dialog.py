@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'src/ui/clear_history_dialog.ui'
+# Form implementation generated from reading ui file 'C:\Users\vyacheslav.slobodyan\Source\Repos\Relanotes\src\ui\clear_history_dialog.ui'
 #
 # Created by: PyQt5 UI code generator 5.8
 #
