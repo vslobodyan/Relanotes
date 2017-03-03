@@ -1065,63 +1065,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         preferences_win.show()
 
     def renew_history_lists(self, active_link):
-
-        # Оформление для сегодняшних элементов
-        # Оформление для вчерашних элементов
-        # Оформление для элементов "на неделе"
-        # Оформление для более ранних элементов
-
+        # Обновления листов истории - сайдбар, и может быть меню в будущем
         html_string = notelist.make_html_source_for_items_list_in_history_sidebar()
-
         self.sidebar_source.setHtml(html_string)
         self.textBrowser_History.setDocument(self.sidebar_source)
 
         return 0
 
-        html_string = '<p id=history_date>Сегодня</p>'
-
-        # app_settings.state_db_connection.execute('''CREATE TABLE history_recs
-        #     (type text, value text, datetime integer)''')
-
-        for row in app_settings.state_db_connection.execute("SELECT * FROM history_recs WHERE type='note' ORDER BY datetime DESC"):
-            type_rec, file_rec, date_rec = row
-
-        # for file_rec in filenames:
-            # self.listWidget.addItem(file_rec)
-            # file_rec = app_settings.path_to_notes + file_rec
-            
-            # if type_rec == 'note':
-        
-            file_rec = give_correct_path_under_win_and_other(file_rec)
-            
-            # if file_rec.rpartition('/')[0]+'/' == app_settings.path_to_notes:
-            if file_rec.rpartition(os.path.sep)[0] + os.path.sep == app_settings.path_to_notes:
-                # У нас корневая заметка
-                file_parent = ''
-            else:
-                # file_parent = file_rec.split('/')[-2] + ': '
-                # print('DEBUG: file_rec.split= %s' % file_rec.split(os.path.sep) )
-                file_parent = file_rec.split(os.path.sep)[-2] + ': '
-            
-            # file_cute_name = file_rec.rpartition('/')[2]
-            file_cute_name = file_rec.rpartition(os.path.sep)[2]
-            file_cute_name = file_cute_name.rpartition('.txt')[0]
-            file_cute_name = file_cute_name.replace('_', ' ')
-            # else:
-            #    file_cute_name = file_rec
-
-            if file_rec == active_link:
-                line_style = ' id="note_opened" '
-                # img_src = 'resources/icons/notelist/g3-g1.png'
-            else:
-                # img_src = 'resources/icons/notelist/g3.png'
-                line_style = ''
-
-            html_string += '<p' + line_style + '><a href="' + file_rec + '" title="'\
-                           + file_parent + file_cute_name + '">' + file_parent + file_cute_name + '</a></p>'
-            # app_settings.state_db.commit()
-
-        html_string += '<p id=history_date>Вчера</p> .....'
         html_string = '<html>%s<body><div id=sidebar>%s</div></body></html>' % (Theme.html_theme_head, html_string,)
         self.sidebar_source.setHtml(html_string)
         self.textBrowser_History.setDocument(self.sidebar_source)
@@ -3801,8 +3751,20 @@ class Notelist():
 
     def make_html_source_for_item_history_sidebar(self, one_item, item_number):
         # Создаем html для элемента истории в сайдбаре
+        html_string = ''
+        filename = one_item['filename']
+        cute_name = self.make_cute_name(filename)
+        if filename == active_link:
+            line_style = ' id="note_opened" '
+            # img_src = 'resources/icons/notelist/g3-g1.png'
+        else:
+            # img_src = 'resources/icons/notelist/g3.png'
+            line_style = ''
 
-        return '<p>%s</p>' % one_item['filename']
+        html_string += '<p' + line_style + '><a href="' + filename + '" title="'\
+                        + cute_name + '">' + cute_name + '</a></p>'
+
+        return html_string
 
 
 
@@ -3949,23 +3911,29 @@ class Notelist():
             #html_source += self.make_html_source_for_item_history_sidebar(one_item)
             
         print('headers: %s' % headers)
-
+        history_items_count = 0 
         # Проверка на пустой список элементов
         if history_items_count<1:            
             sidebar_empty_string = '<div id=notelist_empty_message>%s</div>'
             history_sidebar_is_empty = '''<br>
 История заметок пуста.
 '''
-            sidebar_empty_message = sidebar_empty_string % history_sidebar_is_empty
-        else:
-            sidebar_empty_message = ''
+            html_source = sidebar_empty_string % history_sidebar_is_empty
 
             # Собираем полный исходник на основе двумерного массива элементов, собранного ранее
-
+            for header_item in headers:
+                if len(header_item[3])>0:
+                    # Есть элементы. Добавляем раздел
+                    html_source +=  header_element_string % header_item[0]
+                    for one_item in header_item[3]:
+                        html_source +=  one_item
 
         # Используем настройки темы для оформления списка элементов
         html_source = self.html_body(empty_message=sidebar_empty_message,
                                        html_source=html_source)
+
+        html_source = '<html>%s<body><div id=sidebar>%s</div></body></html>' % (Theme.html_theme_head, html_source,)
+
         #print('html_source of notelist: ###%s###' % html_source)
         return html_source
 
