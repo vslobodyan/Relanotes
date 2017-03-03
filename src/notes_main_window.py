@@ -3609,20 +3609,25 @@ class Notelist():
         # Быстрое обновление отдельного списка истории заметок для случая открытия указанного файла
         for one_item in self.history_items:
             if one_item['filename'] == filename:
+                #print('Элемент найден в старой истории')
                 return 0
         history_items_copy = []
         for one_item in self.items:
             if one_item['filename'] == filename:
+                #print('Элемент будет добавлен в новую историю')
+                #print('Старая история %s' % self.history_items)
                 # Нашли элемент, который надо добавить в начало списка истории
                 one_item_copy = one_item
                 one_item_copy['history'] = True
+                one_item_copy['last_open'] = datetime.now()
                 history_items_copy.append(one_item_copy)
 
                 # Добавляем в новый список все остальные элементы
                 for one_history_item in self.history_items:
                     history_items_copy.append(one_history_item.copy())
                 # Заменяем старый список на новый
-                self.history_items = history_items_copy
+                self.history_items = history_items_copy.copy()
+                #print('Новая история %s' % self.history_items)
                 return 0
 
 
@@ -3938,7 +3943,9 @@ class Notelist():
         if history_items_count<1:
             sidebar_empty_string = '<div id=notelist_empty_message>%s</div>'
             history_sidebar_is_empty = '''<br>
-История заметок пуста.
+  История<br>
+  заметок<br>
+   saveпуста
 '''
             html_source = sidebar_empty_string % history_sidebar_is_empty
         else:
