@@ -1232,7 +1232,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     # Обновляем запись в базе
                     app_settings.state_db_connection.execute("UPDATE file_recs SET last_open=?, count_opens=?  WHERE filename=?",
                                                 (datetime.now(), rec_count_opens + 1, filename))
-                    app_settings.state_db.commit()                        
+                    app_settings.state_db.commit()
                 else:
                     # Записи нет. Создаем новую.
                     # print ( 'rec_tmp: '+str(rec_tmp)+' len:'+str(len(rec_tmp)) )
@@ -1243,6 +1243,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     app_settings.state_db_connection.execute("INSERT INTO file_recs (filename, last_open, count_opens) VALUES (?,?,?)",
                                                     (filename, datetime.now(), 1))
                     app_settings.state_db.commit()
+        # Добавляем элемент к отдельному списку истории
+        notelist.update_history_items_with_one(filename)
 
         fileObj = codecs.open(filename, "r", "utf-8")
         lines = fileObj.read()        
@@ -3546,7 +3548,7 @@ class Notelist():
         
 
 
-    def collect_history_items_list(self):
+    def collect_history_items_list(self, update_items_list=True):
         # Собираем элементы (заметки) из истории при рескане файлов в переменную self.items[]
 
         file_recs_rows = app_settings.state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
@@ -3601,6 +3603,27 @@ class Notelist():
 
                     self.work_with_found_note(filename=filename,
                                               size=size)
+
+
+    def update_history_items_with_one(self, filename):
+        # Быстрое обновление отдельного списка истории заметок для случая открытия указанного файла
+        for one_item in self.history_items:
+            if one_item['filename'] == filename:
+                return 0
+        history_items_copy = []
+        for one_item in self.items:
+            if one_item['filename'] == filename:
+                # Нашли элемент, который надо добавить в начало списка истории
+                one_item_copy = one_item
+                one_item_copy['history'] = True
+                history_items_copy.append(one_item_copy)
+
+                # Добавляем в новый список все остальные элементы
+                for one_history_item in self.history_items:
+                    history_items_copy.append(one_history_item.copy())
+                # Заменяем старый список на новый
+                self.history_items = history_items_copy
+                return 0
 
 
     def update_items_list_with_history_status(self):
