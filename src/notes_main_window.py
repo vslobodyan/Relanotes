@@ -9,7 +9,7 @@ import os
 import re
 import time
 import sqlite3
-from datetime import datetime, timedelta  # , date  #, time
+from datetime import datetime, timedelta, date  #, time
 import codecs
 import html
 
@@ -3894,55 +3894,56 @@ class Notelist():
     def make_html_source_for_items_list_in_history_sidebar(self):
         # Создаем html исходник для всего сайдбара истории
 
+        today_ = date.today()
+
+        headers = [
+            ['Сегодня', today_, None, [] ],
+            ['Вчера', today_ - timedelta(1), today_, [] ],
+            ['На неделе', today_ - timedelta(7), today_ - timedelta(1), [] ],
+            ['Раньше', None, today_ - timedelta(7), [] ],
+            ] 
+
         html_source = ''
         item_number = 0  # Порядковый номер элемента в списке
-        headers = [
-            ['Сегодня', 0, False],
-            ['Вчера', 1, False],
-            ['На неделе',2, False],
-            ['Раньше', 7, False],
-            ]  # Число- количество дней от сегодняшнего дня, старше которых наступает данный раздел
-
-        #header_element_string = '<div id=notelist_header>%s</div>'
         header_element_string = '<p id=history_date>%s</p>'
         current_header_ndx = 0
         current_header_ndx_max = 3
 
-        time_period_begin = datetime.today() - timedelta(days=headers[current_header_ndx][1])
-        time_period_end = datetime.today() + timedelta(days=999)
-
-        header, days_delta, header_switch = headers[current_header_ndx]
+        header, time_period_begin, time_period_end, tmp_items = headers[current_header_ndx]
 
         for one_item in self.history_items:
-            print('filename: %s, last_open: %s' % (one_item['filename'], one_item['last_open']) )
-            while not (current_header_ndx > current_header_ndx_max) or (time_period_begin < one_item['last_open'] < time_period_end):
-                print('Перебираем периоды, ищем подходящий: ndx %s, %s - %s' % (current_header_ndx, time_period_begin, time_period_end) )
-                time_period_begin = datetime.today() - timedelta(days=headers[current_header_ndx][1])
-                time_period_end = datetime.today() - timedelta(days=headers[current_header_ndx-1][1])
-                current_header_ndx += 1
+            one_item['last_open'] = one_item['last_open'].date()
+            print('filename: %s\nlast_open: %s\n' % (one_item['filename'], one_item['last_open']) )
 
-            #print('filename: %s, time_period_begin: %s, time_period_end: %s, current_header_ndx: %s' % (one_item['filename'],
-            #                             time_period_begin,
-            #                             time_period_end,
-            #                             current_header_ndx))
+            while not current_header_ndx > current_header_ndx_max:
 
-            # В какой заголовок добавлять, текущий или следующий?
-            if not (current_header_ndx > current_header_ndx_max) and not headers[current_header_ndx][2]:
-                header_html = header_element_string % headers[current_header_ndx][0]
-                html_source += header_html
-                headers[current_header_ndx][2] = True
-                print('header_html: %s' % header_html)
-            else:
-                print('Условие для заголовка не удовлетворено. Header: %s' % headers[current_header_ndx][2])
+                if not time_period_end:
+                    print('# Сравниваем без конца')
+                    item_in_period = (time_period_begin <= one_item['last_open'])
+                elif not time_period_begin:
+                    print('# Сравниваем без начала')
+                    item_in_period = (one_item['last_open'] < time_period_end)
+                else:
+                    print('# Просто сравниваем с периодом')
+                    item_in_period = (time_period_begin <= one_item['last_open'] < time_period_end)
+
+                if item_in_period:
+                    print('Нашли подходящий период: ndx %s, %s - %s, добавляем в массив' % (current_header_ndx, time_period_begin, time_period_end) )
+                    headers[current_header_ndx][3].append(one_item,)
+                    break
+                else:
+                    current_header_ndx += 1
+                    if not current_header_ndx > current_header_ndx_max:
+                        header, time_period_begin, time_period_end, tmp_items = headers[current_header_ndx]
+                        print('Период не подходит. Следующий: ndx %s, название %s, интервал %s - %s' % (current_header_ndx, header, time_period_begin, time_period_end) )
 
             # Увеличиваем порядковый номер элемента
             item_number += 1
             # print('Создаем html-код для элемента %s' % item_number)
 
-            # Добавляем собственно сам элемент в html-обертке
-            #html_source += self.make_html_source_for_item(one_item, item_number)
             html_source += self.make_html_source_for_item_history_sidebar(one_item)
             
+        print('headers: %s' % headers)
 
         # Проверка на пустой список элементов
         if len(self.items)<1:
