@@ -1069,7 +1069,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def renew_history_lists(self, active_link=None):
         # Обновления листов истории - сайдбар, и может быть меню в будущем
-        print('Обновляем UI списков истории')
+        #print('Обновляем UI списков истории')
         html_string = notelist.make_html_source_for_items_list_in_history_sidebar()
         self.sidebar_source.setHtml(html_string)
         self.textBrowser_History.setDocument(self.sidebar_source)
@@ -4459,7 +4459,8 @@ class App_Tests():
 
             for root, dirs, files in os.walk(self.path_to_notes_convertation):
                 for file in files:
-                    if file.endswith('.txt'):
+                    if os.path.splitext(file)[-1] in notelist.allowed_note_files_extensions:
+                    #if file.endswith('.txt'):
                         filename = os.path.join(root, file)
                         self.items.append(filename)
                         print('filename %s' % filename)
