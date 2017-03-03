@@ -983,6 +983,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                     print(' - %s' % one_item['filename'])
                     app_settings.state_db_connection.execute("UPDATE file_recs SET last_open=NULL, count_opens=0 WHERE filename=?", (one_item['filename'],))
             notelist.update(history_update=True)
+            self.renew_history_lists()
 
         # Удаляем все виджеты и компоновщик
         while layout.count():
@@ -1066,7 +1067,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     def show_preferences(self):
         preferences_win.show()
 
-    def renew_history_lists(self, active_link):
+    def renew_history_lists(self, active_link=None):
         # Обновления листов истории - сайдбар, и может быть меню в будущем
         print('Обновляем UI списков истории')
         html_string = notelist.make_html_source_for_items_list_in_history_sidebar()
