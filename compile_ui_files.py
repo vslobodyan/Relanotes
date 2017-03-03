@@ -17,7 +17,8 @@ ui_files = []
 print('We will compile all UI files with %s extensions under %s path' % (allowed_note_ui_files_extensions, path_to_ui_files) )
 
 def run_proc(cmd):
-    subprocess.run(cmd, shell=True, check=True)
+    #subprocess.run(cmd, shell=True, check=True)
+    pass
 
 print('Compiling Resources file')
 run_proc("pyrcc5 resources/resources.qrc -o resources/resources_rc.py")

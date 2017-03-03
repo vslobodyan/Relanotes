@@ -20,9 +20,11 @@ def give_correct_path_under_win_and_other(path_to_check):
     # QDir::toNativeSeparators()
     # http://doc.qt.io/qt-5/qdir.html#toNativeSeparators
 
+    #print('os.path.sep: %s' % os.path.sep)
     if path_to_check and os.path.sep == '\\':
+        #print('we will check path under that Win')
         # Работаем в случае если это сепаратор Windows и путь к заметкам не пустой
-        if os.path.sep not in path_to_check:
+        if os.path.sep not in path_to_check or '/' in path_to_check:
             # Обнаружен признак отсутствия правильного разделителя в пути к заметкам
             # Разбиваем путь по обратному слешу и собираем обратно правильным образом
             correct_path = os.path.sep.join( path_to_check.split('/') )
