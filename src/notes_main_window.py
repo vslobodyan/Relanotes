@@ -3908,6 +3908,7 @@ class Notelist():
         header_element_string = '<p id=history_date>%s</p>'
         current_header_ndx = 0
         current_header_ndx_max = 3
+        history_items_count = 0
 
         header, time_period_begin, time_period_end, tmp_items = headers[current_header_ndx]
 
@@ -3930,6 +3931,7 @@ class Notelist():
                 if item_in_period:
                     print('Нашли подходящий период: ndx %s, %s - %s, добавляем в массив' % (current_header_ndx, time_period_begin, time_period_end) )
                     headers[current_header_ndx][3].append(one_item,)
+                    history_items_count += 1
                     break
                 else:
                     current_header_ndx += 1
@@ -3946,28 +3948,11 @@ class Notelist():
         print('headers: %s' % headers)
 
         # Проверка на пустой список элементов
-        if len(self.items)<1:
-            # Проверка на полное отсутствие элементов в списке
-            
-            notelist_empty_string = '<div id=notelist_empty_message>%s</div>'
-            notelist_empty_by_filter = '''<br>
-Нет заметок, удовлетворяющих текущему фильтру.
-
-<small>Всего заметок по текущим настройкам: %s</small>''' % self.all_found_files_count
-
-            notelist_empty_by_settings = '''<br>
-Нет заметок, удовлетворяющих текущим настройкам.
-<small>Проверьте указанный путь к каталогу заметок и настройки выбранных типов файлов заметок.</small>'''
-
-            if self.all_found_files_count<1:
-                # Заметок по указанному пути нет вообще
-                notelist_empty_message = notelist_empty_string % notelist_empty_by_settings
-            else:
-                # Заметки есть, но выставленным фильтрам они не удовлетворяют
-                notelist_empty_message = notelist_empty_string % notelist_empty_by_filter
-        else:
-            notelist_empty_message = ''
-
+        if history_items_count<1:            
+            sidebar_empty_string = '<div id=notelist_empty_message>%s</div>'
+            history_sidebar_is_empty = '''<br>
+История заметок пуста.
+'''
         # Используем настройки темы для оформления списка элементов
         html_source = self.html_body(empty_message=notelist_empty_message,
                                        html_source=html_source)
