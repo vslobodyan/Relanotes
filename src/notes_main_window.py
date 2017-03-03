@@ -3799,7 +3799,7 @@ class Notelist():
         return item_cursor_source
 
 
-    def make_html_source_for_item_history_sidebar(self, one_item):
+    def make_html_source_for_item_history_sidebar(self, one_item, item_number):
         # Создаем html для элемента истории в сайдбаре
 
         return '<p>%s</p>' % one_item['filename']
@@ -3913,24 +3913,27 @@ class Notelist():
         header, time_period_begin, time_period_end, tmp_items = headers[current_header_ndx]
 
         for one_item in self.history_items:
-            one_item['last_open'] = one_item['last_open'].date()
-            print('filename: %s\nlast_open: %s\n' % (one_item['filename'], one_item['last_open']) )
+            #print('last_open orig: ##%s##' % one_item['last_open'])
+            last_open_date = one_item['last_open'].date()
+            print('filename: %s\nlast_open: %s\n' % (one_item['filename'], last_open_date) )
 
             while not current_header_ndx > current_header_ndx_max:
 
                 if not time_period_end:
                     print('# Сравниваем без конца')
-                    item_in_period = (time_period_begin <= one_item['last_open'])
+                    item_in_period = (time_period_begin <= last_open_date)
                 elif not time_period_begin:
                     print('# Сравниваем без начала')
-                    item_in_period = (one_item['last_open'] < time_period_end)
+                    item_in_period = (last_open_date < time_period_end)
                 else:
                     print('# Просто сравниваем с периодом')
-                    item_in_period = (time_period_begin <= one_item['last_open'] < time_period_end)
+                    item_in_period = (time_period_begin <= last_open_date < time_period_end)
 
                 if item_in_period:
                     print('Нашли подходящий период: ndx %s, %s - %s, добавляем в массив' % (current_header_ndx, time_period_begin, time_period_end) )
-                    headers[current_header_ndx][3].append(one_item,)
+                    #headers[current_header_ndx][3].append(one_item,)
+                    # Обрабатываем и добавляем html-исходник
+                    headers[current_header_ndx][3].append(self.make_html_source_for_item_history_sidebar(one_item, item_number))
                     history_items_count += 1
                     break
                 else:
@@ -3943,7 +3946,7 @@ class Notelist():
             item_number += 1
             # print('Создаем html-код для элемента %s' % item_number)
 
-            html_source += self.make_html_source_for_item_history_sidebar(one_item)
+            #html_source += self.make_html_source_for_item_history_sidebar(one_item)
             
         print('headers: %s' % headers)
 
@@ -3953,8 +3956,15 @@ class Notelist():
             history_sidebar_is_empty = '''<br>
 История заметок пуста.
 '''
+            sidebar_empty_message = sidebar_empty_string % history_sidebar_is_empty
+        else:
+            sidebar_empty_message = ''
+
+            # Собираем полный исходник на основе двумерного массива элементов, собранного ранее
+
+
         # Используем настройки темы для оформления списка элементов
-        html_source = self.html_body(empty_message=notelist_empty_message,
+        html_source = self.html_body(empty_message=sidebar_empty_message,
                                        html_source=html_source)
         #print('html_source of notelist: ###%s###' % html_source)
         return html_source
