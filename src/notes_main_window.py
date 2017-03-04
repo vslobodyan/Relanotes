@@ -1641,18 +1641,29 @@ class Note():
         return note_source
     
 
-    def health_bad_links(self, html_source):
+    def health_bad_links(self, filename, html_source):
         # Лечение ссылок, испорченных ранее в самых первых версиях RelaNotes
         # [[http://webcast.emg.fm:55655/keks128.mp3.m3u|http://webcast.emg.fm:55655/]]keks128.mp3.m3u
         
         # html_source = re.sub('[[(.*?)|(.*?)]](.*?)', '\\1', html_source)
         # re.sub('\[\[(?!\[)(.+?)\]\]', '\\1', html_source)
+
+        #html_source = re.sub('\[\[(.+?)\|(.+?)\]\](.+?)', '\\2', html_source)
         
-        html_source = re.sub('\[\[(.+?)\|(.+?)\]\](.+?)', '\\2', html_source)
+        AllLinksRegex = re.compile(r'\[\[(?!\[)(.*?)\]\]')
+        NoteSelectedLinks = AllLinksRegex.search(html_source)
+        if NoteSelectedLinks:
+            print('В файле %s найдены ссылки:' % filename)
+            # html_source = html_source + ' ### ' + NoteSelectedText.group(1)
+            print(NoteSelectedLinks)
+            #health_link = NoteSelectedText.group(1)
+            #print('Исправленный линк: ##%s##' % health_link)
 
         BadLinksRegex = re.compile('\[\[(.+?)\|(.+?)\]\](.+?)')
         NoteSelectedText = BadLinksRegex.search(html_source)
         if NoteSelectedText:
+            print('Из них опознаны как плохие:')
+            print(NoteSelectedText)
             # html_source = html_source + ' ### ' + NoteSelectedText.group(1)
             health_link = NoteSelectedText.group(1)
             print('Исправленный линк: ##%s##' % health_link)
@@ -1767,20 +1778,20 @@ class Note():
 
         # html_source = urllib.request.quote(html_source)
 
-        self.health_bad_links(html_source)
+        #self.health_bad_links(html_source)
 
-        _classes = {'c': r'[^\s"<>\']'} # limit the character class a bit
-        url_re = Re(r'''(
-	        \b \w[\w\+\-\.]+:// %(c)s* \[ %(c)s+ \] (?: %(c)s+ [\w/] )?  |
-	        \b \w[\w\+\-\.]+:// %(c)s+ [\w/]                             |
-	        \b mailto: %(c)s+ \@ %(c)s* \[ %(c)s+ \] (?: %(c)s+ [\w/] )? |
-	        \b mailto: %(c)s+ \@ %(c)s+ [\w/]                            |
-	        \b %(c)s+ \@ %(c)s+ \. \w+ \b
-        )''' % _classes, re.X | re.U)
-	    # Full url regex - much more strict then the is_url_re
-	    # The host name in an uri can be "[hex:hex:..]" for ipv6
-	    # but we do not want to match "[http://foo.org]"
-	    # See rfc/3986 for the official -but unpractical- regex
+     #   _classes = {'c': r'[^\s"<>\']'} # limit the character class a bit
+     #   url_re = Re(r'''(
+	    #    \b \w[\w\+\-\.]+:// %(c)s* \[ %(c)s+ \] (?: %(c)s+ [\w/] )?  |
+	    #    \b \w[\w\+\-\.]+:// %(c)s+ [\w/]                             |
+	    #    \b mailto: %(c)s+ \@ %(c)s* \[ %(c)s+ \] (?: %(c)s+ [\w/] )? |
+	    #    \b mailto: %(c)s+ \@ %(c)s+ [\w/]                            |
+	    #    \b %(c)s+ \@ %(c)s+ \. \w+ \b
+     #   )''' % _classes, re.X | re.U)
+	    ## Full url regex - much more strict then the is_url_re
+	    ## The host name in an uri can be "[hex:hex:..]" for ipv6
+	    ## but we do not want to match "[http://foo.org]"
+	    ## See rfc/3986 for the official -but unpractical- regex
 
 
         # print()
@@ -1894,8 +1905,8 @@ class Note():
         # Замена / на альтернативное его обозначение для редактора, чтобы замаскировать ссылку внутри другого форматирования
         #html_source = re.sub('&#x27;&#x27;(.*?)://(.*?)&#x27;&#x27;', '<font id="code">\\1:&#x2F;&#x2F;\\2</font>', html_source)
 
-        #html_source = re.sub("&#x27;&#x27;(?!')(.+?)&#x27;&#x27;", '<font id="code">\\1</font>', html_source)
-        html_source = re.sub(r"''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
+        html_source = re.sub("&#x27;&#x27;(?!')(.+?)&#x27;&#x27;", '<font id="code">\\1</font>', html_source)
+        #html_source = re.sub(r"''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
 
         # 'mark':     Re('__(?!_)(.+?)__'),
         #html_source = re.sub('__(?!_)(.+?)__', '<font id="mark">\\1</font>', html_source)
@@ -4526,7 +4537,7 @@ class App_Tests():
             original_text = fileObj.read()
             fileObj.close()
 
-            note.health_bad_links(original_text)
+            note.health_bad_links(filename, original_text)
 
         print()
         print('Тестирование завершено.')                                
