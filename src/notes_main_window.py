@@ -1650,23 +1650,28 @@ class Note():
 
         #html_source = re.sub('\[\[(.+?)\|(.+?)\]\](.+?)', '\\2', html_source)
         
-        AllLinksRegex = re.compile(r'\[\[(?!\[)(.*?)\]\]')
-        NoteSelectedLinks = AllLinksRegex.search(html_source)
-        if NoteSelectedLinks:
-            print('В файле %s найдены ссылки:' % filename)
+        #AllLinksRegex = re.compile(r'\[\[(?!\[)(.*?)\]\]')
+        #NoteSelectedLinks = AllLinksRegex.search(html_source)
+        #if NoteSelectedLinks:
+            #print('В файле %s найдены ссылки:' % filename)
             # html_source = html_source + ' ### ' + NoteSelectedText.group(1)
-            print(NoteSelectedLinks)
+            #print(NoteSelectedLinks)
             #health_link = NoteSelectedText.group(1)
             #print('Исправленный линк: ##%s##' % health_link)
-
+        
         BadLinksRegex = re.compile('\[\[(.+?)\|(.+?)\]\](.+?)')
         NoteSelectedText = BadLinksRegex.search(html_source)
         if NoteSelectedText:
-            print('Из них опознаны как плохие:')
+            print('В файле %s опознаны как плохие ссылки: ' % filename)
             print(NoteSelectedText)
             # html_source = html_source + ' ### ' + NoteSelectedText.group(1)
             health_link = NoteSelectedText.group(1)
             print('Исправленный линк: ##%s##' % health_link)
+        BadLinksRegex2 = re.compile('&lt;s&gt;(.+?)&lt;/s&gt;')
+        NoteSelectedText = BadLinksRegex2.search(html_source)
+        if NoteSelectedText:
+            print('В файле %s опознаны как плохие ссылки второго типа:' % filename)
+            print(NoteSelectedText)
 
 
     def convert_zim_text_to_html_source(self, text):
@@ -1793,6 +1798,11 @@ class Note():
 	    ## but we do not want to match "[http://foo.org]"
 	    ## See rfc/3986 for the official -but unpractical- regex
 
+        # html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
+        # Информация после заголовка о времени создания заметки.
+        # Наследство Zim.
+        html_source = re.sub('=\n(Created [^\n]*)', '=\n<font id="created">\\1</font>', html_source, re.M)
+
 
         # print()
         # print('После удаления служебных полей Zim:')
@@ -1894,8 +1904,6 @@ class Note():
         # Замена переноса строк в конце ul
         #html_source = re.sub('</ul>\n\n', '</ul>\n', html_source)
 
-        # html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
-        html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
 
 
         # 'code':     Re("''(?!')(.+?)''"),
