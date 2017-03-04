@@ -1660,18 +1660,27 @@ class Note():
             #print('Исправленный линк: ##%s##' % health_link)
         
         BadLinksRegex = re.compile('\[\[(.+?)\|(.+?)\]\](.+?)')
-        NoteSelectedText = BadLinksRegex.search(html_source)
+        #NoteSelectedText = BadLinksRegex.search(html_source)
+        NoteSelectedText = BadLinksRegex.findall(html_source)
         if NoteSelectedText:
-            print('В файле %s опознаны как плохие ссылки: ' % filename)
-            print(NoteSelectedText)
-            # html_source = html_source + ' ### ' + NoteSelectedText.group(1)
-            health_link = NoteSelectedText.group(1)
-            print('Исправленный линк: ##%s##' % health_link)
+            print('\nВ файле %s \nопознаны плохие ссылки: ' % filename)
+            for one_text in NoteSelectedText:
+                #print(NoteSelectedText)
+                print(one_text)
+                # html_source = html_source + ' ### ' + NoteSelectedText.group(1)
+                #health_link = NoteSelectedText.group(1)
+                #health_link = one_text.group(1)
+                #print('Исправленный линк: ##%s##' % health_link)
+
         BadLinksRegex2 = re.compile('&lt;s&gt;(.+?)&lt;/s&gt;')
-        NoteSelectedText = BadLinksRegex2.search(html_source)
+        #NoteSelectedText = BadLinksRegex2.search(html_source)
+        NoteSelectedText = BadLinksRegex2.findall(html_source)
         if NoteSelectedText:
-            print('В файле %s опознаны как плохие ссылки второго типа:' % filename)
-            print(NoteSelectedText)
+            print('\nВ файле %s \nопознаны плохие ссылки второго типа:' % filename)
+            #print(NoteSelectedText)
+            for one_text in NoteSelectedText:
+                #print(NoteSelectedText)
+                print(one_text)
 
 
     def convert_zim_text_to_html_source(self, text):
@@ -1784,7 +1793,7 @@ class Note():
         # html_source = urllib.request.quote(html_source)
 
         #self.health_bad_links(html_source)
-
+          
      #   _classes = {'c': r'[^\s"<>\']'} # limit the character class a bit
      #   url_re = Re(r'''(
 	    #    \b \w[\w\+\-\.]+:// %(c)s* \[ %(c)s+ \] (?: %(c)s+ [\w/] )?  |
@@ -1801,7 +1810,7 @@ class Note():
         # html_source = re.sub('(Created [^\n]*)', '<font id="created">\\1</font>', html_source)
         # Информация после заголовка о времени создания заметки.
         # Наследство Zim.
-        html_source = re.sub('=\n(Created [^\n]*)', '=\n<font id="created">\\1</font>', html_source, re.M)
+        html_source = re.sub('=\n(Created [^\n]*[\d]{4})', '=\n<font id="created">\\1</font>', html_source, re.M)
 
 
         # print()
