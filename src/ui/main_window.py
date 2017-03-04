@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\vyacheslav.slobodyan\Source\Repos\Relanotes\src\ui\main_window.ui'
+# Form implementation generated from reading ui file 'C:\Users\Вячеслав\Source\Repos\Relanotes\src\ui\main_window.ui'
 #
-# Created by: PyQt5 UI code generator 5.8
+# Created by: PyQt5 UI code generator 5.7
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -784,6 +784,8 @@ class Ui_MainWindow(object):
         self.actionSelect_another_directory_and_run_test_for_notes_convertation.setObjectName("actionSelect_another_directory_and_run_test_for_notes_convertation")
         self.actionRun_test_notes_convertation_for_notelist = QtWidgets.QAction(MainWindow)
         self.actionRun_test_notes_convertation_for_notelist.setObjectName("actionRun_test_notes_convertation_for_notelist")
+        self.actionRun_test_health_bad_links_for_notes_from_notelist = QtWidgets.QAction(MainWindow)
+        self.actionRun_test_health_bad_links_for_notes_from_notelist.setObjectName("actionRun_test_health_bad_links_for_notes_from_notelist")
         self.menuFile.addAction(self.actionAdd_new_note)
         self.menuFile.addAction(self.actionRemove_this_note)
         self.menuFile.addAction(self.actionNote_multiaction)
@@ -854,6 +856,7 @@ class Ui_MainWindow(object):
         self.menuDevelop.addAction(self.actionRun_test_for_notes_convertation_in_last_directory)
         self.menuDevelop.addAction(self.actionSelect_another_directory_and_run_test_for_notes_convertation)
         self.menuDevelop.addAction(self.actionRun_test_notes_convertation_for_notelist)
+        self.menuDevelop.addAction(self.actionRun_test_health_bad_links_for_notes_from_notelist)
         self.menuNotelist.addAction(self.actionSort_by_name)
         self.menuNotelist.addAction(self.actionSort_by_size)
         self.menuNotelist.addAction(self.actionSort_by_reopen_count)
@@ -1023,5 +1026,6 @@ class Ui_MainWindow(object):
         self.actionRun_test_for_notes_convertation_in_last_directory.setText(_translate("MainWindow", "Run test for notes convertation in last directory"))
         self.actionSelect_another_directory_and_run_test_for_notes_convertation.setText(_translate("MainWindow", "Select another directory and run test for notes convertation.."))
         self.actionRun_test_notes_convertation_for_notelist.setText(_translate("MainWindow", "Run test notes convertation for notelist"))
+        self.actionRun_test_health_bad_links_for_notes_from_notelist.setText(_translate("MainWindow", "Run test health bad links for notes from notelist"))
 
 from resources import resources_rc

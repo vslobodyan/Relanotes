@@ -1163,6 +1163,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionRun_test_for_notes_convertation_in_last_directory"/>
     <addaction name="actionSelect_another_directory_and_run_test_for_notes_convertation"/>
     <addaction name="actionRun_test_notes_convertation_for_notelist"/>
+    <addaction name="actionRun_test_health_bad_links_for_notes_from_notelist"/>
    </widget>
    <widget class="QMenu" name="menuNotelist">
     <property name="title">
@@ -2013,9 +2014,14 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionRun_test_notes_convertation_for_notelist">
-    <property name="text">
-      <string>Run test notes convertation for notelist</string>
-    </property>
+   <property name="text">
+    <string>Run test notes convertation for notelist</string>
+   </property>
+  </action>
+  <action name="actionRun_test_health_bad_links_for_notes_from_notelist">
+   <property name="text">
+    <string>Run test health bad links for notes from notelist</string>
+   </property>
   </action>
  </widget>
  <resources>

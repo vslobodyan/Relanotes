@@ -1769,6 +1769,20 @@ class Note():
 
         self.health_bad_links(html_source)
 
+        _classes = {'c': r'[^\s"<>\']'} # limit the character class a bit
+        url_re = Re(r'''(
+	        \b \w[\w\+\-\.]+:// %(c)s* \[ %(c)s+ \] (?: %(c)s+ [\w/] )?  |
+	        \b \w[\w\+\-\.]+:// %(c)s+ [\w/]                             |
+	        \b mailto: %(c)s+ \@ %(c)s* \[ %(c)s+ \] (?: %(c)s+ [\w/] )? |
+	        \b mailto: %(c)s+ \@ %(c)s+ [\w/]                            |
+	        \b %(c)s+ \@ %(c)s+ \. \w+ \b
+        )''' % _classes, re.X | re.U)
+	    # Full url regex - much more strict then the is_url_re
+	    # The host name in an uri can be "[hex:hex:..]" for ipv6
+	    # but we do not want to match "[http://foo.org]"
+	    # See rfc/3986 for the official -but unpractical- regex
+
+
         # print()
         # print('После удаления служебных полей Zim:')
         # print(html_source)
@@ -1833,17 +1847,20 @@ class Note():
         # TODO: re.search, groups - обнаружение и сохранение позиций вики-форматирования
         
         # 'strong':   Re('\*\*(?!\*)(.+?)\*\*'),
-        html_source = re.sub('\*\*(.*?)\*\*', '<strong>\\1</strong>', html_source)
+        #html_source = re.sub('\*\*(.*?)\*\*', '<strong>\\1</strong>', html_source)
+        html_source = re.sub(r'\*\*(?!\*)(.*?)\*\*', '<strong>\\1</strong>', html_source)
 
-        html_source = re.sub('//(.*?)//', '<i>\\1</i>', html_source)
+        #html_source = re.sub('//(.*?)//', '<i>\\1</i>', html_source)
+        html_source = re.sub(r'//(?!/)(.*?)//', '<i>\\1</i>', html_source)
 
         # 'strike':   Re('~~(?!~)(.+?)~~'),
         
 
         # Замена / на альтернативное его обозначение для редактора, чтобы замаскировать ссылку внутри другого форматирования
-        html_source = re.sub('~~(.*?)://(.*?)~~', '<s>\\1:&#x2F;&#x2F;\\2</s>', html_source)
+        #html_source = re.sub('~~(.*?)://(.*?)~~', '<s>\\1:&#x2F;&#x2F;\\2</s>', html_source)
         
-        html_source = re.sub('~~(.*?)~~', '<s>\\1</s>', html_source)
+        #html_source = re.sub('~~(.*?)~~', '<s>\\1</s>', html_source)
+        html_source = re.sub(r'~~(?!~)(.+?)~~', '<s>\\1</s>', html_source)
 
         # 'emphasis': Re('//(?!/)(.+?)//'),
 
@@ -1875,24 +1892,34 @@ class Note():
         # html_source = re.sub("''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
 
         # Замена / на альтернативное его обозначение для редактора, чтобы замаскировать ссылку внутри другого форматирования
-        html_source = re.sub('&#x27;&#x27;(.*?)://(.*?)&#x27;&#x27;', '<font id="code">\\1:&#x2F;&#x2F;\\2</font>', html_source)
+        #html_source = re.sub('&#x27;&#x27;(.*?)://(.*?)&#x27;&#x27;', '<font id="code">\\1:&#x2F;&#x2F;\\2</font>', html_source)
 
-        html_source = re.sub("&#x27;&#x27;(?!')(.+?)&#x27;&#x27;", '<font id="code">\\1</font>', html_source)
-
+        #html_source = re.sub("&#x27;&#x27;(?!')(.+?)&#x27;&#x27;", '<font id="code">\\1</font>', html_source)
+        html_source = re.sub(r"''(?!')(.+?)''", '<font id="code">\\1</font>', html_source)
 
         # 'mark':     Re('__(?!_)(.+?)__'),
-        html_source = re.sub('__(?!_)(.+?)__', '<font id="mark">\\1</font>', html_source)
+        #html_source = re.sub('__(?!_)(.+?)__', '<font id="mark">\\1</font>', html_source)
+        html_source = re.sub(r'__(?!_)(.*?)__', '<font id="mark">\\1</font>', html_source)
 
         # Внутренний линк
         # 'link':     Re('\[\[(?!\[)(.+?)\]\]'),
-        html_source = re.sub('\[\[(?!\[)(.+?)\]\]', '<a href="\\1">\\1</a>', html_source)
+        #html_source = re.sub('\[\[(?!\[)(.+?)\]\]', '<a href="\\1">\\1</a>', html_source)
+        html_source = re.sub(r'\[\[(?!\[)(.*?)\]\]', '<a href="\\1">\\1</a>', html_source)
+
+        # Метка
+        #TAG, r'(?<!\S)@\w+',
+
+        # Rule(SUBSCRIPT, r'_\{(?!~)(.+?)\}')
+		# Rule(SUPERSCRIPT, r'\^\{(?!~)(.+?)\}')
+
 
         # Внешний линк
         # html_source = re.sub('(http://[^ \n]*)','<a href="\\1">\\1</a>', html_source)
         html_source = re.sub('([^ \n]*://[^ \n]*)', '<a href="\\1">\\1</a>', html_source)
 
         # 'img':      Re('\{\{(?!\{)(.+?)\}\}'),
-        html_source = re.sub('\{\{(?!\{)(.+?)\}\}', '<img src="\\1">', html_source)
+        #html_source = re.sub('\{\{(?!\{)(.+?)\}\}', '<img src="\\1">', html_source)
+        html_source = re.sub(r'\{\{(?!\{)(.*?)\}\}', '<img src="\\1">', html_source)
         #html_source = re.sub('<img src="~', '<img src="' + path_to_home, html_source)
         
         # print()
@@ -4488,8 +4515,22 @@ class App_Tests():
             # Сохраняем переменную с новым каталогом
             app_settings.settings.setValue('path_to_notes_convertation_test', self.path_to_notes_convertation)
             app_settings.settings.sync()
+
     
-                                
+    def test_notes_items_for_health_bad_link(self):
+        # Тестовая функция, позволяющая проверить результативность функции исправления испорченных ранее ссылок
+        print('Запускаем функцию тестирования лечения испорченных ссылок')
+
+        for filename in self.items:
+            fileObj = codecs.open(filename, "r", "utf-8")
+            original_text = fileObj.read()
+            fileObj.close()
+
+            note.health_bad_links(original_text)
+
+        print()
+        print('Тестирование завершено.')                                
+
 
     def test_notes_items_for_convertation(self):
         # Тестовая функция, позволяющая проверить корректность конвертации форматирования при открытии и сохранении заметок
@@ -4528,6 +4569,11 @@ class App_Tests():
         print()
         print('Тестирование завершено.')
 
+    def health_bad_links_for_notes_from_notelist(self):
+        # Выполняем тест для текущего списка заметок
+        self.collect_items(from_notelist=True)
+        self.test_notes_items_for_health_bad_link()
+
     def notes_convertation_for_notelist(self):
         # Выполняем тест для текущего списка заметок
         self.collect_items(from_notelist=True)
@@ -4554,8 +4600,7 @@ class App_Tests():
     
         main_window.actionSelect_another_directory_and_run_test_for_notes_convertation.triggered.connect(self.notes_convertation_change_path)
         
-        
-        
+        main_window.actionRun_test_health_bad_links_for_notes_from_notelist.triggered.connect(self.health_bad_links_for_notes_from_notelist)
 
 
 

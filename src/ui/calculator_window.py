@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\vyacheslav.slobodyan\Source\Repos\Relanotes\src\ui\calculator_window.ui'
+# Form implementation generated from reading ui file 'C:\Users\Вячеслав\Source\Repos\Relanotes\src\ui\calculator_window.ui'
 #
-# Created by: PyQt5 UI code generator 5.8
+# Created by: PyQt5 UI code generator 5.7
 #
 # WARNING! All changes made in this file will be lost!
 
