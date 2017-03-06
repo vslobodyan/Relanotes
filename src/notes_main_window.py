@@ -1665,6 +1665,28 @@ class Note():
         #    else: return "B"
         #re.sub('([-|A-Z])', normalize_orders, '-1234⇢A193⇢ B123')
 
+        def hide_inline_url(matchobj):
+            if matchobj.group(1) == '-': return "A"
+            else: return "B"
+        #re.sub('([-|A-Z])', normalize_orders, '-1234⇢A193⇢ B123')
+
+        StrikeRegex = re.compile(r'~~(?!~)(.+?)~~')
+        
+        NoteSelectedText = StrikeRegex.findall(html_source)
+        if NoteSelectedText:
+            print('\nВ файле %s \nнайден зачеркнутый текст: ' % filename)
+            for one_text in NoteSelectedText:
+                print(one_text)
+
+        html_source = re.sub(r'~~(?!~)(.+?)~~', hide_inline_url, html_source)
+
+        NoteSelectedText = StrikeRegex.findall(html_source)
+        if NoteSelectedText:
+            print('\nПосле изменения он выглядит так: ' % filename)
+            for one_text in NoteSelectedText:
+                print(one_text)
+
+        return 0
 
         #pattern = re.compile(r'\*(.*?)\*')
         #>>> pattern.sub(r"<b>\g<1>1<\\b>", text)
@@ -3512,7 +3534,9 @@ class Notelist():
             # Добавляем и в отдельный список для истории, если это она
             # Переводим дату из строки в datetime
             rec_item_copy = rec_item.copy()
-            rec_item_copy['last_open']= datetime.strptime(rec_item['last_open'], '%Y-%m-%d %H:%M:%S.%f')
+            if rec_item['last_open']:
+                # Если запись последнего открытия не пустая
+                rec_item_copy['last_open']= datetime.strptime(rec_item['last_open'], '%Y-%m-%d %H:%M:%S.%f')
             self.history_items.append(rec_item_copy)
         
     def delete_item(self, item_filename=None, items_array=[]):
