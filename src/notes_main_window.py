@@ -1659,6 +1659,18 @@ class Note():
             #health_link = NoteSelectedText.group(1)
             #print('Исправленный линк: ##%s##' % health_link)
         
+
+        #def normalize_orders(matchobj):
+        #    if matchobj.group(1) == '-': return "A"
+        #    else: return "B"
+        #re.sub('([-|A-Z])', normalize_orders, '-1234⇢A193⇢ B123')
+
+
+        #pattern = re.compile(r'\*(.*?)\*')
+        #>>> pattern.sub(r"<b>\g<1>1<\\b>", text)
+        #'imagine⇢a⇢new⇢<b>world1<\\b>,⇢a⇢magic⇢<b>world1<\\b>'
+
+
         BadLinksRegex = re.compile('\[\[(.+?)\|(.+?)\]\](.+?)')
         #NoteSelectedText = BadLinksRegex.search(html_source)
         NoteSelectedText = BadLinksRegex.findall(html_source)
@@ -2228,7 +2240,7 @@ class Note():
         # f.writelines(note_source)
         # f.close()
 
-        print("We will save notes to %s" % filename)
+        #print("We will save notes to %s" % filename)
 
         # Новое сохранение с использование кодировки UTF8
         fileObj = codecs.open(filename, "w", "utf-8")
@@ -3759,7 +3771,7 @@ class Notelist():
                 self.items_cursor_position = new_cursor_position
             else:
                 new_cursor_position += 1
-        print('cursor_filename: %s, position: %s' % (cursor_filename, self.items_cursor_position))
+        #print('cursor_filename: %s, position: %s' % (cursor_filename, self.items_cursor_position))
         #print('items: %s' % self.items)
 
         # 6. Обновить информацию об общей статистике найденного и отображенных элементов в Notelist
