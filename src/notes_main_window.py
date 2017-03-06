@@ -3738,7 +3738,7 @@ class Notelist():
             new_history_items.append(one_item['filename'])
 
         # Проходим по старым айтемам и те, что не история или не в новой истории - добавляем к новому массиву
-        print('Добавляем элементы, которые не были и не есть в истории')
+        #print('Добавляем элементы, которые не были и не есть в истории')
         for one_item in items_copy:
             if not one_item['filename'] in new_history_items:
                 # Нету в новой истории
