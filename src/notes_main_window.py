@@ -1666,25 +1666,43 @@ class Note():
         #re.sub('([-|A-Z])', normalize_orders, '-1234⇢A193⇢ B123')
 
         def hide_inline_url(matchobj):
-            if matchobj.group(1) == '-': return "A"
-            else: return "B"
+            #print('  groups: %s' % matchobj.group(0))
+            matching_string = ''
+            result = ''
+            matching_string = matchobj.group(0)
+            if '://' in matching_string:
+                print('  group(0): %s' % matching_string)
+                print('  group(1): %s' % matchobj.group(1))
+                #print('  group(2): %s' % matchobj.group(2))
+                #print('  group(3): %s' % matchobj.group(3))
+                result = matching_string.replace('://', ':/&#x2F;')
+                print('  after replace: %s' % result)
+            else:
+                result = matching_string
+            #if matchobj.group(1) == '-': return "A"
+            #else: return "B"
+            return result
+
         #re.sub('([-|A-Z])', normalize_orders, '-1234⇢A193⇢ B123')
 
+        #StrikeRegex = re.compile(r'(~~)(?!~)(.+?)(~~)')
         StrikeRegex = re.compile(r'~~(?!~)(.+?)~~')
         
         NoteSelectedText = StrikeRegex.findall(html_source)
         if NoteSelectedText:
             print('\nВ файле %s \nнайден зачеркнутый текст: ' % filename)
             for one_text in NoteSelectedText:
-                print(one_text)
+                if '://' in one_text:
+                    print(' %s' % one_text)
 
-        html_source = re.sub(r'~~(?!~)(.+?)~~', hide_inline_url, html_source)
+        html_source = StrikeRegex.sub(hide_inline_url, html_source)
 
         NoteSelectedText = StrikeRegex.findall(html_source)
         if NoteSelectedText:
-            print('\nПосле изменения он выглядит так: ' % filename)
+            print('\nПосле изменения он выглядит так: ')
             for one_text in NoteSelectedText:
-                print(one_text)
+                if ':/' in one_text:
+                    print(' %s' % one_text)
 
         return 0
 
@@ -1715,6 +1733,8 @@ class Note():
             for one_text in NoteSelectedText:
                 #print(NoteSelectedText)
                 print(one_text)
+
+
 
 
     def convert_zim_text_to_html_source(self, text):
