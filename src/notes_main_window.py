@@ -4022,6 +4022,8 @@ class Notelist():
 
         for one_item in self.history_items:
             #print('last_open orig: ##%s##' % one_item['last_open'])
+            if not one_item['last_open'].date():
+                print('Пустая дата в сайдбаре истории у %s' % one_item['filename'])
             last_open_date = one_item['last_open'].date()
             #print('filename: %s\nlast_open: %s\n' % (one_item['filename'], last_open_date) )
 
