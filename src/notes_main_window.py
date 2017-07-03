@@ -949,8 +949,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Подготовка и отображение диалога очистки истории последних открытых заметок
         clear_history_win.history_items = []
         
-        layout = QtWidgets.QVBoxLayout(clear_history_win.scrollArea)
-        layout.setAlignment(QtCore.Qt.AlignTop)
+
+        #layout = QtWidgets.QVBoxLayout(clear_history_win.scrollArea)
+        #layout.setAlignment(QtCore.Qt.AlignTop)
+
+        layout2 = QtWidgets.QVBoxLayout(clear_history_win.scrollAreaWidgetContents)
+        #layout2.setAlignment(QtCore.Qt.AlignTop)
+
 
         # Собираем все элементы истории
         file_recs_rows = app_settings.state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
@@ -968,12 +973,20 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             history_item = clear_history_win.history_rec.copy()
             chb_label = rec_last_open.rpartition(':')[0] + ' - ' + str(rec_filename)
             new_checkbox = QtWidgets.QCheckBox(chb_label)
-            layout.addWidget(new_checkbox)
+
+            layout2.addWidget(new_checkbox)
+
             history_item['checkbox'] = new_checkbox
             history_item['filename'] = rec_filename
             history_item['last_open'] = rec_last_open
 
             clear_history_win.history_items.append(history_item)
+
+        #print("layout.sizeHint() : %s" % layout.sizeHint())
+        #layout.setGeometry(QtCore.QRect(QtCore.QPoint(0,0), layout.sizeHint()))
+        #print("layout2.sizeHint() : %s" % layout2.sizeHint())
+        layout.setGeometry(QtCore.QRect(QtCore.QPoint(0,0), layout.sizeHint()))
+
 
         # Запускаем диалог и получаем ответ пользователя
         if clear_history_win.exec():
