@@ -949,12 +949,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # Подготовка и отображение диалога очистки истории последних открытых заметок
         clear_history_win.history_items = []
         
-
         #layout = QtWidgets.QVBoxLayout(clear_history_win.scrollArea)
         #layout.setAlignment(QtCore.Qt.AlignTop)
 
-        layout2 = QtWidgets.QVBoxLayout(clear_history_win.scrollAreaWidgetContents)
-        #layout2.setAlignment(QtCore.Qt.AlignTop)
+        layout = QtWidgets.QVBoxLayout(clear_history_win.scrollAreaWidgetContents)
+        layout.setAlignment(QtCore.Qt.AlignTop)
 
 
         # Собираем все элементы истории
@@ -974,7 +973,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             chb_label = rec_last_open.rpartition(':')[0] + ' - ' + str(rec_filename)
             new_checkbox = QtWidgets.QCheckBox(chb_label)
 
-            layout2.addWidget(new_checkbox)
+            layout.addWidget(new_checkbox)
 
             history_item['checkbox'] = new_checkbox
             history_item['filename'] = rec_filename
