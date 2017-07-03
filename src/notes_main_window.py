@@ -4022,9 +4022,14 @@ class Notelist():
 
         for one_item in self.history_items:
             #print('last_open orig: ##%s##' % one_item['last_open'])
-            if not one_item['last_open'].date():
-                print('Пустая дата в сайдбаре истории у %s' % one_item['filename'])
-            last_open_date = one_item['last_open'].date()
+            if one_item['last_open'] is None:
+                print('Нет записи о последнем открытии у (поиск в контенте?) %s' % one_item['filename'])
+                last_open_date = today_
+            else:
+                if not one_item['last_open'].date():
+                    print('Пустая дата в сайдбаре истории у %s' % one_item['filename'])
+                last_open_date = one_item['last_open'].date()
+
             #print('filename: %s\nlast_open: %s\n' % (one_item['filename'], last_open_date) )
 
             while not current_header_ndx > current_header_ndx_max:
