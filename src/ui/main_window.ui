@@ -1055,7 +1055,7 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>View</string>
+     <string>&amp;View</string>
     </property>
     <widget class="QMenu" name="menuSelect_theme_for_UI">
      <property name="title">
@@ -1074,7 +1074,7 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Edit</string>
+     <string>&amp;Edit</string>
     </property>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
@@ -1118,14 +1118,14 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menuHistory">
     <property name="title">
-     <string>History</string>
+     <string>&amp;History</string>
     </property>
     <addaction name="actionHistoryClear"/>
     <addaction name="actionHistory_preferences"/>
    </widget>
    <widget class="QMenu" name="menuFormat">
     <property name="title">
-     <string>Format</string>
+     <string>&amp;Format</string>
     </property>
     <addaction name="actionBold"/>
     <addaction name="actionItalic"/>
@@ -1167,7 +1167,7 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menuNotelist">
     <property name="title">
-     <string>Notelist</string>
+     <string>&amp;Notelist</string>
     </property>
     <addaction name="actionSort_by_name"/>
     <addaction name="actionSort_by_size"/>
