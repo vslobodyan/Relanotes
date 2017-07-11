@@ -1178,11 +1178,6 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>&amp;Snippets</string>
     </property>
-    <addaction name="actionSort_by_name"/>
-    <addaction name="separator"/>
-    <addaction name="actionSort_by_size"/>
-    <addaction name="actionSort_by_reopen_count"/>
-    <addaction name="actionSort_by_last_edit"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>

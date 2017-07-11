@@ -129,6 +129,7 @@ class App_Settings():
     snippets_relative_filename = os.path.join('Relanotes', 'Snippets-saved.txt')
     snippets_separator = '###'
     snippets_filename = ''
+    snippet_actions = []
 
     def __init__(self, **kwargs):
         print('Инициализация настроек приложения')
@@ -1442,7 +1443,16 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.doc_source.setHtml('<html><body>123<h3>123</h3></body></html>')
         # self.textBrowser_Note.setDocument(self.doc_source)
 
-    def open_snippets(self):
+    def copy_snippet_text_to_clipboard(self, number):
+        print('Копируем в буфер сниппет номер %s' % number)
+        text = app_settings.snippet_actions[number].StatusTip()
+        print('Полученный текст: %s' % text)
+        # cb = QtGui.QApplication.clipboard()
+        # cb.clear(mode=cb.Clipboard)
+        # cb.setText("Clipboard Text", mode=cb.Clipboard)
+
+
+    def edit_snippets(self):
         fname = app_settings.snippets_filename
         print('Открываем сниппеты для редактирования: %s' % fname)
         self.open_file_in_editor(fname, dont_save_in_history=True)
@@ -1478,14 +1488,41 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             snippets = total_text.split(app_settings.snippets_separator)
             # print(total_text.splitlines())
             # print(snippets)
+            # Удаляем старые пункты меню
+
+            # Добавляем новые пункты меню
             for snippet in snippets:
                 # Перебираем сниппеты. Очищаем от лишнего.
                 # Разделяем заголовок и текст
                 snippet = snippet.strip('\n')
                 snippet_lines = snippet.split('\n')
                 print()
-                print('Заголовок: %s' % snippet_lines[0])
-                print('Текст: %s' % '\n'.join(snippet_lines[1:]))
+                snippet_name = snippet_lines[0]
+                snippet_text = '\n'.join(snippet_lines[1:])
+                if not snippet_name:
+                    continue
+                print('Заголовок: %s' % snippet_name)
+                print('Текст: %s' % snippet_text)
+
+                # exitAction = QAction(QIcon('exit.png'), 'snippet_name', self)
+                # exitAction.setShortcut('Ctrl+Q')
+                # exitAction.setStatusTip('Exit application')
+                # exitAction.triggered.connect(qApp.quit)
+
+                app_settings.snippet_actions.append(
+                    QtWidgets.QAction(QtGui.QIcon('clipboard.png'), snippet_name, self) )
+                app_settings.snippet_actions[-1].setStatusTip(snippet_text)
+                app_settings.snippet_actions[-1].triggered.connect(self.copy_snippet_text_to_clipboard)
+                self.menuSnippets.addAction(app_settings.snippet_actions[-1])
+            # Добавляем сепаратор
+            self.menuSnippets.addSeparator()
+            # Добавляем пункт редактирования сниппетов
+            Edit_Snippets_Action = QtWidgets.QAction(
+                QtGui.QIcon('edit.png'), 'Редактирование сниппетов..', self)
+            Edit_Snippets_Action.triggered.connect(
+                self.edit_snippets )
+            self.menuSnippets.addAction(Edit_Snippets_Action)
+
 
         else:
             print('Такого файла не существует')
