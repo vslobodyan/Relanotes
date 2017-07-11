@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'C:\Users\vyacheslav.slobodyan\Source\Repos\Relanotes\src\ui\main_window.ui'
 #
-# Created by: PyQt5 UI code generator 5.8.2
+# Created by: PyQt5 UI code generator 5.9
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -455,6 +455,8 @@ class Ui_MainWindow(object):
         self.menuDevelop.setObjectName("menuDevelop")
         self.menuNotelist = QtWidgets.QMenu(self.menubar)
         self.menuNotelist.setObjectName("menuNotelist")
+        self.menuSnippets = QtWidgets.QMenu(self.menubar)
+        self.menuSnippets.setObjectName("menuSnippets")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -861,11 +863,17 @@ class Ui_MainWindow(object):
         self.menuNotelist.addAction(self.actionSort_by_size)
         self.menuNotelist.addAction(self.actionSort_by_reopen_count)
         self.menuNotelist.addAction(self.actionSort_by_last_edit)
+        self.menuSnippets.addAction(self.actionSort_by_name)
+        self.menuSnippets.addSeparator()
+        self.menuSnippets.addAction(self.actionSort_by_size)
+        self.menuSnippets.addAction(self.actionSort_by_reopen_count)
+        self.menuSnippets.addAction(self.actionSort_by_last_edit)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuHistory.menuAction())
         self.menubar.addAction(self.menuNotelist.menuAction())
+        self.menubar.addAction(self.menuSnippets.menuAction())
         self.menubar.addAction(self.menuFormat.menuAction())
         self.menubar.addAction(self.menuContent_cur_note.menuAction())
         self.menubar.addAction(self.menuGo_to.menuAction())
@@ -921,6 +929,7 @@ class Ui_MainWindow(object):
         self.menuContent_cur_note.setTitle(_translate("MainWindow", "&Content of cur.note"))
         self.menuDevelop.setTitle(_translate("MainWindow", "&Develop"))
         self.menuNotelist.setTitle(_translate("MainWindow", "&Notelist"))
+        self.menuSnippets.setTitle(_translate("MainWindow", "&Snippets"))
         self.dockHistory.setWindowTitle(_translate("MainWindow", " Smart histor&y"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.dockNoteContentTable.setWindowTitle(_translate("MainWindow", "Note content table"))

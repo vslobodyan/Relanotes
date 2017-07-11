@@ -458,7 +458,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.actionCollapse_all_H_exclude_cur,
             self.actionCollapse_cur_H, self.actionExpand_all_H,
             self.actionSave_note, self.action_ClearFormat,
-            self.actionCode
+            self.actionCode,
+            self.menuFormat,
+            self.menuContent_cur_note,
+            self.actionCopy, self.actionPaste, self.actionCut,
+            self.actionPaste_as_text
         ]
 
         self.note_editor_toolbar_actions = [
@@ -3321,6 +3325,13 @@ class Notelist():
         #    action.setEnabled(visible)
         # Переключаем соотстветствующее отображению действие
         main_window.actionFast_jump_to_file_or_section.setChecked(visible)
+
+        # Пробный код вставки виджета в панель кнопок
+        # comboStyle = QtWidgets.QComboBox(main_window.toolBar)
+        # main_window.toolBar.addWidget(comboStyle)
+        # comboStyle.addItem("Standard")
+        # comboStyle.addItem("Bullet List (Disc)")
+
 
     def is_visible(self):
         if main_window.stackedWidget.currentIndex() == 0:
