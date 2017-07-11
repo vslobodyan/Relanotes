@@ -202,7 +202,7 @@ class MyEventFilter(QtCore.QObject):
 
         # После блокировки и сворачивания окна перехыватываем восстановление окна и
         # запускаем таймер сворачивания снова, если он неактивный.
-        if main_window.locked and main_window.isVisible() and (event.type() in [QEvent.WindowStateChange]) and \
+        if main_window.locked and main_window.isVisible() and (event.type() in [QtCore.QEvent.WindowStateChange]) and \
                 not main_window.timer_window_minimize.isActive():
             # FIXME: .. фильтр событий повторно запускает таймер на сворачивание окна при первом сворачивании
             # Вариант решения: делать таймаут полсекунды в обработке событий,
