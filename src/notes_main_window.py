@@ -2458,11 +2458,16 @@ class Text_Format():
         def adaptate_alien_html_styles(self, html_source):
             # Адаптируем чужие стили html к стилям текущей темы span
             print('Получили для адаптации при вставке следующий html:\n' + html_source + '\n')
-
+            max_size_of_html_source = len(html_source)
             # TODO: ... записать в преимущества функцию умного преобразования инородного html и вставки простого текста
             #  в свой html/wiki
             # TODO: ... сделать функцию иморта из любого html на основе преобразования инородного html в свой
-            
+
+            # Проверяем - не наш ли это собственный текст
+            '<html><head><meta name="qrichtext"'
+            "<!--StartFragment-->"
+            "<!--EndFragment-->"
+
             # Удаляем все переносы строк \n
             html_source = html_source.replace('\n', '')
             html_source = html_source.replace('\r', '')
@@ -2508,8 +2513,12 @@ class Text_Format():
                 
                 # html_source = re.sub('<a .*?href="(*.?)" .*?>', '<a '+self.editor_link_external_style+'
                 # href="\\1">\\1</a>', html_source)
-                
                 while html_source.find('<a', pos) >= 0:
+                    if pos>max_size_of_html_source:
+                        print("желаемый pos превысил размер текста")
+                        break
+                    print("#1 pos=%s, html_source.find('<a', pos)=%s" % (pos, html_source.find('<a', pos)))
+
                     pos1 = html_source.find('<a', pos)
                     pos_href_1 = html_source.find('href=', pos1)
                     pos_href_1 = html_source.find('"', pos_href_1)
@@ -2527,6 +2536,10 @@ class Text_Format():
             if html_source.find('<img') >= 0:
                 pos = 0
                 while html_source.find('<img', pos) >= 0:
+                    if pos>max_size_of_html_source:
+                        print("желаемый pos превысил размер текста")
+                        break
+                    print("#2 pos=%s, html_source.find('<img', pos)=%s" % (pos, html_source.find('<a', pos)))
                     pos1 = html_source.find('<img', pos)
                     pos2 = html_source.find('>', pos1)
                     pos_src_1 = html_source.find('src=', pos1)
@@ -2557,6 +2570,11 @@ class Text_Format():
                 for i in range(0, 5):
                     pos = 0
                     while html_source.find(h_begin[i], pos) >= 0:
+                        if pos > max_size_of_html_source:
+                            print("желаемый pos превысил размер текста")
+                            break
+                        print("#3 pos=%s, html_source.find(h_begin[i], pos)=%s" % (pos, html_source.find(h_begin[i], pos)))
+
                         pos = html_source.find(h_begin[i], pos)
                         pos2 = html_source.find('>', pos)
                         html_source = html_source[:pos] + '<p>' + h_span[i] + html_source[pos2 + 1:]
