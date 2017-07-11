@@ -126,6 +126,9 @@ class App_Settings():
     settings = None    # ini-хранилище переменных
     state_db = None    # База данных со списками истории открытия заметок и прочими данными
     state_db_connection = None
+    snippets_relative_filename = os.path.join('Relanotes', 'Snippets-saved.txt')
+    snippets_separator = '###'
+    snippets_filename = ''
 
     def __init__(self, **kwargs):
         print('Инициализация настроек приложения')
@@ -145,9 +148,14 @@ class App_Settings():
         self.settings = QtCore.QSettings(full_ini_filename, QtCore.QSettings.IniFormat)
 
         self.path_to_notes = self.settings.value('path_to_notes')
-        #print('DEBUG: path_to_notes from settings: %s' % self.path_to_notes)
+        # print('DEBUG: path_to_notes from settings: %s' % self.path_to_notes)
         # Проверяем БАГ, когда в переменную библиотека QT занесла неправильные слеши
         self.path_to_notes = give_correct_path_under_win_and_other(self.path_to_notes)
+
+        self.snippets_filename = os.path.join(self.path_to_notes, self.snippets_relative_filename)
+
+        self.snippets_filename = give_correct_path_under_win_and_other(self.snippets_filename)
+
 
         # Получаем путь к каталогу, в котором лежат исходники программы
         self.path_to_app = get_path_to_app()
@@ -635,6 +643,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionOpenNotes.triggered.connect(self.open_notes)
 
         self.actionReopen_note.triggered.connect(self.reopen_note)
+
+        self.show_snippets()
+
+
 
         ## Устанавливаем стили текстовых редакторов
         #texteditor_style = '''
@@ -1430,9 +1442,56 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         # self.doc_source.setHtml('<html><body>123<h3>123</h3></body></html>')
         # self.textBrowser_Note.setDocument(self.doc_source)
 
+    def open_snippets(self):
+        fname = app_settings.snippets_filename
+        print('Открываем сниппеты для редактирования: %s' % fname)
+        self.open_file_in_editor(fname, dont_save_in_history=True)
+
+    def show_snippets(self):
+        fname = app_settings.snippets_filename
+        total_text = ''
+        snippets = []
+        print('Генерим список сниппетов и добавляем их в меню из файла %s' % fname)
+        # Проверяем существование файла
+        if os.path.isfile(fname):
+            # Загружаем содержимое файла
+            fileObj = codecs.open(fname, "r", "utf-8")
+            lines = fileObj.read()
+            lines_without_comments = []
+            fileObj.close()
+            # print(lines)
+            # Перебираем строки и добавляем в меню
+            is_first_block_of_comments = True
+            for line in lines.splitlines():
+                # Проверяем блок комментариев в начале
+                if is_first_block_of_comments:
+                    if line.startswith(';;'):
+                        continue
+                    else:
+                        is_first_block_of_comments = False
+                # Теперь остался несущий текст. Собираем его в один массив
+                # print(line)
+                lines_without_comments.append(line)
+            # Сбор остального текста закончили
+            # Разбиваем на блоки по сепараторам
+            total_text = '\n'.join(lines_without_comments)
+            snippets = total_text.split(app_settings.snippets_separator)
+            # print(total_text.splitlines())
+            # print(snippets)
+            for snippet in snippets:
+                # Перебираем сниппеты. Очищаем от лишнего.
+                # Разделяем заголовок и текст
+                snippet = snippet.strip('\n')
+                snippet_lines = snippet.split('\n')
+                print()
+                print('Заголовок: %s' % snippet_lines[0])
+                print('Текст: %s' % '\n'.join(snippet_lines[1:]))
+
+        else:
+            print('Такого файла не существует')
 
 
- 
+
 
 class Theme():
     """ Все что определяет работу с темами интерфейса и текста
