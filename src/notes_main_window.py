@@ -459,11 +459,17 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.actionCollapse_cur_H, self.actionExpand_all_H,
             self.actionSave_note, self.action_ClearFormat,
             self.actionCode,
-            self.menuFormat,
-            self.menuContent_cur_note,
             self.actionCopy, self.actionPaste, self.actionCut,
             self.actionPaste_as_text
         ]
+
+        # Корневые пункты меню, которые скрываем и показываем вместе с
+        # текущей заметкой
+        self.note_editor_root_menus = [
+            self.menuFormat,
+            self.menuContent_cur_note
+        ]
+
 
         self.note_editor_toolbar_actions = [
             self.actionUndo,
@@ -1500,7 +1506,11 @@ class Note():
         for action in main_window.note_editor_actions:
             # action.setEnabled(visible)
             action.setVisible(visible)
-        # Переключаем соотстветствующее отображению действие
+        for menu in main_window.note_editor_root_menus:
+            # action.setEnabled(visible)
+            menu.menuAction().setVisible(visible)
+
+                # Переключаем соотстветствующее отображению действие
         # main_window.actionFast_jump_to_file_or_section.setChecked(visible)
 
     def is_visible(self):
