@@ -1488,11 +1488,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             snippets = total_text.split(app_settings.snippets_separator)
             # print(total_text.splitlines())
             # print(snippets)
-            # Удаляем старые пункты меню
 
-            for one_action in app_settings.snippet_actions:
-                self.menuSnippets.removeAction(one_action)
+            # Удаляем старые пункты меню и очищаем массив действий
+            # for one_action in app_settings.snippet_actions:
+            #     self.menuSnippets.removeAction(one_action)
             self.menuSnippets.clear()
+            app_settings.snippet_actions = []
 
             snippet_ndx = -1
             # Добавляем новые пункты меню
