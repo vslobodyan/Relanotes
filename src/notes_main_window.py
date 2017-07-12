@@ -1490,6 +1490,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             # print(snippets)
             # Удаляем старые пункты меню
 
+            for one_action in app_settings.snippet_actions:
+                self.menuSnippets.removeAction(one_action)
+            self.menuSnippets.clear()
+
             snippet_ndx = -1
             # Добавляем новые пункты меню
             for snippet in snippets:
@@ -1513,7 +1517,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 snippet_ndx += 1  # Увеличиваем индекс текущего сниппета
                 print('snippet_ndx: %s' % snippet_ndx)
                 app_settings.snippet_actions.append(
-                    QtWidgets.QAction(QtGui.QIcon('clipboard.png'), snippet_name, self) )
+                    QtWidgets.QAction(QtGui.QIcon('clipboard.png'), snippet_name, self.menuSnippets) )
                 app_settings.snippet_actions[snippet_ndx].setStatusTip(snippet_text)
 
                 # О том, как передать параметр в цикличном создании QAction
@@ -1527,12 +1531,15 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
             # Добавляем сепаратор
             self.menuSnippets.addSeparator()
+
             # Добавляем пункт редактирования сниппетов
-            Edit_Snippets_Action = QtWidgets.QAction(
-                QtGui.QIcon('edit.png'), 'Редактирование сниппетов..', self)
-            Edit_Snippets_Action.triggered.connect(
+
+            app_settings.snippet_actions.append(QtWidgets.QAction(
+                QtGui.QIcon('edit.png'), 'Редактирование сниппетов..', self.menuSnippets))
+
+            app_settings.snippet_actions[-1].triggered.connect(
                 self.edit_snippets )
-            self.menuSnippets.addAction(Edit_Snippets_Action)
+            self.menuSnippets.addAction(app_settings.snippet_actions[-1])
 
 
         else:
@@ -2423,6 +2430,11 @@ class Note():
             fileObj.write(one_line)
         fileObj.close()
 
+
+        # Код обновления специального меню сниппетов, если сохранен
+        # такой специальный файл
+        if filename == app_settings.snippets_filename:
+            main_window.show_snippets()
 
         main_window.statusbar.showMessage('Note saved as ' + filename)
         
