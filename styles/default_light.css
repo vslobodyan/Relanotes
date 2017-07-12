@@ -58,8 +58,14 @@ background-color: #fff8a5;
 
 #notelist_search_param_message {
 	color: #aaa;
-	/*font-size: 18px;*/
+	font-size: 16px;
 }
+
+#notelist_search_param_message small, #notelist_search_param_message small span {
+font-size: 13px;
+}
+
+
 
 #notelist_empty_message {
 	color: #666;

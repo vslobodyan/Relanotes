@@ -3347,7 +3347,7 @@ class Notelist():
 
         if main_window.current_open_note_link:
             cute_filename = self.make_cute_name(main_window.current_open_note_link)
-            return_info = ' &nbsp; <small>(Press <b>Esc</b> to return to <span style="color: #008066;">%s</span>)</small>' % cute_filename
+            return_info = ' &nbsp; <small>Press <b>Esc</b> to return to <span style="color: #008066;">%s</span></small>' % cute_filename
             # <span style="color: #008066;">
         else:
             return_info = ''
