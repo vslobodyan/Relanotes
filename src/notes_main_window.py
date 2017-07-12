@@ -3345,7 +3345,14 @@ class Notelist():
         else:
             description_filter_text = 'containing any text'
 
-        notelist_search_param_message_text = description_filter_name + ' and ' + description_filter_text
+        if main_window.current_open_note_link:
+            cute_filename = self.make_cute_name(main_window.current_open_note_link)
+            return_info = ' &nbsp; <small>(Press <b>Esc</b> to return to "%s")</small>' % cute_filename
+            # <span style="color: #008066;">
+        else:
+            return_info = ''
+
+        notelist_search_param_message_text = description_filter_name + ' and ' + description_filter_text + return_info
         #if not self.filter_name and not self.filter_text:
         #    # Фильтры не установлены. Минимальная строка.
         #    # Надо добавить к ней пробелов

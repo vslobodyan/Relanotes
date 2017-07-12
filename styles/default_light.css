@@ -117,6 +117,10 @@ white-space: pre-wrap;  /* Важнейшая штука - позволяет сохранять пробелы в html 
 /*margin: 15px;*/
 }
 
+small {
+font-size: 14px;
+}
+
 s {
 color: #aaa;
 }
