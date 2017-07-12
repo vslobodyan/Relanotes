@@ -1445,11 +1445,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def copy_snippet_text_to_clipboard(self, number):
         print('Копируем в буфер сниппет номер %s' % number)
-        text = app_settings.snippet_actions[number].StatusTip()
+        text = app_settings.snippet_actions[number].statusTip()
         print('Полученный текст: %s' % text)
-        # cb = QtGui.QApplication.clipboard()
-        # cb.clear(mode=cb.Clipboard)
-        # cb.setText("Clipboard Text", mode=cb.Clipboard)
+        cb = QtGui.QGuiApplication.clipboard()
+        cb.clear(mode=cb.Clipboard)
+        cb.setText(text, mode=cb.Clipboard)
 
 
     def edit_snippets(self):
@@ -1490,6 +1490,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             # print(snippets)
             # Удаляем старые пункты меню
 
+            snippet_ndx = -1
             # Добавляем новые пункты меню
             for snippet in snippets:
                 # Перебираем сниппеты. Очищаем от лишнего.
@@ -1509,11 +1510,21 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 # exitAction.setStatusTip('Exit application')
                 # exitAction.triggered.connect(qApp.quit)
 
+                snippet_ndx += 1  # Увеличиваем индекс текущего сниппета
+                print('snippet_ndx: %s' % snippet_ndx)
                 app_settings.snippet_actions.append(
                     QtWidgets.QAction(QtGui.QIcon('clipboard.png'), snippet_name, self) )
-                app_settings.snippet_actions[-1].setStatusTip(snippet_text)
-                app_settings.snippet_actions[-1].triggered.connect(self.copy_snippet_text_to_clipboard)
-                self.menuSnippets.addAction(app_settings.snippet_actions[-1])
+                app_settings.snippet_actions[snippet_ndx].setStatusTip(snippet_text)
+
+                # О том, как передать параметр в цикличном создании QAction
+                # и связывании их с функцией:
+                # https://stackoverflow.com/questions/40322041/how-in-pyqt-connect-button-to-a-function-with-a-specific-parameter
+                app_settings.snippet_actions[snippet_ndx].triggered.connect(lambda arg, snippet_ndx=snippet_ndx: self.copy_snippet_text_to_clipboard(snippet_ndx))
+
+                self.menuSnippets.addAction(app_settings.snippet_actions[snippet_ndx])
+
+
+
             # Добавляем сепаратор
             self.menuSnippets.addSeparator()
             # Добавляем пункт редактирования сниппетов
