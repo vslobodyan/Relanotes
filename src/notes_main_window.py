@@ -12,6 +12,7 @@ import sqlite3
 from datetime import datetime, timedelta, date  #, time
 import codecs
 import html
+import logging
 
 # from src.ui import calculator_window, preferences_window, note_multiaction
 from src.ui import preferences_window, note_multiaction, clear_history_dialog
@@ -123,6 +124,7 @@ class App_Settings():
     config_path = ''   # Путь к файлам локальных настроек программы
     path_to_notes = '' # Путь к каталогу с заметками
     path_to_app = ''   # Путь к исходникам (или выполняемым файлам) приложения
+    logfile = ''        # Путь к лог-файлу
     settings = None    # ini-хранилище переменных
     state_db = None    # База данных со списками истории открытия заметок и прочими данными
     state_db_connection = None
@@ -146,6 +148,11 @@ class App_Settings():
         # Инициируем хранение настроек в ini-файле
         full_ini_filename = os.path.join(self.config_path, 'settings.ini')
         # print("Полный путь к ini-файлу настроек: %s" % full_ini_filename)
+        print("Каталог настроек и лога: %s" % self.config_path)
+
+        log_level = logging.DEBUG # or whatever
+        logfile = os.path.join(self.config_path, 'working.log')
+
         self.settings = QtCore.QSettings(full_ini_filename, QtCore.QSettings.IniFormat)
 
         self.path_to_notes = self.settings.value('path_to_notes')
@@ -179,6 +186,11 @@ class App_Settings():
 
 
         return super().__init__(**kwargs)
+
+
+class Log():
+
+    pass
 
 
 
@@ -2539,11 +2551,11 @@ class Text_Format():
         # editor_link_local_span =
         # editor_link_wiki_span =
 
-        editor_default_font = QtGui.QFont()
+        editor_default_font = QtGui.QFont('Sans', 17, QtGui.QFont.Normal)
         # editor_default_font.setStyle(QFont.Normal)
         # editor_default_font.setBold(False)
-        editor_default_font.setFamily('Sans')
-        editor_default_font.setPixelSize(17)
+        # editor_default_font.setFamily('Sans')
+        # editor_default_font.setPixelSize(17)
                  
         editor_default_format = QtGui.QTextCharFormat()
         editor_default_format.setFont(editor_default_font)
@@ -3202,7 +3214,7 @@ class Notelist():
     need_rescan = True  # Признак необходимости рескана списка заметок/файлов
 
     history_back_offset = 0  # Обратное смещение по списку истории
-    
+
     note_contents_source = QtGui.QTextDocument()
     
     # file_recs = []
@@ -4003,7 +4015,6 @@ class Notelist():
         self.items_notes_size = items_notes_size_copy
         self.items_notes_count = items_notes_count_copy
 
-        
 
 
     def highlight_found_text_in_html_source(self, item_source, highlight_text):
@@ -4393,9 +4404,19 @@ class Notelist():
             self.items_cursor_position = 1
 
         html_string = self.make_html_source_from_items_list()
-        
+
+        print('Делаем исходник для списка заметок')
+        root_logger.info('Делаем исходник для списка заметок')
+        print('=' * 40)
+        root_logger.info('=' * 40)
+        # print(html_string)
+        root_logger.info(html_string)
+        print('=' * 40)
+        '=' * 40
         main_window.notelist_source.setHtml(html_string)
+        print('Делаем документ для списка заметок')
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
+        print('Закончили со списком заметок')
         self.move_textbrowser_cursor()
         self.search_progress_indicator_hide()
         
@@ -4880,6 +4901,15 @@ app = QtWidgets.QApplication(sys.argv)
 
 # Инициируем класс настроек приложения
 app_settings = App_Settings()
+
+# Включаем логирование
+root_logger = logging.getLogger()
+root_logger.setLevel(app_settings.log_level)
+handler = logging.FileHandler(app_settings.logfile, 'w', 'utf-8') # or whatever
+# formatter = logging.Formatter('%(name)s %(message)s') # or whatever
+# handler.setFormatter(formatter) # Pass handler as a parameter, not assign
+root_logger.addHandler(handler)
+
 
 # theme = Theme()
 

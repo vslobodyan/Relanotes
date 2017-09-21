@@ -3,8 +3,8 @@
 
 
 import sys
-import logging
-import os
+# import logging
+# import os
 
 # Check if we run the correct python version
 try:
