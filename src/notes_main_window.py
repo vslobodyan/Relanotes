@@ -125,6 +125,7 @@ class App_Settings():
     path_to_notes = '' # Путь к каталогу с заметками
     path_to_app = ''   # Путь к исходникам (или выполняемым файлам) приложения
     logfile = ''        # Путь к лог-файлу
+    log_level = ''
     settings = None    # ini-хранилище переменных
     state_db = None    # База данных со списками истории открытия заметок и прочими данными
     state_db_connection = None
@@ -150,8 +151,8 @@ class App_Settings():
         # print("Полный путь к ini-файлу настроек: %s" % full_ini_filename)
         print("Каталог настроек и лога: %s" % self.config_path)
 
-        log_level = logging.DEBUG # or whatever
-        logfile = os.path.join(self.config_path, 'working.log')
+        self.log_level = logging.DEBUG # or whatever
+        self.logfile = os.path.join(self.config_path, 'working.log')
 
         self.settings = QtCore.QSettings(full_ini_filename, QtCore.QSettings.IniFormat)
 
