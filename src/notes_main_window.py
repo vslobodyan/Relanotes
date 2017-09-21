@@ -4417,6 +4417,7 @@ class Notelist():
         # print(html_string)
         root_logger.info(html_string)
         # print('=' * 40)
+        root_logger.info('=' * 40)
         main_window.notelist_source.setHtml(html_string)
         print('Делаем документ для списка заметок')
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
