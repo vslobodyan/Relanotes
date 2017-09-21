@@ -142,14 +142,13 @@ class App_Settings():
         # Получаем путь к каталогу с настройками программы по данным QStandardPaths
         self.config_path = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppDataLocation);
         self.config_path = give_correct_path_under_win_and_other(self.config_path)
-        print("Каталог с настройками программы: %s" % self.config_path)
+        print("Каталог с настройками и логом программы: %s" % self.config_path)
         # Если не существует - создаем.
         if not os.path.exists(self.config_path):
             os.makedirs(self.config_path)
         # Инициируем хранение настроек в ini-файле
         full_ini_filename = os.path.join(self.config_path, 'settings.ini')
         # print("Полный путь к ini-файлу настроек: %s" % full_ini_filename)
-        print("Каталог настроек и лога: %s" % self.config_path)
 
         self.log_level = logging.DEBUG # or whatever
         self.logfile = os.path.join(self.config_path, 'working.log')
@@ -1515,13 +1514,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 # Разделяем заголовок и текст
                 snippet = snippet.strip('\n')
                 snippet_lines = snippet.split('\n')
-                print()
+                # print()
                 snippet_name = snippet_lines[0]
                 snippet_text = '\n'.join(snippet_lines[1:])
                 if not snippet_name:
                     continue
-                print('Заголовок: %s' % snippet_name)
-                print('Текст: %s' % snippet_text)
+                # print('Заголовок: %s' % snippet_name)
+                # print('Текст: %s' % snippet_text)
 
                 # exitAction = QAction(QIcon('exit.png'), 'snippet_name', self)
                 # exitAction.setShortcut('Ctrl+Q')
@@ -1529,7 +1528,7 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 # exitAction.triggered.connect(qApp.quit)
 
                 snippet_ndx += 1  # Увеличиваем индекс текущего сниппета
-                print('snippet_ndx: %s' % snippet_ndx)
+                # print('snippet_ndx: %s' % snippet_ndx)
                 app_settings.snippet_actions.append(
                     QtWidgets.QAction(QtGui.QIcon('clipboard.png'), snippet_name, self.menuSnippets) )
                 app_settings.snippet_actions[snippet_ndx].setStatusTip(snippet_text)
