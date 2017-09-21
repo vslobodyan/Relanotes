@@ -373,14 +373,14 @@ def hbytes(num):
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
     # Главное окно приложения.
-    doc_source = QtGui.QTextDocument()
-    sidebar_source = QtGui.QTextDocument()
-    notelist_source = QtGui.QTextDocument()
+    doc_source = '' # QtGui.QTextDocument()
+    sidebar_source = '' # QtGui.QTextDocument()
+    notelist_source = '' # QtGui.QTextDocument()
     current_open_note_link = ''    # Ссылка на текущую открытую заметку
-    timer_lock_ui = QtCore.QTimer()
+    timer_lock_ui = '' # QtCore.QTimer()
     lock_ui_timeout = 10000
     locked = False
-    timer_window_minimize = QtCore.QTimer()
+    timer_window_minimize = '' # QtCore.QTimer()
     window_minimize_timeout = 10000
 
     # Действия, относящиеся только к редактору заметки
@@ -447,8 +447,13 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.current_open_note_link:
             self.open_file_in_editor(self.current_open_note_link, reload=True)
 
-
     def __init__(self, parent=None):
+        self.doc_source = QtGui.QTextDocument()
+        self.sidebar_source = QtGui.QTextDocument()
+        self.notelist_source = QtGui.QTextDocument()
+        self.timer_lock_ui = QtCore.QTimer()
+        self.timer_window_minimize = QtCore.QTimer()
+
         QtWidgets.QMainWindow.__init__(self, parent)
         self.setupUi(self)
 
@@ -3215,11 +3220,11 @@ class Notelist():
 
     history_back_offset = 0  # Обратное смещение по списку истории
 
-    note_contents_source = QtGui.QTextDocument()
+    note_contents_source = '' # QtGui.QTextDocument()
     
     # file_recs = []
 
-    timer_update = QtCore.QTimer()
+    timer_update = '' # QtCore.QTimer()
     update_timeout = 350 # 420
 
     progress_count_files = 0  # Счетчик прогресса поиска файлов
@@ -3375,13 +3380,13 @@ class Notelist():
     def html_body(self, empty_message='', html_source=''):
         # Основной шаблон списка заметок
             return '''<html>
-                      <body id=notelist_body>
-                      %s
-                      <span style="font-size: 6px;"> </span>%s
-                      %s
-                      <div id=notelist>%s</div>
-                      </body>
-                      </html>''' % (Theme.html_theme_head,
+<body id=notelist_body>
+%s
+<span style="font-size: 6px;"> </span>%s
+%s
+<div id=notelist>%s</div>
+</body>
+</html>''' % (Theme.html_theme_head,
                                     self.search_param_message(),
                                     empty_message,
                                     html_source,)
@@ -4407,12 +4412,11 @@ class Notelist():
 
         print('Делаем исходник для списка заметок')
         root_logger.info('Делаем исходник для списка заметок')
-        print('=' * 40)
+        # print('=' * 40)
         root_logger.info('=' * 40)
         # print(html_string)
         root_logger.info(html_string)
-        print('=' * 40)
-        '=' * 40
+        # print('=' * 40)
         main_window.notelist_source.setHtml(html_string)
         print('Делаем документ для списка заметок')
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
@@ -4473,6 +4477,8 @@ class Notelist():
     
 
     def __init__(self):
+        self.note_contents_source = QtGui.QTextDocument()
+        self.timer_update = QtCore.QTimer()
         # QtCore.QObject.connect(main_window.textBrowser_Listnotes, QtCore.SIGNAL("anchorClicked (const QUrl&)"),
                                # self.link_action)
         main_window.textBrowser_Listnotes.anchorClicked.connect(self.link_action)
