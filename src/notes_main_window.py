@@ -4410,18 +4410,19 @@ class Notelist():
 
         html_string = self.make_html_source_from_items_list()
 
-        print('Делаем исходник для списка заметок')
-        root_logger.info('Делаем исходник для списка заметок')
+        # print('Делаем исходник для списка заметок')
+        # root_logger.info('Делаем исходник для списка заметок')
         # print('=' * 40)
         root_logger.info('=' * 40)
         # print(html_string)
         root_logger.info(html_string)
         # print('=' * 40)
         root_logger.info('=' * 40)
+        #root_logger.warning
         main_window.notelist_source.setHtml(html_string)
-        print('Делаем документ для списка заметок')
+        # print('Делаем документ для списка заметок')
         main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
-        print('Закончили со списком заметок')
+        # print('Закончили со списком заметок')
         self.move_textbrowser_cursor()
         self.search_progress_indicator_hide()
         
