@@ -4432,8 +4432,9 @@ class Notelist():
 
         html_string = self.make_html_source_from_items_list()
 
+
         # print('Делаем исходник для списка заметок')
-        # root_logger.info('Делаем исходник для списка заметок')
+        root_logger.info('\nДелаем исходник для списка заметок:')
         # print('=' * 40)
         root_logger.info('=' * 40)
         # print(html_string)
