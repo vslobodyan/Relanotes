@@ -2594,7 +2594,13 @@ class Text_Format():
 
         def adaptate_alien_html_styles(self, html_source):
             # Адаптируем чужие стили html к стилям текущей темы span
-            print('Получили для адаптации при вставке следующий html:\n' + html_source + '\n')
+
+            root_logger.info('\nПолучили для адаптации при вставке следующий html:')
+            root_logger.info('=' * 40)
+            root_logger.info(html_source)
+            # print('Получили для адаптации при вставке следующий html:\n' + html_source + '\n')
+            root_logger.info('=' * 40)
+
             max_size_of_html_source = len(html_source)
             # TODO: ... записать в преимущества функцию умного преобразования инородного html и вставки простого текста
             #  в свой html/wiki
@@ -2631,7 +2637,8 @@ class Text_Format():
                 str2 == '</h3>') or (str1 == '<h4>' and str2 == '</h4>') or (str1 == '<h5>' and str2 == '</h5>') or
                     (str1 == '<h6>' and str2 == '</h6>')) and '<br>' in between:
                 # print ('str1='+str1, 'str2='+str2, 'between='+between)
-                print('Clear H wrong tag from paste html source')
+                # print('Clear H wrong tag from paste html source')
+                root_logger.info('Clear H wrong tag from paste html source')
                 html_source = between
                 
             # Удаляем все что связано с размером и цветом шрифта
@@ -2652,9 +2659,11 @@ class Text_Format():
                 # href="\\1">\\1</a>', html_source)
                 while html_source.find('<a', pos) >= 0:
                     if pos>max_size_of_html_source:
-                        print("желаемый pos превысил размер текста")
+                        # print("желаемый pos превысил размер текста")
+                        root_logger.info('желаемый pos превысил размер текста')
                         break
-                    print("#1 pos=%s, html_source.find('<a', pos)=%s" % (pos, html_source.find('<a', pos)))
+                    # print("#1 pos=%s, html_source.find('<a', pos)=%s" % (pos, html_source.find('<a', pos)))
+                    root_logger.info("#1 pos=%s, html_source.find('<a', pos)=%s" % (pos, html_source.find('<a', pos)))
 
                     pos1 = html_source.find('<a', pos)
                     pos_href_1 = html_source.find('href=', pos1)
@@ -2674,9 +2683,12 @@ class Text_Format():
                 pos = 0
                 while html_source.find('<img', pos) >= 0:
                     if pos>max_size_of_html_source:
-                        print("желаемый pos превысил размер текста")
+                        # print("желаемый pos превысил размер текста")
+                        root_logger.info('желаемый pos превысил размер текста')
                         break
-                    print("#2 pos=%s, html_source.find('<img', pos)=%s" % (pos, html_source.find('<a', pos)))
+                    # print("#2 pos=%s, html_source.find('<img', pos)=%s" % (pos, html_source.find('<a', pos)))
+                    root_logger.info("#2 pos=%s, html_source.find('<img', pos)=%s" % (pos, html_source.find('<a', pos)))
+
                     pos1 = html_source.find('<img', pos)
                     pos2 = html_source.find('>', pos1)
                     pos_src_1 = html_source.find('src=', pos1)
@@ -2708,9 +2720,11 @@ class Text_Format():
                     pos = 0
                     while html_source.find(h_begin[i], pos) >= 0:
                         if pos > max_size_of_html_source:
-                            print("желаемый pos превысил размер текста")
+                            # print("желаемый pos превысил размер текста")
+                            root_logger.info('желаемый pos превысил размер текста')
                             break
-                        print("#3 pos=%s, html_source.find(h_begin[i], pos)=%s" % (pos, html_source.find(h_begin[i], pos)))
+                        # print("#3 pos=%s, html_source.find(h_begin[i], pos)=%s" % (pos, html_source.find(h_begin[i], pos)))
+                        root_logger.info("#3 pos=%s, html_source.find(h_begin[i], pos)=%s" % (pos, html_source.find(h_begin[i], pos)))
 
                         pos = html_source.find(h_begin[i], pos)
                         pos2 = html_source.find('>', pos)
@@ -2730,8 +2744,16 @@ class Text_Format():
             html_source = text_format.editor_default_font_span.replace('<span ', '<div ') + html_source + '</div>'
             if need_insert_p_at_end:
                 html_source += '</p><p>'
-            print('\nИтоговый результат:\n' + html_source + '\n')
+
+            # print('\nИтоговый результат:\n' + html_source + '\n')
+
+            root_logger.info('\nИтоговый результат:')
+            root_logger.info('=' * 40)
+            root_logger.info(html_source)
+            root_logger.info('=' * 40)
+
             return html_source
+
 
         def switch_format_span(self, format_span, action):
             # Универсальная функция переключения или установки формата шрифта для выделенного фрагмента
