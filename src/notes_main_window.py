@@ -359,16 +359,6 @@ class MyEventFilter(QtCore.QObject):
             return super(MyEventFilter, self).eventFilter(receiver, event)
 
 
-def hbytes(num):
-    # Возвращает размер в удобночитаемом виде
-    for x in ['bytes', 'KB', 'MB', 'GB']:
-        if num < 1024.0:
-            if x == 'bytes':
-                return "%3.0f %s" % (num, x)
-            else:
-                return "%3.1f %s" % (num, x)
-        num /= 1024.0
-    return "%3.1f%s" % (num, 'TB')
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):

@@ -8,6 +8,18 @@ import urllib.request
 import difflib
 
 
+def hbytes(num):
+    # Возвращает размер в удобночитаемом виде
+    for x in ['bytes', 'KB', 'MB', 'GB']:
+        if num < 1024.0:
+            if x == 'bytes':
+                return "%3.0f %s" % (num, x)
+            else:
+                return "%3.1f %s" % (num, x)
+        num /= 1024.0
+    return "%3.1f%s" % (num, 'TB')
+
+
 def give_correct_path_under_win_and_other(path_to_check):
     # Важная функция исправления внутреннего представления путей под Win
 
