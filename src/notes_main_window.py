@@ -160,7 +160,9 @@ class App_Settings():
         # Проверяем БАГ, когда в переменную библиотека QT занесла неправильные слеши
         self.path_to_notes = give_correct_path_under_win_and_other(self.path_to_notes)
 
-        self.snippets_filename = os.path.join(self.path_to_notes, self.snippets_relative_filename)
+        print('self.path_to_notes: "%s", self.snippets_relative_filename: "%s"' % (self.path_to_notes, self.snippets_relative_filename))
+        if self.path_to_notes:
+            self.snippets_filename = os.path.join(self.path_to_notes, self.snippets_relative_filename)
 
         self.snippets_filename = give_correct_path_under_win_and_other(self.snippets_filename)
 
