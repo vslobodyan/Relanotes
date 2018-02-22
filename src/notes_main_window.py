@@ -1201,54 +1201,55 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
             return style, end_pos
 
         # Ищем первую значащую строку
-        style, next_pos = next_span_style(0, html_with_styles, comment='Default')
+        style_default, next_pos = next_span_style(0, html_with_styles, comment='Default')
 
-        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H1')
-        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H2')
-        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H3')
-        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H4')
-        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H5')
-        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H6')
+        style_h1, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H1')
+        style_h2, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H2')
+        style_h3, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H3')
+        style_h4, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H4')
+        style_h5, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H5')
+        style_h6, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H6')
 
         style, next_pos = next_span_style(next_pos, html_with_styles, comment='<br>', log=False)
-        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='Code')
+        style_code, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='Code')
         style, next_pos = next_span_style(next_pos, html_with_styles, comment='<br>', log=False)
-        style, next_pos = next_span_style(next_pos, html_with_styles, comment='Strike')
+        style_strike, next_pos = next_span_style(next_pos, html_with_styles, comment='Strike')
         style, next_pos = next_span_style(next_pos, html_with_styles, comment='<br>', log=False)
-        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='Mark')
+        style_mark, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='Mark')
         style, next_pos = next_span_style(next_pos, html_with_styles, comment='<br>', log=False)
-        style, next_pos = next_span_style(next_pos, html_with_styles, comment='Link')
+        style_link, next_pos = next_span_style(next_pos, html_with_styles, comment='Link')
 
-        #text_format.editor_default_font_span =
-        #text_format.editor_h1_span =
-        #text_format.editor_h2_span =
-        #text_format.editor_h3_span =
-        #text_format.editor_h4_span =
-        #text_format.editor_h5_span =
-        #text_format.editor_h6_span =
+        span_template = '<span style="%s">'
+        text_format.editor_default_font_span = span_template % style_default
+        text_format.editor_h1_span = span_template % style_h1
+        text_format.editor_h2_span = span_template % style_h2
+        text_format.editor_h3_span = span_template % style_h3
+        text_format.editor_h4_span = span_template % style_h4
+        text_format.editor_h5_span = span_template % style_h5
+        text_format.editor_h6_span = span_template % style_h6
 
-        #text_format.editor_code_span =
-        #text_format.editor_strikethrough_span =
-        #text_format.editor_mark_span =
-        #text_format.editor_link_external_style = move_down_and_get_span(test_cursor, only_style=True)
+        text_format.editor_code_span = span_template % style_code
+        text_format.editor_strikethrough_span = span_template % style_strike
+        text_format.editor_mark_span = span_template % style_mark
+        text_format.editor_link_external_style = style_link #move_down_and_get_span(test_cursor, only_style=True)
 
 
         # Новая функция получения стилей через перемещение курсора
-        test_cursor = self.textBrowser_TestNote.textCursor()
-        test_cursor.movePosition(QtGui.QTextCursor.Start)
-        
-        def move_down_and_get_span(cursor, only_style=False):
-            cursor.movePosition(QtGui.QTextCursor.Down)
-            cursor.movePosition(QtGui.QTextCursor.StartOfLine)
-            return note.get_span_under_cursor(test_cursor, only_style)
-
-        text_format.editor_default_font_span = note.get_span_under_cursor(test_cursor)
-        text_format.editor_h1_span = move_down_and_get_span(test_cursor)
-        text_format.editor_h2_span = move_down_and_get_span(test_cursor)
-        text_format.editor_h3_span = move_down_and_get_span(test_cursor)
-        text_format.editor_h4_span = move_down_and_get_span(test_cursor)
-        text_format.editor_h5_span = move_down_and_get_span(test_cursor)
-        text_format.editor_h6_span = move_down_and_get_span(test_cursor)
+        # test_cursor = self.textBrowser_TestNote.textCursor()
+        # test_cursor.movePosition(QtGui.QTextCursor.Start)
+        #
+        # def move_down_and_get_span(cursor, only_style=False):
+        #     cursor.movePosition(QtGui.QTextCursor.Down)
+        #     cursor.movePosition(QtGui.QTextCursor.StartOfLine)
+        #     return note.get_span_under_cursor(test_cursor, only_style)
+        #
+        # text_format.editor_default_font_span = note.get_span_under_cursor(test_cursor)
+        # text_format.editor_h1_span = move_down_and_get_span(test_cursor)
+        # text_format.editor_h2_span = move_down_and_get_span(test_cursor)
+        # text_format.editor_h3_span = move_down_and_get_span(test_cursor)
+        # text_format.editor_h4_span = move_down_and_get_span(test_cursor)
+        # text_format.editor_h5_span = move_down_and_get_span(test_cursor)
+        # text_format.editor_h6_span = move_down_and_get_span(test_cursor)
 
 
         text_format.editor_h_span = ['0-empty', text_format.editor_h1_span,
@@ -1258,10 +1259,10 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                                     text_format.editor_h5_span,
                                     text_format.editor_h6_span]
 
-        text_format.editor_code_span = move_down_and_get_span(test_cursor)
-        text_format.editor_strikethrough_span = move_down_and_get_span(test_cursor)
-        text_format.editor_mark_span = move_down_and_get_span(test_cursor)
-        text_format.editor_link_external_style = move_down_and_get_span(test_cursor, only_style=True)
+        # text_format.editor_code_span = move_down_and_get_span(test_cursor)
+        # text_format.editor_strikethrough_span = move_down_and_get_span(test_cursor)
+        # text_format.editor_mark_span = move_down_and_get_span(test_cursor)
+        # text_format.editor_link_external_style = move_down_and_get_span(test_cursor, only_style=True)
 
 
 
@@ -1272,12 +1273,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         root_logger.info('=' * 40)
 
 
-        root_logger.info('\nПолучены следующие дефолтовые стили:')
-        root_logger.info('text_format.editor_h_span: %s' % text_format.editor_h_span)
-        root_logger.info('text_format.editor_code_span: %s' % text_format.editor_code_span)
-        root_logger.info('text_format.editor_strikethrough_span: %s' % text_format.editor_strikethrough_span)
-        root_logger.info('text_format.editor_mark_span: %s' % text_format.editor_mark_span)
-        root_logger.info('text_format.editor_link_external_style: %s' % text_format.editor_link_external_style)
+        # root_logger.info('\nПолучены следующие дефолтовые стили:')
+        # root_logger.info('text_format.editor_h_span: %s' % text_format.editor_h_span)
+        # root_logger.info('text_format.editor_code_span: %s' % text_format.editor_code_span)
+        # root_logger.info('text_format.editor_strikethrough_span: %s' % text_format.editor_strikethrough_span)
+        # root_logger.info('text_format.editor_mark_span: %s' % text_format.editor_mark_span)
+        # root_logger.info('text_format.editor_link_external_style: %s' % text_format.editor_link_external_style)
 
 
 
@@ -2305,7 +2306,13 @@ class Note():
         text = re.sub(text_format.editor_mark_span + '(.*?)</span>', '__\\1__', text)         
         
         # Код
-        text = re.sub(text_format.editor_code_span + '(.*?)</span>', '\'\'\\1\'\'', text)         
+        text = re.sub(text_format.editor_code_span + '(.*?)</span>', '\'\'\\1\'\'', text)
+
+
+        root_logger.info('\nПредварительный исходник результата сохранения в формате Zim:')
+        root_logger.info('=' * 40)
+        root_logger.info(text)
+        root_logger.info('=' * 40)
 
         # profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
 
@@ -2369,6 +2376,13 @@ class Note():
 
         # Добавляем начало файла как у Zim        
         text = begin_of_zim_note + text
+
+
+        root_logger.info('\nОкончательный исходник результата сохранения в формате Zim:')
+        root_logger.info('=' * 40)
+        root_logger.info(text)
+        root_logger.info('=' * 40)
+
 
         return text
 
