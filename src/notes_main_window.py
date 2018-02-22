@@ -1170,6 +1170,69 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.test_doc_source.setHtml(test_note_source)
         self.textBrowser_TestNote.setDocument(self.test_doc_source)
 
+        # Новая функция получения стилей перебором html-исходника текста редактора
+        html_with_styles = self.textBrowser_TestNote.toHtml()
+
+        def next_span_style(pos, str='', skip_next=False, log=True, comment=''):
+            'Ищем следующий span и получаем его стиль'
+            span_begin = '<span style="'
+            style_end = '">'
+            style = ''
+            # Ищем span
+            begin_pos = str.find(span_begin, pos) + len(span_begin)
+            # Ищем завершение его стиля
+            end_pos = str.find(style_end, begin_pos)
+            # Берем его стиль
+            style = str[begin_pos:end_pos]
+            # Возвращаем найденную позицию span, его стиль и позицию окончания стиля
+            skip_next_notify = ''
+            if skip_next:
+                # Надо проскочить следующий стиль
+                useless, end_pos = next_span_style(end_pos, str, log=False)
+                skip_next_notify = ' (skip_next)'
+            if log:
+                root_logger.info('Извлечение стиля %s из span%s,  pos %s-%s, "%s"' % (comment, skip_next_notify, begin_pos, end_pos, style))
+            else:
+                pass
+                # Надо вынуть текст из пропускаемого тега
+                #text_end = str.find("<", end_pos)
+                #root_logger.info('Текст пропускаемого тега "%s"' % str[end_pos:text_end])
+
+            return style, end_pos
+
+        # Ищем первую значащую строку
+        style, next_pos = next_span_style(0, html_with_styles, comment='Default')
+
+        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H1')
+        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H2')
+        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H3')
+        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H4')
+        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H5')
+        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='H6')
+
+        style, next_pos = next_span_style(next_pos, html_with_styles, comment='<br>', log=False)
+        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='Code')
+        style, next_pos = next_span_style(next_pos, html_with_styles, comment='<br>', log=False)
+        style, next_pos = next_span_style(next_pos, html_with_styles, comment='Strike')
+        style, next_pos = next_span_style(next_pos, html_with_styles, comment='<br>', log=False)
+        style, next_pos = next_span_style(next_pos, html_with_styles, skip_next=True, comment='Mark')
+        style, next_pos = next_span_style(next_pos, html_with_styles, comment='<br>', log=False)
+        style, next_pos = next_span_style(next_pos, html_with_styles, comment='Link')
+
+        #text_format.editor_default_font_span =
+        #text_format.editor_h1_span =
+        #text_format.editor_h2_span =
+        #text_format.editor_h3_span =
+        #text_format.editor_h4_span =
+        #text_format.editor_h5_span =
+        #text_format.editor_h6_span =
+
+        #text_format.editor_code_span =
+        #text_format.editor_strikethrough_span =
+        #text_format.editor_mark_span =
+        #text_format.editor_link_external_style = move_down_and_get_span(test_cursor, only_style=True)
+
+
         # Новая функция получения стилей через перемещение курсора
         test_cursor = self.textBrowser_TestNote.textCursor()
         test_cursor.movePosition(QtGui.QTextCursor.Start)
@@ -1200,6 +1263,21 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         text_format.editor_mark_span = move_down_and_get_span(test_cursor)
         text_format.editor_link_external_style = move_down_and_get_span(test_cursor, only_style=True)
 
+
+
+        root_logger.info('\nИсходник для получения стилей:')
+        root_logger.info('=' * 40)
+        root_logger.info(self.textBrowser_TestNote.toHtml())
+        # print('Получили для адаптации при вставке следующий html:\n' + html_source + '\n')
+        root_logger.info('=' * 40)
+
+
+        root_logger.info('\nПолучены следующие дефолтовые стили:')
+        root_logger.info('text_format.editor_h_span: %s' % text_format.editor_h_span)
+        root_logger.info('text_format.editor_code_span: %s' % text_format.editor_code_span)
+        root_logger.info('text_format.editor_strikethrough_span: %s' % text_format.editor_strikethrough_span)
+        root_logger.info('text_format.editor_mark_span: %s' % text_format.editor_mark_span)
+        root_logger.info('text_format.editor_link_external_style: %s' % text_format.editor_link_external_style)
 
 
 
@@ -1305,6 +1383,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         note_source = note.convert_zim_text_to_html_source(lines)
         self.doc_source.setHtml(note_source)
         self.textBrowser_Note.setDocument(self.doc_source)
+
+        root_logger.info('\nИсходник загружаемой заметки из файла %s:' % filename)
+        root_logger.info('=' * 40)
+        root_logger.info(self.textBrowser_Note.toHtml())
+        # print('Получили для адаптации при вставке следующий html:\n' + html_source + '\n')
+        root_logger.info('=' * 40)
 
 
         # Передвигаем курсор на нужную позицию
@@ -4426,13 +4510,13 @@ class Notelist():
 
 
         # print('Делаем исходник для списка заметок')
-        root_logger.info('\nДелаем исходник для списка заметок:')
+        #root_logger.info('\nДелаем исходник для списка заметок:')
         # print('=' * 40)
-        root_logger.info('=' * 40)
+        #root_logger.info('=' * 40)
         # print(html_string)
-        root_logger.info(html_string)
+        #root_logger.info(html_string)
         # print('=' * 40)
-        root_logger.info('=' * 40)
+        #root_logger.info('=' * 40)
         #root_logger.warning
         main_window.notelist_source.setHtml(html_string)
         # print('Делаем документ для списка заметок')
