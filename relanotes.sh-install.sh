@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 SCRIPT_NAME="relanotes.sh"
+LINK_NAME="relanotes"
+
 SCRIPT_PATH=`pwd`
 LINK_PATH="/usr/local/bin"
-LINK_NAME="relanotes"
 SCRIPT_FILENAME="$SCRIPT_PATH/relanotes.sh"
 LINK_FROM="$LINK_PATH/$LINK_NAME"
 LINK_TO="$SCRIPT_PATH/$SCRIPT_NAME"
