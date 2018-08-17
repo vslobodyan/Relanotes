@@ -1167,6 +1167,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="separator"/>
     <addaction name="actionShow_note_HTML_source"/>
     <addaction name="actionSave_also_note_HTML_source"/>
+    <addaction name="actionOpen_logfile_in_text_editor"/>
     <addaction name="actionRun_test_for_notes_convertation_in_last_directory"/>
     <addaction name="actionSelect_another_directory_and_run_test_for_notes_convertation"/>
     <addaction name="actionRun_test_notes_convertation_for_notelist"/>
@@ -2034,6 +2035,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionRun_test_health_bad_links_for_notes_from_notelist">
    <property name="text">
     <string>Run test &amp;health bad links for notes from notelist</string>
+   </property>
+  </action>
+  <action name="actionOpen_logfile_in_text_editor">
+   <property name="text">
+    <string>Open logfile in text editor</string>
    </property>
   </action>
  </widget>

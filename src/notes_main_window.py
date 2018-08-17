@@ -429,6 +429,12 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
                 app_settings.settings.sync()
                 print("Выбран новый путь к заметкам:", app_settings.path_to_notes)
 
+    def open_logfile_in_text_editor(self):
+        # Открываем лог-файл в дефолтовой программе среды исполнения.
+        # os.startfile(app_settings.logfile)
+        import webbrowser
+        webbrowser.open(app_settings.logfile)
+
     def open_notes(self):
         # Открываем другой каталог с заметками
         self.check_path_to_notes_or_select_new(select_new=True)
@@ -645,6 +651,8 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionFind_next_in_cur_note.triggered.connect(self.find_next_in_cur_note)
         # QtCore.QObject.connect(self.lineTextToFind, QtCore.SIGNAL("returnPressed()"), self.find_next_in_cur_note)
         self.lineTextToFind.returnPressed.connect(self.find_next_in_cur_note)
+
+        self.actionOpen_logfile_in_text_editor.triggered.connect(self.open_logfile_in_text_editor)
 
         
         self.actionShow_note_HTML_source.triggered.connect(self.show_html_source)
@@ -5012,7 +5020,6 @@ class App_Tests():
         main_window.actionSelect_another_directory_and_run_test_for_notes_convertation.triggered.connect(self.notes_convertation_change_path)
         
         main_window.actionRun_test_health_bad_links_for_notes_from_notelist.triggered.connect(self.health_bad_links_for_notes_from_notelist)
-
 
 
 
