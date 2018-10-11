@@ -13,6 +13,13 @@ REM Переходим в папку, в которой находится скрипт и основной запускаемый Питон-ф
 REM Также включен флаг смены диска, если надо.
 cd /d %~dp0
 
+
+echo ===========================
+echo WARNING! This is obsolete script for now - non-actual path to UI-files.
+echo Need to change this!
+echo ===========================
+
+
 echo We will compile new UI for RelaNotes..
 
 pyrcc5 resources/resources.qrc -o resources/resources_rc.py

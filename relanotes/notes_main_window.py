@@ -4,8 +4,6 @@
 # __version__ = '0.06'
 
 
-import sys
-import os
 import re
 import time
 import sqlite3
@@ -15,16 +13,16 @@ import html
 import logging
 
 # from src.ui import calculator_window, preferences_window, note_multiaction
-from src.ui import preferences_window, note_multiaction, clear_history_dialog
-from src.ui.main_window import *
-from src import calculator
+from relanotes.qtdesign_ui import clear_history_dialog, preferences_window, note_multiaction
+from relanotes.qtdesign_ui.main_window import *
+from relacalc import calculator
 
 # from PyQt4.QtCore import *
 # from PyQt4.QtGui import *
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from src.routines import *
+from relanotes.routines import *
 
 # from PyQt5.QtCore import *
 # from PyQt5.QtGui import *

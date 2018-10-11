@@ -1,17 +1,15 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import sys
-
 #from PyQt4 import QtCore, QtGui
 #from PyQt4.QtCore import *
 #from PyQt4.QtGui import *
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtWidgets
 # from PyQt5.QtCore import *
 # from PyQt5.QtGui import *
 
-from src.ui import calculator_window
+from relacalc.qtdesign_ui import calculator_window
 
 
 class CalculatorWindow(QtWidgets.QDialog, calculator_window.Ui_Dialog):  # src.ui.
