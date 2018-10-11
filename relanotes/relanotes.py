@@ -15,7 +15,7 @@ import logging
 # from src.ui import calculator_window, preferences_window, note_multiaction
 from relanotes.qtdesign_ui import clear_history_dialog, preferences_window, note_multiaction
 from relanotes.qtdesign_ui.main_window import *
-from relacalc import calculator
+from relacalc import relacalc
 
 # from PyQt4.QtCore import *
 # from PyQt4.QtGui import *
@@ -5056,7 +5056,7 @@ notelist = Notelist()
 #history = History()
 
 table_of_note_contents = Table_of_note_contents()
-calculator_win = calculator.CalculatorWindow()
+calculator_win = relacalc.CalculatorWindow()
 
 preferences_win = PreferencesWindow()
 notemultiaction_win = NoteMultiactionWindow()

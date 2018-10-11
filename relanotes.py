@@ -23,7 +23,7 @@ except:
 
 
 try:
-    import relanotes.notes_main_window
+    import relanotes.relanotes
 except ImportError:
     sys.excepthook(*sys.exc_info())
     print >> sys.stderr, 'ERROR: Could not find python module files in path:'
