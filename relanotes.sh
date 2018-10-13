@@ -23,7 +23,7 @@
 
 #RELANOTES_HOME="$(dirname "$(realpath "$0")")"
 #echo "Real path to RelaNotes is $RELANOTES_HOME"
-#RELANOTES_MAIN="$RELANOTES_HOME/relanotes.py"
+#RELANOTES_MAIN="$RELANOTES_HOME/main.py"
 #python3 "$RELANOTES_MAIN"
 
 SCRIPT_NAME="relanotes.py"
@@ -34,6 +34,6 @@ SCRIPT_MAIN="$SCRIPT_HOME/$SCRIPT_NAME"
 python3 "$SCRIPT_MAIN"
 
 
-#python3 relanotes.py
+#python3 main.py
 #echo "Press any key to exit.."
 #read

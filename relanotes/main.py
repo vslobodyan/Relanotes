@@ -16,7 +16,7 @@ from relanotes.note_multiaction_window import NoteMultiactionWindow
 from relanotes.notelist import Notelist
 from relanotes.preferences_window import PreferencesWindow
 from relanotes.profiler import Profiler
-from relacalc import relacalc
+from relacalc import main
 
 # from PyQt4.QtCore import *
 # from PyQt4.QtGui import *
@@ -156,7 +156,7 @@ notelist = Notelist()
 #history = History()
 
 table_of_note_contents = Table_of_note_contents()
-calculator_win = relacalc.CalculatorWindow()
+calculator_win = main.CalculatorWindow()
 
 preferences_win = PreferencesWindow()
 notemultiaction_win = NoteMultiactionWindow()
