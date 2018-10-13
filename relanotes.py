@@ -24,6 +24,8 @@ except:
 
 try:
     import relanotes.main
+    relanotes.main.main()
+
 except ImportError:
     sys.excepthook(*sys.exc_info())
     print >> sys.stderr, 'ERROR: Could not find python module files in path:'

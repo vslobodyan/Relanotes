@@ -6,9 +6,8 @@ from PyQt5 import QtCore
 
 from relanotes.routines import give_correct_path_under_win_and_other, get_path_to_app
 
-
 class App_Settings():
-    # Основные настройки программы
+    """Основной класс настроек программы"""
 
     NameOrganization = 'DigiTect'
     NameGlobal = 'Relanotes'
@@ -26,7 +25,8 @@ class App_Settings():
     snippets_filename = ''
     snippet_actions = []
 
-    def __init__(self, **kwargs):
+    # was: , **kwargs
+    def __init__(self):
         print('Инициализация настроек приложения')
         QtCore.QCoreApplication.setOrganizationName(self.NameOrganization)
         QtCore.QCoreApplication.setApplicationName(self.NameGlobal)
@@ -35,9 +35,11 @@ class App_Settings():
         self.config_path = QtCore.QStandardPaths.writableLocation(QtCore.QStandardPaths.AppDataLocation);
         self.config_path = give_correct_path_under_win_and_other(self.config_path)
         print("Каталог с настройками и логом программы: %s" % self.config_path)
+
         # Если не существует - создаем.
         if not os.path.exists(self.config_path):
             os.makedirs(self.config_path)
+
         # Инициируем хранение настроек в ini-файле
         full_ini_filename = os.path.join(self.config_path, 'settings.ini')
         # print("Полный путь к ini-файлу настроек: %s" % full_ini_filename)
@@ -58,7 +60,6 @@ class App_Settings():
 
         self.snippets_filename = give_correct_path_under_win_and_other(self.snippets_filename)
 
-
         # Получаем путь к каталогу, в котором лежат исходники программы
         self.path_to_app = get_path_to_app()
         print("path_to_app:", self.path_to_app)
@@ -77,6 +78,4 @@ class App_Settings():
         self.state_db = sqlite3.connect(full_state_db_filename)
         self.state_db_connection = self.state_db.cursor()
 
-
-
-        return super().__init__(**kwargs)
+        # return super().__init__(**kwargs)

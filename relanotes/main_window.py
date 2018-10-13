@@ -5,7 +5,7 @@ from datetime import datetime
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 from relanotes.qtdesign_ui.main_window import Ui_MainWindow
-# from relanotes.relanotes import app_settings, notelist, main_window, clear_history_win, calculator_win, preferences_win, \
+# from relanotes.main import app_settings, notelist, main_window, clear_history_win, calculator_win, preferences_win, \
 #     note, root_logger, text_format
 from relanotes.routines import give_correct_path_under_win_and_other, get_correct_filename_from_url
 
@@ -92,14 +92,11 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.current_open_note_link:
             self.open_file_in_editor(self.current_open_note_link, reload=True)
 
-    def __init__(self, parent=None):
-        self.doc_source = QtGui.QTextDocument()
-        self.sidebar_source = QtGui.QTextDocument()
-        self.notelist_source = QtGui.QTextDocument()
-        self.timer_lock_ui = QtCore.QTimer()
-        self.timer_window_minimize = QtCore.QTimer()
 
-        QtWidgets.QMainWindow.__init__(self, parent)
+    def initial_setup(self):
+        """Функция начальной настройки и корректировки главного окна приложения, выполняющаяся
+        при запуске программы для подготовки к отображению этого окна."""
+
         self.setupUi(self)
 
         # settings.setValue('int_value', 42)
@@ -343,6 +340,19 @@ class Window(QtWidgets.QMainWindow, Ui_MainWindow):
         #        app_settings.settings.setValue('path_to_notes', app_settings.path_to_notes)
         #        app_settings.settings.sync()
         #        print("Выбран новый путь к заметкам:", app_settings.path_to_notes)
+
+
+
+
+    def __init__(self, parent=None):
+        self.doc_source = QtGui.QTextDocument()
+        self.sidebar_source = QtGui.QTextDocument()
+        self.notelist_source = QtGui.QTextDocument()
+        self.timer_lock_ui = QtCore.QTimer()
+        self.timer_window_minimize = QtCore.QTimer()
+
+        QtWidgets.QMainWindow.__init__(self, parent)
+
 
 
     def minimize(self):

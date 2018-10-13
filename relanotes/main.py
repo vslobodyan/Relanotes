@@ -116,51 +116,70 @@ file_recs = [ rec1, rec2, rec3, .. ]
 file_recs = []
 """
 
+
+print ('== 000')
+
 profiler = Profiler()
 
-
-
-# if __name__ == "__main__":
 app = QtWidgets.QApplication(sys.argv)
 # myapp = MyForm()
+
+print ('== 001')
 
 # Инициируем класс настроек приложения
 app_settings = App_Settings()
 
+print ('== 002')
+
 # Включаем логирование
 root_logger = logging.getLogger()
 root_logger.setLevel(app_settings.log_level)
-handler = logging.FileHandler(app_settings.logfile, 'w', 'utf-8') # or whatever
+handler = logging.FileHandler(app_settings.logfile, 'w', 'utf-8')  # or whatever
 # formatter = logging.Formatter('%(name)s %(message)s') # or whatever
 # handler.setFormatter(formatter) # Pass handler as a parameter, not assign
 root_logger.addHandler(handler)
 
-
 # theme = Theme()
 
+print ('== 003')
 
 myFilter = MyEventFilter()
+
+print ('== 004')
+
 text_format = Text_Format()
+print ('== 01')
 main_window = Window()
+print ('Загрузили класс Window')
 
 # Переопределяем класс редактора заметок
 new_textBrowser = MyTextBrowser(main_window.textBrowser_Note)
 main_window.textBrowser_Note.setVisible(False)  # Скрываем старый класс редактора заметки
-main_window.textBrowser_Note = new_textBrowser 
+main_window.textBrowser_Note = new_textBrowser
 main_window.horizontalLayout_Note.layout().addWidget(main_window.textBrowser_Note)
 main_window.horizontalLayout_Note.layout().addWidget(main_window.frame_NoteMinimap)
 
+print ('== 1')
+
 note = Note()
 
+print ('== 2')
+
 notelist = Notelist()
-#history = History()
+# history = History()
+
+print ('== 3')
 
 table_of_note_contents = Table_of_note_contents()
 calculator_win = main.CalculatorWindow()
 
+print ('== 4')
+
 preferences_win = PreferencesWindow()
 notemultiaction_win = NoteMultiactionWindow()
 clear_history_win = ClearHistoryDialog()
+
+print ('== 5')
 
 app.installEventFilter(myFilter)
 
@@ -168,23 +187,32 @@ app.installEventFilter(myFilter)
 app_tests = App_Tests()
 
 
-# Запускаем инициализирующую проверку пути к заметкам
-main_window.check_path_to_notes_or_select_new()        
+def main():
+    """Основная функция запуска главного окна программы, инициализации настроек приложения и т.д."""
 
-# history.setVisible()
-notelist.set_visible()  # По-умолчанию встречаем пользователя списком заметок
+    print('== 6')
 
-main_window.show()
+    main_window.initial_setup()
 
-main_window.statusbar.showMessage('Application initializing..')
-# self.open_file_in_editor(path_to_notes + 'компьютерное.txt')
-main_window.initial_db()
-notelist.update()
-main_window.renew_history_lists('')
-# Делаем инициализацию текста в поле фильтра списка заметок
-main_window.notelist_filter_changed('')
+    # Запускаем инициализирующую проверку пути к заметкам
+    main_window.check_path_to_notes_or_select_new()
+
+    # history.setVisible()
+    notelist.set_visible()  # По-умолчанию встречаем пользователя списком заметок
+
+    main_window.show()
+
+    main_window.statusbar.showMessage('Application initializing..')
+    # self.open_file_in_editor(path_to_notes + 'компьютерное.txt')
+    main_window.initial_db()
+    notelist.update()
+    main_window.renew_history_lists('')
+    # Делаем инициализацию текста в поле фильтра списка заметок
+    main_window.notelist_filter_changed('')
+
+    sys.exit(app.exec_())
 
 
-sys.exit(app.exec_())
-
+if __name__ == "__main__":
+    main()
 
