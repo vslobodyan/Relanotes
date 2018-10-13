@@ -60,12 +60,14 @@ def main():
 
     print('== 7')
 
-    # Переопределяем класс редактора заметок
-    new_textBrowser = MyTextBrowser(rn_app.main_window.textBrowser_Note)
-    rn_app.main_window.textBrowser_Note.setVisible(False)  # Скрываем старый класс редактора заметки
-    rn_app.main_window.textBrowser_Note = new_textBrowser
-    rn_app.main_window.horizontalLayout_Note.layout().addWidget(rn_app.main_window.textBrowser_Note)
-    rn_app.main_window.horizontalLayout_Note.layout().addWidget(rn_app.main_window.frame_NoteMinimap)
+    rn_app.main_window.redefine_textbrowser_class()
+
+    # # Переопределяем класс редактора заметок
+    # new_textBrowser = MyTextBrowser(rn_app.main_window.textBrowser_Note)
+    # rn_app.main_window.textBrowser_Note.setVisible(False)  # Скрываем старый класс редактора заметки
+    # rn_app.main_window.textBrowser_Note = new_textBrowser
+    # rn_app.main_window.horizontalLayout_Note.layout().addWidget(rn_app.main_window.textBrowser_Note)
+    # rn_app.main_window.horizontalLayout_Note.layout().addWidget(rn_app.main_window.frame_NoteMinimap)
 
     print('== 8')
 
@@ -82,20 +84,39 @@ def main():
     # Запускаем инициализирующую проверку пути к заметкам
     rn_app.main_window.check_path_to_notes_or_select_new()
 
-    rn_app.app_tests.initial_setup()
+    print('== 12')
+
+    rn_app.tests.initial_setup()
+
+    print('== 13')
 
     # history.setVisible()
     rn_app.notelist.set_visible()  # По-умолчанию встречаем пользователя списком заметок
+
+    print('== 14')
 
     rn_app.main_window.show()
 
     rn_app.main_window.statusbar.showMessage('Application initializing..')
     # self.open_file_in_editor(path_to_notes + 'компьютерное.txt')
+
+    print('== 15')
+
     rn_app.main_window.initial_db()
+
+    print('== 16')
+
     rn_app.notelist.update()
+
+    print('== 17')
+
     rn_app.main_window.renew_history_lists('')
     # Делаем инициализацию текста в поле фильтра списка заметок
+
+    print('== 18')
     rn_app.main_window.notelist_filter_changed('')
+
+    print('== 19')
 
     sys.exit(app.exec_())
 

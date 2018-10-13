@@ -143,7 +143,7 @@ class App_Tests():
         print('Инициализация класса тестов')
 
         # Получение из настроек пути к каталогу тестов
-        new_path = self.rn_app.app_settings.settings.value('path_to_notes_convertation_test')
+        new_path = self.rn_app.settings.settings.value('path_to_notes_convertation_test')
         self.update_path_info_for_notes_convertation(new_path)
 
         self.rn_app.main_window.actionRun_test_for_notes_convertation_in_last_directory.triggered.connect(self.notes_convertation_for_directory)

@@ -119,6 +119,16 @@ class Main_Window(QtWidgets.QMainWindow, Ui_MainWindow):
             self.open_file_in_editor(self.current_open_note_link, reload=True)
 
 
+    def redefine_textbrowser_class(self):
+        # Переопределяем класс редактора заметок
+        from relanotes.mytextbrowser import MyTextBrowser
+        new_textBrowser = MyTextBrowser(self.rn_app, parent=self.textBrowser_Note)
+        self.textBrowser_Note.setVisible(False)  # Скрываем старый класс редактора заметки
+        self.textBrowser_Note = new_textBrowser
+        self.horizontalLayout_Note.layout().addWidget(self.textBrowser_Note)
+        self.horizontalLayout_Note.layout().addWidget(self.frame_NoteMinimap)
+
+
     def initial_setup(self):
         """Функция начальной настройки и корректировки главного окна приложения, выполняющаяся
         при запуске программы для подготовки к отображению этого окна."""
@@ -333,7 +343,6 @@ class Main_Window(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionReopen_note.triggered.connect(self.reopen_note)
 
         self.show_snippets()
-
 
 
         ## Устанавливаем стили текстовых редакторов

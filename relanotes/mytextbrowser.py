@@ -1,12 +1,15 @@
 from PyQt5 import QtWidgets
 
-from relanotes.rn_class import note, text_format
+# from relanotes.rn_class import note, text_format
 # from relanotes.main import note, text_format
 
 
 class MyTextBrowser(QtWidgets.QTextBrowser):
     # Класс, переопределяющий работу основного навигатора заметок
-    def __init__(self, parent=None):
+    rn_app = None
+
+    def __init__(self, rn_app, parent=None):
+        self.rn_app = rn_app
         super(MyTextBrowser, self).__init__(parent)
         self.setReadOnly(False)
         self.setObjectName('MyTextBrowser')
@@ -35,8 +38,8 @@ class MyTextBrowser(QtWidgets.QTextBrowser):
             cursor.insertImage("image")
         '''
 
-        if source_html == '' or note.paste_as_text_once :
-            note.paste_as_text_once = False
+        if source_html == '' or self.rn_app.note.paste_as_text_once :
+            self.rn_app.note.paste_as_text_once = False
             self.insertPlainText(source.text())
         else:
-            self.insertHtml(text_format.adaptate_alien_html_styles(source_html))
+            self.insertHtml(self.rn_app.text_format.adaptate_alien_html_styles(source_html))
