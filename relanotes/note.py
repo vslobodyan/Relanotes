@@ -6,9 +6,22 @@ from datetime import datetime
 
 from PyQt5 import QtGui
 
-# from relanotes.relanotes import main_window, table_of_note_contents, notelist, text_format, root_logger, \
+# from relanotes.rn import rn_app
+#
+# main_window = rn_app.main_window
+# table_of_note_contents = rn_app.table_of_note_contents
+# notelist = rn_app.notelist
+# text_format = rn_app.text_format
+# root_logger = rn_app.root_logger
+# app_settings = rn_app.app_settings
+# note = rn_app.note
+# notemultiaction_win = rn_app.notemultiaction_win
+
+
+# from relanotes.main import main_window, table_of_note_contents, notelist, text_format, root_logger, \
 #     app_settings, note, notemultiaction_win
-from relanotes.theme import Theme
+
+from relanotes.themes import Themes
 from relanotes.routines import get_correct_filename_from_url
 
 
@@ -23,6 +36,8 @@ class Note():
     """
     # cursor_format = QTextCharFormat
     # cursor = QtGui.QTextCursor(main_window.doc_source)
+
+    rn_app = None
 
     paste_as_text_once = False
 
@@ -44,11 +59,11 @@ class Note():
         # Переключение видимости все что связано с непосредственным редактирование заметки
         if visible:
             # Отображаем все виджеты, связанные Note
-            main_window.stackedWidget.setCurrentIndex(1)
+            self.rn_app.main_window.stackedWidget.setCurrentIndex(1)
             # Скрываем конкурирующие виджеты
             # note.setVisible(False)
-            table_of_note_contents.setVisible(False)
-            notelist.set_visible(False)
+            self.rn_app.table_of_note_contents.setVisible(False)
+            self.rn_app.notelist.set_visible(False)
 
         # Переключаем все действия, связанные с форматирование и редактирование заметки
         # note_actions = [
@@ -70,10 +85,10 @@ class Note():
         # main_window.actionNote_multiaction,
         # main_window.actionShow_note_contents
         # for action in note_actions:
-        for action in main_window.note_editor_actions:
+        for action in self.rn_app.main_window.note_editor_actions:
             # action.setEnabled(visible)
             action.setVisible(visible)
-        for menu in main_window.note_editor_root_menus:
+        for menu in self.rn_app.main_window.note_editor_root_menus:
             # action.setEnabled(visible)
             menu.menuAction().setVisible(visible)
 
@@ -81,7 +96,7 @@ class Note():
         # main_window.actionFast_jump_to_file_or_section.setChecked(visible)
 
     def is_visible(self):
-        if main_window.stackedWidget.currentIndex() == 1:
+        if self.rn_app.main_window.stackedWidget.currentIndex() == 1:
             return True
         else:
             return False
@@ -611,7 +626,7 @@ class Note():
         html_source = html_source.replace('\n', '<br>')
         # html_source = html_source.replace('\n', '</p><p>')
 
-        html_source = '<html>%s<body>%s</body></html>' % (Theme.html_theme_head, html_source,)
+        html_source = '<html>%s<body>%s</body></html>' % (Themes.html_theme_head, html_source,)
 
         # print('Итоговый вид html:')
         # print(html_source)
@@ -653,24 +668,23 @@ class Note():
         # profiler.checkpoint('Заменяем html-теги заголовков на вики-форматирование')
 
         # Заголовок
-        text = re.sub(text_format.editor_h1_span + '(.*?)</span>', '====== \\1 ======', text)
-        text = re.sub(text_format.editor_h2_span + '(.*?)</span>', '===== \\1 =====', text)
-        text = re.sub(text_format.editor_h3_span + '(.*?)</span>', '==== \\1 ====', text)
-        text = re.sub(text_format.editor_h4_span + '(.*?)</span>', '=== \\1 ===', text)
-        text = re.sub(text_format.editor_h5_span + '(.*?)</span>', '== \\1 ==', text)
-        text = re.sub(text_format.editor_h6_span + '(.*?)</span>', '= \\1 =', text)
+        text = re.sub(self.rn_app.text_format.editor_h1_span + '(.*?)</span>', '====== \\1 ======', text)
+        text = re.sub(self.rn_app.text_format.editor_h2_span + '(.*?)</span>', '===== \\1 =====', text)
+        text = re.sub(self.rn_app.text_format.editor_h3_span + '(.*?)</span>', '==== \\1 ====', text)
+        text = re.sub(self.rn_app.text_format.editor_h4_span + '(.*?)</span>', '=== \\1 ===', text)
+        text = re.sub(self.rn_app.text_format.editor_h5_span + '(.*?)</span>', '== \\1 ==', text)
+        text = re.sub(self.rn_app.text_format.editor_h6_span + '(.*?)</span>', '= \\1 =', text)
 
         # Подчеркнутый (выделенный)
-        text = re.sub(text_format.editor_mark_span + '(.*?)</span>', '__\\1__', text)
+        text = re.sub(self.rn_app.text_format.editor_mark_span + '(.*?)</span>', '__\\1__', text)
 
         # Код
-        text = re.sub(text_format.editor_code_span + '(.*?)</span>', '\'\'\\1\'\'', text)
+        text = re.sub(self.rn_app.text_format.editor_code_span + '(.*?)</span>', '\'\'\\1\'\'', text)
 
-
-        root_logger.info('\nПредварительный исходник результата сохранения в формате Zim:')
-        root_logger.info('=' * 40)
-        root_logger.info(text)
-        root_logger.info('=' * 40)
+        self.rn_app.loggers.root.info('\nПредварительный исходник результата сохранения в формате Zim:')
+        self.rn_app.loggers.root.info('=' * 40)
+        self.rn_app.loggers.root.info(text)
+        self.rn_app.loggers.root.info('=' * 40)
 
         # profiler.checkpoint('Заменяем html-теги ссылок на вики-форматирование')
 
@@ -735,11 +749,10 @@ class Note():
         # Добавляем начало файла как у Zim
         text = begin_of_zim_note + text
 
-
-        root_logger.info('\nОкончательный исходник результата сохранения в формате Zim:')
-        root_logger.info('=' * 40)
-        root_logger.info(text)
-        root_logger.info('=' * 40)
+        self.rn_app.loggers.root.info('\nОкончательный исходник результата сохранения в формате Zim:')
+        self.rn_app.loggers.root.info('=' * 40)
+        self.rn_app.loggers.root.info(text)
+        self.rn_app.loggers.root.info('=' * 40)
 
 
         return text
@@ -748,14 +761,14 @@ class Note():
     def save_note(self):
         # profiler.start('Начинаем сохранение заметки')
 
-        filename = main_window.current_open_note_link
+        filename = self.rn_app.main_window.current_open_note_link
 
         print('Сохраняем файл %s' % filename)
 
         # Обновляем запись в базе
-        app_settings.state_db_connection.execute("UPDATE file_recs SET last_change=?  WHERE filename=?",
+        self.rn_app.settings.state_db_connection.execute("UPDATE file_recs SET last_change=?  WHERE filename=?",
                                     (datetime.now(), filename))
-        app_settings.state_db.commit()
+        self.rn_app.settings.state_db.commit()
 
         # Добавляем суффикс к имени файла, при этом сохраняя оригинальное его расширение
         filename_wo_ext = os.path.splitext(filename)[0]
@@ -777,7 +790,7 @@ class Note():
         # # return 0
         # # filename = main_window.current_open_note_link+'2'
 
-        note_source = main_window.textBrowser_Note.toHtml()
+        note_source = self.rn_app.main_window.textBrowser_Note.toHtml()
         note_source = self.convert_html_source_to_zim_text(note_source)
 
         # print('self.metadata_lines_before_note:')
@@ -790,8 +803,8 @@ class Note():
         # print('begin_of_zim_note: ###%s###' % begin_of_zim_note)
 
 
-        if main_window.actionSave_also_note_HTML_source.isChecked():
-            filename_html = main_window.current_open_note_link.replace('.txt', '.html')
+        if self.rn_app.main_window.actionSave_also_note_HTML_source.isChecked():
+            filename_html = self.rn_app.main_window.current_open_note_link.replace('.txt', '.html')
             f = open(filename_html, "w")
             f.writelines(note_source)
             f.close()
@@ -899,10 +912,10 @@ class Note():
 
         # Код обновления специального меню сниппетов, если сохранен
         # такой специальный файл
-        if filename == app_settings.snippets_filename:
-            main_window.show_snippets()
+        if filename == self.rn_app.settings.snippets_filename:
+            self.rn_app.main_window.show_snippets()
 
-        main_window.statusbar.showMessage('Note saved as ' + filename)
+            self.rn_app.main_window.statusbar.showMessage('Note saved as ' + filename)
 
         # TODO: Запуск перебора всех заметок и сохранения их в альтернативный каталог
         # TODO: Diff всех файлов заметок - оригиналов и сохраненных, и коррекция сохранения.
@@ -911,10 +924,10 @@ class Note():
 
     def show_note_multiaction_win_button(self):
         # if main_window.textBrowser_Note.isVisible():
-        if note.is_visible():
-            self.show_note_multiaction_win(main_window.current_open_note_link)
+        if self.rn_app.note.is_visible():
+            self.show_note_multiaction_win(self.rn_app.main_window.current_open_note_link)
         else:
-            self.show_note_multiaction_win(notelist.items_cursor_url.split('?')[1])
+            self.show_note_multiaction_win(self.rn_app.notelist.items_cursor_url.split('?')[1])
 
     def show_note_multiaction_win(self, note_filename=''):
         # if note_filename == '':
@@ -923,44 +936,49 @@ class Note():
         # Получаем корректный путь к файлу из линка со всякими %2U
         note_filename = get_correct_filename_from_url(note_filename)
 
-        notemultiaction_win.labelNoteFileName.setText(note_filename)
-        notemultiaction_win.lineEdit.setText('')
-        notemultiaction_win.lineEdit.setFocus()
-        notemultiaction_win.show()
+        self.rn_app.notemultiaction_win.labelNoteFileName.setText(note_filename)
+        self.rn_app.notemultiaction_win.lineEdit.setText('')
+        self.rn_app.notemultiaction_win.lineEdit.setFocus()
+        self.rn_app.notemultiaction_win.show()
 
     def paste_as_text(self):
         self.paste_as_text_once = True
-        main_window.textBrowser_Note.paste()
+        self.rn_app.main_window.textBrowser_Note.paste()
 
-    def __init__(self):  # Note class
+
+    def window_triggers_connect(self):
         # Прописываем реакцию на сигналы
         # QtCore.QObject.connect(main_window.textBrowser_Note, QtCore.SIGNAL("textChanged()"), text_format.update_ui)
-        main_window.textBrowser_Note.textChanged.connect(text_format.update_ui)
+        self.rn_app.main_window.textBrowser_Note.textChanged.connect(self.rn_app.text_format.update_ui)
         # QtCore.QObject.connect(main_window.textBrowser_Note, QtCore.SIGNAL("cursorPositionChanged()"), text_format.update_ui)
-        main_window.textBrowser_Note.cursorPositionChanged.connect(text_format.update_ui)
+        self.rn_app.main_window.textBrowser_Note.cursorPositionChanged.connect(self.rn_app.text_format.update_ui)
 
         # QtCore.QObject.connect(main_window.doc_source, QtCore.SIGNAL("textChanged()"), text_format.updateUI)
         # QtCore.QObject.connect(main_window.doc_source, QtCore.SIGNAL("cursorPositionChanged()"), text_format.updateUI)
 
         # Прописываем реакцию на действия
-        main_window.actionBold.triggered.connect(text_format.bold)
-        main_window.actionItalic.triggered.connect(text_format.italic)
-        main_window.actionStrikethrough.triggered.connect(text_format.strikethrough)
-        main_window.actionCode.triggered.connect(text_format.code)
-        main_window.actionMark.triggered.connect(text_format.mark)
+        self.rn_app.main_window.actionBold.triggered.connect(self.rn_app.text_format.bold)
+        self.rn_app.main_window.actionItalic.triggered.connect(self.rn_app.text_format.italic)
+        self.rn_app.main_window.actionStrikethrough.triggered.connect(self.rn_app.text_format.strikethrough)
+        self.rn_app.main_window.actionCode.triggered.connect(self.rn_app.text_format.code)
+        self.rn_app.main_window.actionMark.triggered.connect(self.rn_app.text_format.mark)
 
-        main_window.action_ClearFormat.triggered.connect(text_format.clear_format)
-        main_window.actionHeading_1.triggered.connect(text_format.h1)
-        main_window.actionHeading_2.triggered.connect(text_format.h2)
-        main_window.actionHeading_3.triggered.connect(text_format.h3)
-        main_window.actionHeading_4.triggered.connect(text_format.h4)
-        main_window.actionHeading_5.triggered.connect(text_format.h5)
-        main_window.actionHeading_6.triggered.connect(text_format.h6)
+        self.rn_app.main_window.action_ClearFormat.triggered.connect(self.rn_app.text_format.clear_format)
+        self.rn_app.main_window.actionHeading_1.triggered.connect(self.rn_app.text_format.h1)
+        self.rn_app.main_window.actionHeading_2.triggered.connect(self.rn_app.text_format.h2)
+        self.rn_app.main_window.actionHeading_3.triggered.connect(self.rn_app.text_format.h3)
+        self.rn_app.main_window.actionHeading_4.triggered.connect(self.rn_app.text_format.h4)
+        self.rn_app.main_window.actionHeading_5.triggered.connect(self.rn_app.text_format.h5)
+        self.rn_app.main_window.actionHeading_6.triggered.connect(self.rn_app.text_format.h6)
 
-        main_window.actionSave_note.triggered.connect(self.save_note)
-        main_window.actionNote_multiaction.triggered.connect(self.show_note_multiaction_win_button)
+        self.rn_app.main_window.actionSave_note.triggered.connect(self.save_note)
+        self.rn_app.main_window.actionNote_multiaction.triggered.connect(self.show_note_multiaction_win_button)
 
-        main_window.actionPaste_as_text.triggered.connect(self.paste_as_text)
+        self.rn_app.main_window.actionPaste_as_text.triggered.connect(self.paste_as_text)
 
         # Скрываем дополнительные фреймы
-        main_window.frameSearchInNote.setVisible(False)
+        self.rn_app.main_window.frameSearchInNote.setVisible(False)
+
+
+    def __init__(self, rn_app):  # Note class
+        self.rn_app = rn_app

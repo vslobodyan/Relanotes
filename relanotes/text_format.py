@@ -2,12 +2,15 @@ import re
 
 from PyQt5 import QtGui
 
-# from relanotes.relanotes import root_logger, text_format, main_window, note
+# from relanotes.rn_class import root_logger, text_format, main_window, note
+# from relanotes.main import root_logger, text_format, main_window, note
 
 
 class Text_Format():
         # Класс форматирования текста в редакторе и его преображение при копировании и т.д.
         # h_span_preformatting = '<span style=" font-family:\'%s\'; font-size:%spx; font-weight:%s; color:%s;">'
+
+        rn_app = None
 
         editor_h1_span = ''
         editor_h2_span = ''
@@ -81,11 +84,11 @@ class Text_Format():
         def adaptate_alien_html_styles(self, html_source):
             # Адаптируем чужие стили html к стилям текущей темы span
 
-            root_logger.info('\nПолучили для адаптации при вставке следующий html:')
-            root_logger.info('=' * 40)
-            root_logger.info(html_source)
+            self.rn_app.loggers.root.info('\nПолучили для адаптации при вставке следующий html:')
+            self.rn_app.loggers.root.info('=' * 40)
+            self.rn_app.loggers.root.info(html_source)
             # print('Получили для адаптации при вставке следующий html:\n' + html_source + '\n')
-            root_logger.info('=' * 40)
+            self.rn_app.loggers.root.info('=' * 40)
 
             max_size_of_html_source = len(html_source)
             # TODO: ... записать в преимущества функцию умного преобразования инородного html и вставки простого текста
@@ -124,7 +127,7 @@ class Text_Format():
                     (str1 == '<h6>' and str2 == '</h6>')) and '<br>' in between:
                 # print ('str1='+str1, 'str2='+str2, 'between='+between)
                 # print('Clear H wrong tag from paste html source')
-                root_logger.info('Clear H wrong tag from paste html source')
+                self.rn_app.loggers.root.info('Clear H wrong tag from paste html source')
                 html_source = between
 
             # Удаляем все что связано с размером и цветом шрифта
@@ -146,10 +149,10 @@ class Text_Format():
                 while html_source.find('<a', pos) >= 0:
                     if pos>max_size_of_html_source:
                         # print("желаемый pos превысил размер текста")
-                        root_logger.info('желаемый pos превысил размер текста')
+                        self.rn_app.loggers.root.info('желаемый pos превысил размер текста')
                         break
                     # print("#1 pos=%s, html_source.find('<a', pos)=%s" % (pos, html_source.find('<a', pos)))
-                    root_logger.info("#1 pos=%s, html_source.find('<a', pos)=%s" % (pos, html_source.find('<a', pos)))
+                        self.rn_app.loggers.root.info("#1 pos=%s, html_source.find('<a', pos)=%s" % (pos, html_source.find('<a', pos)))
 
                     pos1 = html_source.find('<a', pos)
                     pos_href_1 = html_source.find('href=', pos1)
@@ -170,10 +173,10 @@ class Text_Format():
                 while html_source.find('<img', pos) >= 0:
                     if pos>max_size_of_html_source:
                         # print("желаемый pos превысил размер текста")
-                        root_logger.info('желаемый pos превысил размер текста')
+                        self.rn_app.loggers.root.info('желаемый pos превысил размер текста')
                         break
                     # print("#2 pos=%s, html_source.find('<img', pos)=%s" % (pos, html_source.find('<a', pos)))
-                    root_logger.info("#2 pos=%s, html_source.find('<img', pos)=%s" % (pos, html_source.find('<a', pos)))
+                        self.rn_app.loggers.root.info("#2 pos=%s, html_source.find('<img', pos)=%s" % (pos, html_source.find('<a', pos)))
 
                     pos1 = html_source.find('<img', pos)
                     pos2 = html_source.find('>', pos1)
@@ -207,10 +210,10 @@ class Text_Format():
                     while html_source.find(h_begin[i], pos) >= 0:
                         if pos > max_size_of_html_source:
                             # print("желаемый pos превысил размер текста")
-                            root_logger.info('желаемый pos превысил размер текста')
+                            self.rn_app.loggers.root.info('желаемый pos превысил размер текста')
                             break
                         # print("#3 pos=%s, html_source.find(h_begin[i], pos)=%s" % (pos, html_source.find(h_begin[i], pos)))
-                        root_logger.info("#3 pos=%s, html_source.find(h_begin[i], pos)=%s" % (pos, html_source.find(h_begin[i], pos)))
+                            self.rn_app.loggers.root.info("#3 pos=%s, html_source.find(h_begin[i], pos)=%s" % (pos, html_source.find(h_begin[i], pos)))
 
                         pos = html_source.find(h_begin[i], pos)
                         pos2 = html_source.find('>', pos)
@@ -233,18 +236,18 @@ class Text_Format():
 
             # print('\nИтоговый результат:\n' + html_source + '\n')
 
-            root_logger.info('\nИтоговый результат:')
-            root_logger.info('=' * 40)
-            root_logger.info(html_source)
-            root_logger.info('=' * 40)
+            self.rn_app.loggers.root.info('\nИтоговый результат:')
+            self.rn_app.loggers.root.info('=' * 40)
+            self.rn_app.loggers.root.info(html_source)
+            self.rn_app.loggers.root.info('=' * 40)
 
             return html_source
 
 
         def switch_format_span(self, format_span, action):
             # Универсальная функция переключения или установки формата шрифта для выделенного фрагмента
-            cursor = main_window.textBrowser_Note.textCursor()
-            line_html = note.clear_selection_html_cover(cursor.selection().toHtml())
+            cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
+            line_html = self.rn_app.note.clear_selection_html_cover(cursor.selection().toHtml())
             text = cursor.selectedText()
             pos_cur = cursor.position()
             if pos_cur != cursor.selectionEnd():
@@ -267,7 +270,7 @@ class Text_Format():
             cursor.setPosition(selection_begin)
             # cursor.setPosition(selection_end, QtGui.QTextCursor.KeepAnchor)
             cursor.setPosition(pos_cur, QtGui.QTextCursor.KeepAnchor)
-            main_window.textBrowser_Note.setTextCursor(cursor)
+            self.rn_app.main_window.textBrowser_Note.setTextCursor(cursor)
             # cursor.select(QtGui.QTextCursor.BlockUnderCursor)
 
             # FIXME: .. при выделении строки с начала сложным форматирование с тегом <li> возникают проблемы
@@ -281,7 +284,7 @@ class Text_Format():
             # FIXME: .. Если курсор до выделения - не отображается ни сложное форматирование, ни жирн/италик
             # FIXME: .. Нажатие на форматирование без выделения не сбрасывает оформление набираемого затем текста
 
-            actions = [main_window.actionStrikethrough, main_window.actionCode, main_window.actionMark]
+            actions = [self.rn_app.main_window.actionStrikethrough, self.rn_app.main_window.actionCode, self.rn_app.main_window.actionMark]
             format_spans = [self.editor_strikethrough_span, self.editor_code_span, self.editor_mark_span]
 
             if result:
@@ -290,7 +293,7 @@ class Text_Format():
                     actions[i].setChecked(False)
                 return result
 
-            cursor = main_window.textBrowser_Note.textCursor()
+            cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
             pos_cur = cursor.position()
             cursor.movePosition(QtGui.QTextCursor.StartOfLine)
             pos_begin_line = cursor.position()
@@ -316,7 +319,7 @@ class Text_Format():
             #    print('Выбранный текст пустой')
             #    return result
 
-            line_html = note.clear_selection_html_cover(cursor.selection().toHtml())
+            line_html = self.rn_app.note.clear_selection_html_cover(cursor.selection().toHtml())
             # print('Выделение '+str(pos_cur)+'-'+str(new_pos_cur) + ', строка '+str(pos_begin_line)+'-'+
             # str(pos_end_line))
             # print('Полная строка: '+full_line_html)
@@ -340,15 +343,19 @@ class Text_Format():
             return result
 
         def switch_h_line(self, h):
-            editor_h_action = ['0-empty', main_window.actionHeading_1, main_window.actionHeading_2,
-                               main_window.actionHeading_3, main_window.actionHeading_4, main_window.actionHeading_5,
-                               main_window.actionHeading_6]
+            editor_h_action = ['0-empty',
+                               self.rn_app.main_window.actionHeading_1,
+                               self.rn_app.main_window.actionHeading_2,
+                               self.rn_app.main_window.actionHeading_3,
+                               self.rn_app.main_window.actionHeading_4,
+                               self.rn_app.main_window.actionHeading_5,
+                               self.rn_app.main_window.actionHeading_6]
 
-            cursor = main_window.textBrowser_Note.textCursor()
+            cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
             pos_cur = cursor.position()
             cursor.movePosition(QtGui.QTextCursor.EndOfLine)
             cursor.movePosition(QtGui.QTextCursor.StartOfLine, QtGui.QTextCursor.KeepAnchor)
-            line_html = note.clear_selection_html_cover(cursor.selection().toHtml())
+            line_html = self.rn_app.note.clear_selection_html_cover(cursor.selection().toHtml())
 
             if self.editor_h_span[h] in line_html:
                 # print('Заголовок уже стоит. Убираем форматирование заголовка.')
@@ -384,7 +391,7 @@ class Text_Format():
             self.switch_h_line(6)
 
         def bold(self):
-            cursor = main_window.textBrowser_Note.textCursor()
+            cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
             pos_cur = cursor.position()
             if pos_cur == cursor.selectionStart():
                 # Исправляем ситуацию, когда курсор, стоя в начале, не видит выделенного текста после него
@@ -404,7 +411,7 @@ class Text_Format():
             cursor.setCharFormat(fmt)  # Устанавливаем стиль "с нуля", удаляя предыдущий
 
         def italic(self):
-            cursor = main_window.textBrowser_Note.textCursor()
+            cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
             pos_cur = cursor.position()
             if pos_cur == cursor.selectionStart():
                 # Исправляем ситуацию, когда курсор, стоя в начале, не видит выделенного текста после него
@@ -421,18 +428,18 @@ class Text_Format():
             cursor.setCharFormat(fmt)  # Устанавливаем стиль "с нуля", удаляя предыдущий
 
         def strikethrough(self):
-            self.switch_format_span(self.editor_strikethrough_span, main_window.actionStrikethrough)
+            self.switch_format_span(self.editor_strikethrough_span, self.rn_app.main_window.actionStrikethrough)
 
         def code(self):
-            self.switch_format_span(self.editor_code_span, main_window.actionCode)
+            self.switch_format_span(self.editor_code_span, self.rn_app.main_window.actionCode)
 
         def mark(self):
-            self.switch_format_span(self.editor_mark_span, main_window.actionMark)
+            self.switch_format_span(self.editor_mark_span, self.rn_app.main_window.actionMark)
 
         def clear_format(self):
             # Устанавливаем формат шрифта по-умолчанию
             # FIXME: как и другое форматирование - удаляет оформление ссылок
-            cursor = main_window.textBrowser_Note.textCursor()
+            cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
             cursor.setCharFormat(self.editor_default_format)
 
         def getLineAtPosition3(self, pos):
@@ -442,7 +449,7 @@ class Text_Format():
             self.getHtmlSourceOfSelectedPart()
 
             # Копируем курсор текстового редактора
-            cursor = main_window.textBrowser_Note.textCursor()
+            cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
             # Устанавливаем курсору указанное в параметрах положение
             cursor.setPosition(pos)
             #cur_pos = cursor.position()
@@ -457,7 +464,7 @@ class Text_Format():
             return i
 
         def getLineAtPosition(self, pos):
-            cursor = main_window.textBrowser_Note.textCursor()
+            cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
             cursor.setPosition(pos)
 
             cursor.movePosition(QtGui.QTextCursor.StartOfLine)
@@ -479,7 +486,7 @@ class Text_Format():
             return lines
 
         def getLineAtPosition2(self, pos):
-            cursor = main_window.textBrowser_Note.textCursor()
+            cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
             # cursor.setPosition(pos)
             # cursor.movePosition(0)
             cursor.setPosition(0)
@@ -502,12 +509,12 @@ class Text_Format():
             # html_source = re.sub('(</p>)', '\n', html_source)
             # html_source = re.sub('(<br.*?>)', '\n', html_source)
 
-            main_window.plainTextEdit_Note_Ntml_Source.setPlainText(html_source)
+            self.rn_app.main_window.plainTextEdit_Note_Ntml_Source.setPlainText(html_source)
             # main_window.plainTextEdit_Note_Ntml_Source.textCursor().setPosition(pos)
 
         def getHtmlSourceOfSelectedPart(self):
-            if main_window.actionShow_note_HTML_source.isChecked():
-                cursor = main_window.textBrowser_Note.textCursor()
+            if self.rn_app.main_window.actionShow_note_HTML_source.isChecked():
+                cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
                 # html_source = cursor.selection().toPlainText() + ' ### ' + cursor.selection().toHtml()
                 html_source = cursor.selection().toHtml()
                 NoteSelectedTextRegex = re.compile(r'.*?-->(.*)<!--.*?', re.DOTALL)
@@ -531,13 +538,13 @@ class Text_Format():
                 # # html_source = re.sub('(</p>)', '\n', html_source)
                 # # html_source = re.sub('(<br.*?>)', '\n', html_source)
 
-                main_window.plainTextEdit_Note_Ntml_Source.setPlainText(html_source)
+                    self.rn_app.main_window.plainTextEdit_Note_Ntml_Source.setPlainText(html_source)
 
 
         def update_ui(self):
             # Обновляем интерфейс в соответствии с выделенным или написанным текстом
 
-            cursor = main_window.textBrowser_Note.textCursor()
+            cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
 
             # 'pos: '+str(cursor.position())
             # 'line2: '+str( self.getLineAtPosition2(cursor.position()) )+  \
@@ -554,7 +561,7 @@ class Text_Format():
             # + \
             # ', block: '+str(cursor.blockNumber())+ \
             # ', sel.start: '+str(cursor.selectionStart())+', sel.end: '+str(cursor.selectionEnd())
-            main_window.statusbar.showMessage(mess)
+            self.rn_app.main_window.statusbar.showMessage(mess)
 
             # cursor =  QtGui.QTextCursor(main_window.doc_source)
             # cursor =  main_window.textBrowser_Note.textCursor()
@@ -576,50 +583,50 @@ class Text_Format():
             # print('pos line: '+ str(pos_begin)+'-'+ str(pos_end) +', NEW selection: '+str(cursor.selectionStart())+
             # '-'+str(cursor.selectionEnd()) )
             line_html1 = cursor.selection().toHtml()
-            line_html = note.clear_selection_html_cover(cursor.selection().toHtml())
+            line_html = self.rn_app.note.clear_selection_html_cover(cursor.selection().toHtml())
             # print('line_html: '+line_html)
 
             if self.editor_h1_span in line_html:
-                main_window.actionHeading_1.setChecked(True)
+                self.rn_app.main_window.actionHeading_1.setChecked(True)
                 complex_format_was_found = True
             else:
-                main_window.actionHeading_1.setChecked(False)
+                self.rn_app.main_window.actionHeading_1.setChecked(False)
 
             if self.editor_h2_span in line_html:
-                main_window.actionHeading_2.setChecked(True)
+                self.rn_app.main_window.actionHeading_2.setChecked(True)
                 complex_format_was_found = True
             else:
-                main_window.actionHeading_2.setChecked(False)
+                self.rn_app.main_window.actionHeading_2.setChecked(False)
 
             if self.editor_h3_span in line_html:
-                main_window.actionHeading_3.setChecked(True)
+                self.rn_app.main_window.actionHeading_3.setChecked(True)
                 complex_format_was_found = True
             else:
-                main_window.actionHeading_3.setChecked(False)
+                self.rn_app.main_window.actionHeading_3.setChecked(False)
 
             if self.editor_h4_span in line_html:
-                main_window.actionHeading_4.setChecked(True)
+                self.rn_app.main_window.actionHeading_4.setChecked(True)
                 complex_format_was_found = True
             else:
-                main_window.actionHeading_4.setChecked(False)
+                self.rn_app.main_window.actionHeading_4.setChecked(False)
 
             if self.editor_h5_span in line_html:
-                main_window.actionHeading_5.setChecked(True)
+                self.rn_app.main_window.actionHeading_5.setChecked(True)
                 complex_format_was_found = True
             else:
-                main_window.actionHeading_5.setChecked(False)
+                self.rn_app.main_window.actionHeading_5.setChecked(False)
 
             if self.editor_h6_span in line_html:
-                main_window.actionHeading_6.setChecked(True)
+                self.rn_app.main_window.actionHeading_6.setChecked(True)
                 complex_format_was_found = True
             else:
-                main_window.actionHeading_6.setChecked(False)
+                self.rn_app.main_window.actionHeading_6.setChecked(False)
 
             # Особое форматирование, дополняющее обычный формат текста
             if self.editor_li_span in line_html:
-                main_window.actionBullet_List.setChecked(True)
+                self.rn_app.main_window.actionBullet_List.setChecked(True)
             else:
-                main_window.actionBullet_List.setChecked(False)
+                self.rn_app.main_window.actionBullet_List.setChecked(False)
 
             cursor.setPosition(pos_cur)
 
@@ -629,22 +636,22 @@ class Text_Format():
 
             if not complex_format_was_found:
                 # Определяем простое форматирование текста
-                cursor = main_window.textBrowser_Note.textCursor()
+                cursor = self.rn_app.main_window.textBrowser_Note.textCursor()
                 fmt = cursor.charFormat()
 
                 if fmt.fontItalic():
-                    main_window.actionItalic.setChecked(True)
+                    self.rn_app.main_window.actionItalic.setChecked(True)
                 else:
-                    main_window.actionItalic.setChecked(False)
+                    self.rn_app.main_window.actionItalic.setChecked(False)
 
                 if fmt.fontWeight() == 75:
-                    main_window.actionBold.setChecked(True)
+                    self.rn_app.main_window.actionBold.setChecked(True)
                 else:
-                    main_window.actionBold.setChecked(False)
+                    self.rn_app.main_window.actionBold.setChecked(False)
             else:
-                main_window.actionBold.setChecked(False)
-                main_window.actionItalic.setChecked(False)
+                self.rn_app.main_window.actionBold.setChecked(False)
+                self.rn_app.main_window.actionItalic.setChecked(False)
                 # print('базовое форматирование не проверяем, снимем его отметки')
 
-        def __init__(self):
-            pass
+        def __init__(self, rn_app):
+            self.rn_app = rn_app

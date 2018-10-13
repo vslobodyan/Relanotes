@@ -6,7 +6,7 @@ from relanotes.qtdesign_ui import clear_history_dialog
 
 
 class ClearHistoryDialog(QtWidgets.QDialog, clear_history_dialog.Ui_ClearHistoryDialog):
-
+    rn_app = None
     history_items = []
 
     history_rec = {}
@@ -38,7 +38,9 @@ class ClearHistoryDialog(QtWidgets.QDialog, clear_history_dialog.Ui_ClearHistory
         pass
 
 
-    def __init__(self, parent=None):
+    def __init__(self, rn_app, parent=None):
+        self.rn_app = rn_app
+
         QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
 

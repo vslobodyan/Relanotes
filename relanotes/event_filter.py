@@ -3,7 +3,14 @@
 from PyQt5 import QtCore
 
 from relanotes.note import Note
-# from relanotes.relanotes import main_window, text_format, notelist
+# from relanotes.rn_app import main_window, text_format, notelist
+# from relanotes.main import main_window, text_format, notelist
+
+from relanotes.rn import rn_app
+
+main_window = rn_app.main_window
+text_format = rn_app.text_format
+notelist = rn_app.notelist
 
 
 class MyEventFilter(QtCore.QObject):

@@ -8,7 +8,13 @@ from relanotes.qtdesign_ui import note_multiaction
 
 
 class NoteMultiactionWindow(QtWidgets.QDialog, note_multiaction.Ui_DialogNoteMultiaction):  # src.ui.
-    def __init__(self, parent=None):
+
+    rn_app = None
+
+    def __init__(self, rn_app, parent=None):
+
+        self.rn_app = rn_app
+
         QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
 
@@ -61,8 +67,8 @@ class NoteMultiactionWindow(QtWidgets.QDialog, note_multiaction.Ui_DialogNoteMul
         # full_filename = note_path+'/'+new_filename
         full_filename = note_path + os.path.sep + new_filename
         self.make_new_note_file(full_filename, new_note_name)
-        main_window.open_file_in_editor(full_filename, line_number=3)
-        main_window.statusbar.showMessage('New note created: ' + full_filename)
+        self.rn_app.main_window.open_file_in_editor(full_filename, line_number=3)
+        self.rn_app.main_window.statusbar.showMessage('New note created: ' + full_filename)
         self.close()
 
     def add_child_note(self):
@@ -77,6 +83,6 @@ class NoteMultiactionWindow(QtWidgets.QDialog, note_multiaction.Ui_DialogNoteMul
             # Создаем каталог нужный
             os.makedirs(note_path)
         self.make_new_note_file(full_filename, new_note_name)
-        main_window.open_file_in_editor(full_filename, line_number=3)
-        main_window.statusbar.showMessage('New note created: ' + full_filename)
+        self.rn_app.main_window.open_file_in_editor(full_filename, line_number=3)
+        self.rn_app.main_window.statusbar.showMessage('New note created: ' + full_filename)
         self.close()

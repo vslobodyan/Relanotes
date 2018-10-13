@@ -5,8 +5,10 @@ from datetime import datetime, date, timedelta
 
 from PyQt5 import QtGui, QtCore
 
-# from relanotes.relanotes import main_window, note, table_of_note_contents, notelist, app_settings
-from relanotes.theme import Theme
+# from relanotes.rn_class import main_window, note, table_of_note_contents, notelist, app_settings
+# from relanotes.main import main_window, note, table_of_note_contents, notelist, app_settings
+
+from relanotes.themes import Themes
 from relanotes.routines import hbytes
 
 
@@ -21,6 +23,9 @@ class Notelist():
     sidebar_source    (исходник сайдбара)
     notelist_source    (исходник списка заметок)
     """
+
+    rn_app = None
+
     filter_name = ''  # Фильтрация списка заметок по имени заметки
     filter_text = ''  # Фильтрация списка заметок по тексту, содержащемуся внутри заметок
     filter_is_empty = True  # Признак пустоты пользовательского фильтра, чтобы можно было отображать подсказку в самом текстовом поле
@@ -184,7 +189,7 @@ class Notelist():
         if len(self.items) < 1:
             return 0
 
-        main_window.adjust_scrollbar_position_at_editor(main_window.textBrowser_Listnotes, self.items_cursor_position, len(self.items))
+        self.rn_app.main_window.adjust_scrollbar_position_at_editor(self.rn_app.main_window.textBrowser_Listnotes, self.items_cursor_position, len(self.items))
 
         #scrollbar_maximum = main_window.textBrowser_Listnotes.verticalScrollBar().maximum()
         #percent_of_position = self.items_cursor_position / len(self.items)
@@ -214,8 +219,8 @@ class Notelist():
         else:
             description_filter_text = 'containing any text'
 
-        if main_window.current_open_note_link:
-            cute_filename = self.make_cute_name(main_window.current_open_note_link)
+        if self.rn_app.main_window.current_open_note_link:
+            cute_filename = self.make_cute_name(self.rn_app.main_window.current_open_note_link)
             return_info = ' &nbsp; <small>Press <b>Esc</b> to return to <span style="color: #008066;">%s</span></small>' % cute_filename
             # <span style="color: #008066;">
         else:
@@ -238,10 +243,10 @@ class Notelist():
 %s
 <div id=notelist>%s</div>
 </body>
-</html>''' % (Theme.html_theme_head,
-                                    self.search_param_message(),
-                                    empty_message,
-                                    html_source,)
+</html>''' % (Themes.html_theme_head,
+              self.search_param_message(),
+              empty_message,
+              html_source,)
 
 
     def search_progress_indicator_init(self):
@@ -255,29 +260,29 @@ class Notelist():
         #main_window.textBrowser_Listnotes.append(self.search_param_message())
 
         #main_window.lbSearchParam.setMinimumWidth(400)
-        main_window.lbSearchParam.setText(self.search_param_message())
+        self.rn_app.main_window.lbSearchParam.setText(self.search_param_message())
         #main_window.lbSearchParam.resize()
 
         #main_window.lbSearchParam.setStyleSheet('''
         #                        font-size: 12px;
         #                        '''
         #                        )
-        main_window.lbSearchFiles.setText('Файлов в обработке: ')
-        main_window.lbSearchItems.setText('Элементов найдено: ')
-        main_window.lbFormatItems.setText('Элементов оформлено: ')
+        self.rn_app.main_window.lbSearchFiles.setText('Файлов в обработке: ')
+        self.rn_app.main_window.lbSearchItems.setText('Элементов найдено: ')
+        self.rn_app.main_window.lbFormatItems.setText('Элементов оформлено: ')
 
         #main_window.lbSearchFilesProgress.setMinimumWidth(40)
         #main_window.lbSearchItemsProgress.setMinimumWidth(50)
         #main_window.lbFormatItemsProgress.setMinimumWidth(50)
 
-        main_window.progressBar_Notelist.setMaximum(0)
+        self.rn_app.main_window.progressBar_Notelist.setMaximum(0)
         self.progress_count_files = 0
         self.progress_count_items = 0
-        main_window.lbSearchFilesProgress.setText('0')
-        main_window.lbSearchItemsProgress.setText('0')
-        main_window.lbFormatItemsProgress.setText('0')
+        self.rn_app.main_window.lbSearchFilesProgress.setText('0')
+        self.rn_app.main_window.lbSearchItemsProgress.setText('0')
+        self.rn_app.main_window.lbFormatItemsProgress.setText('0')
 
-        main_window.Search_Progressbar_Panel.show()
+        self.rn_app.main_window.Search_Progressbar_Panel.show()
         ##main_window.Search_Progressbar_Panel.resize()
         #main_window.Search_Progressbar_Panel.update()
         #main_window.Search_Progressbar_Panel.repaint()
@@ -288,16 +293,16 @@ class Notelist():
     def search_progress_indicator_add(self, files=False, items=False, add=1):
         if files:
             self.progress_count_files += add
-            main_window.lbSearchFilesProgress.setText(str(self.progress_count_files))
+            self.rn_app.main_window.lbSearchFilesProgress.setText(str(self.progress_count_files))
             ##main_window.lbSearchFilesProgress.update()
             #main_window.lbSearchFilesProgress.repaint()
         if items:
             self.progress_count_items += add
-            if not main_window.progressBar_Notelist.maximum():
-                main_window.progressBar_Notelist.setMaximum(len(self.items))
+            if not self.rn_app.main_window.progressBar_Notelist.maximum():
+                self.rn_app.main_window.progressBar_Notelist.setMaximum(len(self.items))
             else:
-                main_window.progressBar_Notelist.setValue(self.progress_count_items)
-            main_window.lbFormatItemsProgress.setText(str(self.progress_count_items))
+                self.rn_app.main_window.progressBar_Notelist.setValue(self.progress_count_items)
+                self.rn_app.main_window.lbFormatItemsProgress.setText(str(self.progress_count_items))
 
             #main_window.progressBar_Notelist.repaint()
             ##main_window.progressBar_Notelist.ensurePolished()
@@ -308,8 +313,7 @@ class Notelist():
             ##main_window.lbFormatItemsProgress.ensurePolished()
             ##main_window.lbFormatItemsProgress.update()
 
-
-        main_window.lbSearchItemsProgress.setText(str(len(self.items)))
+        self.rn_app.main_window.lbSearchItemsProgress.setText(str(len(self.items)))
         #main_window.lbSearchItemsProgress.update()
         #main_window.lbSearchItemsProgress.repaint()
 
@@ -329,7 +333,7 @@ class Notelist():
         #main_window.update()
 
     def search_progress_indicator_hide(self):
-        main_window.Search_Progressbar_Panel.hide()
+        self.rn_app.main_window.Search_Progressbar_Panel.hide()
         #pass
 
 
@@ -337,10 +341,10 @@ class Notelist():
         # Переключение видимости всего что связано со списком заметок
         if visible:
             # Отображаем все виджеты, связанные Notelist
-            main_window.stackedWidget.setCurrentIndex(0)
+            self.rn_app.main_window.stackedWidget.setCurrentIndex(0)
             # Скрываем конкурирующие виджеты
-            note.set_visible(False)
-            table_of_note_contents.setVisible(False)
+            self.rn_app.note.set_visible(False)
+            self.rn_app.table_of_note_contents.setVisible(False)
             # notelist.setVisible(False)
 
         # Переключаем все действия, связанные со списком заметок
@@ -348,7 +352,7 @@ class Notelist():
         # for action in note_actions:
         #    action.setEnabled(visible)
         # Переключаем соотстветствующее отображению действие
-        main_window.actionFast_jump_to_file_or_section.setChecked(visible)
+        self.rn_app.main_window.actionFast_jump_to_file_or_section.setChecked(visible)
 
         # Пробный код вставки виджета в панель кнопок
         # comboStyle = QtWidgets.QComboBox(main_window.toolBar)
@@ -358,7 +362,7 @@ class Notelist():
 
 
     def is_visible(self):
-        if main_window.stackedWidget.currentIndex() == 0:
+        if self.rn_app.main_window.stackedWidget.currentIndex() == 0:
             return True
         else:
             return False
@@ -375,9 +379,9 @@ class Notelist():
             self.update(history_update=True)
             # Устанавливаем фокус на поля фильтров ввода
             # При любом раскладе выделяем весь текст в поле имени и ставим на него фокус
-            main_window.lineNotelist_Filter.setFocus()
-            if not notelist.filter_is_empty:
-                main_window.lineNotelist_Filter.selectAll()
+            self.rn_app.main_window.lineNotelist_Filter.setFocus()
+            if not self.rn_app.notelist.filter_is_empty:
+                self.rn_app.main_window.lineNotelist_Filter.selectAll()
 
             # # Если обнаружен текст в поле поиска по содержимому - переставляем фокус в него
             # if main_window.lineEdit_Filter_Note_Text.text() != '':
@@ -403,7 +407,7 @@ class Notelist():
         #print('notelist.timer_update start')
         self.items_cursor_position = 0
         self.need_rescan = True
-        self.timer_update.start(notelist.update_timeout)
+        self.timer_update.start(self.rn_app.notelist.update_timeout)
 
 
     def move_cursor(self, delta=0):
@@ -456,7 +460,7 @@ class Notelist():
             notelist_filter = ''
         else:
             # Иначе берем фильтр из поля в UI
-            notelist_filter = main_window.lineNotelist_Filter.text()
+            notelist_filter = self.rn_app.main_window.lineNotelist_Filter.text()
 
         self.filter_name, self.filter_text = self.extract_filters(notelist_filter)
 
@@ -529,7 +533,7 @@ class Notelist():
     def make_cute_name(self, filename):
         # Создаем симпатичное длинное имя заметки из имени файла
         # 1. Убираем из пути каталог до заметок
-        cute_filename = filename.replace(app_settings.path_to_notes + os.path.sep, '')
+        cute_filename = filename.replace(self.rn_app.settings.path_to_notes + os.path.sep, '')
         # 2. Убираем расширение файла
         # 2.1 Разрезаем на отдельные слова - папки и имя файла
         list_of_words = cute_filename.split(os.path.sep)
@@ -547,8 +551,8 @@ class Notelist():
 
     def file_in_history(self, filename):
         # Проверяем - есть ли файл в списке истории
-        app_settings.state_db_connection.execute("SELECT * FROM file_recs WHERE filename=? AND last_open NOT NULL", (filename,))
-        existed_rec = app_settings.state_db_connection.fetchall()
+        self.rn_app.settings.state_db_connection.execute("SELECT * FROM file_recs WHERE filename=? AND last_open NOT NULL", (filename,))
+        existed_rec = self.rn_app.settings.state_db_connection.fetchall()
         if len(existed_rec) > 0:
             # print('Файл обнаружен в истории: ', filename)
             return True
@@ -557,8 +561,8 @@ class Notelist():
 
     def file_in_state_db(self, filename):
         # Проверяем - есть ли файл в списке истории
-        app_settings.state_db_connection.execute("SELECT * FROM file_recs WHERE filename=?", (filename,))
-        existed_rec = app_settings.state_db_connection.fetchall()
+        self.rn_app.settings.state_db_connection.execute("SELECT * FROM file_recs WHERE filename=?", (filename,))
+        existed_rec = self.rn_app.settings.state_db_connection.fetchall()
         if len(existed_rec) > 0:
             # print('Файл обнаружен в базе: ', filename)
             return True
@@ -717,7 +721,7 @@ class Notelist():
     def collect_history_items_list(self, update_items_list=True):
         # Собираем элементы (заметки) из истории при рескане файлов в переменную self.items[]
 
-        file_recs_rows = app_settings.state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
+        file_recs_rows = self.rn_app.settings.state_db_connection.execute("SELECT * FROM file_recs WHERE last_open NOT NULL ORDER BY last_open DESC")
 
         for row in file_recs_rows:
             rec_filename, rec_cute_name, rec_parent_id, rec_subnotes_count, rec_last_change, rec_last_open, rec_count_opens, rec_current_position = row
@@ -726,7 +730,7 @@ class Notelist():
             if not os.path.isfile(rec_filename):
                 # Файл не существует или это каталог, а не файл.
                 # Удаляем из истории
-                app_settings.state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,))
+                self.rn_app.settings.state_db_connection.execute("DELETE FROM file_recs WHERE filename=?", (rec_filename,))
                 continue  # Переходим на следующий виток цикла
 
             self.work_with_found_note(filename=rec_filename,
@@ -743,7 +747,7 @@ class Notelist():
         # subdirectories
         # http://stackoverflow.com/questions/2225564/get-a-filtered-list-of-files-in-a-directory
 
-        for root, dirs, files in os.walk(app_settings.path_to_notes):
+        for root, dirs, files in os.walk(self.rn_app.settings.path_to_notes):
             for file in files:
                 self.search_progress_indicator_add(files=True)
                 # print('Найдено во время обхода: %s' % os.path.join(root, file))
@@ -801,8 +805,8 @@ class Notelist():
         # Обновляем список элементов после изменении истории
 
         # 0. Запомнить - на какой заметке (по имени файла) должен быть курсор
-        if notelist.items_cursor_position > 0:
-            cursor_filename = notelist.items[notelist.items_cursor_position-1]['filename']
+        if self.rn_app.notelist.items_cursor_position > 0:
+            cursor_filename = self.rn_app.notelist.items[self.rn_app.notelist.items_cursor_position-1]['filename']
         else:
             cursor_filename = ''
         print('cursor_filename %s' % cursor_filename)
@@ -965,7 +969,7 @@ class Notelist():
         # Готовим переменные, которые понадобятся в любом случае
         filename = one_item['filename']
         cute_filename = self.make_cute_name(filename)
-        active_link = main_window.current_open_note_link
+        active_link = self.rn_app.main_window.current_open_note_link
         last_open = ''  # Признак элемента из истории
 
         item_cursor_source = self.make_html_source_for_item_cursor(item_number, one_item, filename, active_link)
@@ -1062,7 +1066,7 @@ class Notelist():
         current_header_ndx = 0
         current_header_ndx_max = 3
         history_items_count = 0
-        active_link = main_window.current_open_note_link
+        active_link = self.rn_app.main_window.current_open_note_link
 
         header, time_period_begin, time_period_end, tmp_items = headers[current_header_ndx]
 
@@ -1133,7 +1137,7 @@ class Notelist():
         #html_source = self.html_body(empty_message=sidebar_empty_message,
                                        #html_source=html_source)
 
-        html_source = '<html>%s<body><div id=sidebar>%s</div></body></html>' % (Theme.html_theme_head, html_source,)
+        html_source = '<html>%s<body><div id=sidebar>%s</div></body></html>' % (Themes.html_theme_head, html_source,)
 
         #print('html_source of notelist: ###%s###' % html_source)
         return html_source
@@ -1237,7 +1241,7 @@ class Notelist():
         #print('rescan_files, need_rescan: %s, history_update: %s' % (self.need_rescan, history_update) )
 
         self.get_and_display_filters()
-        notelist.set_visible()
+        self.rn_app.notelist.set_visible()
 
         if self.need_rescan:
             # Если требуется рескан файлов - проводим его
@@ -1253,7 +1257,7 @@ class Notelist():
                 self.update_items_list_with_history_status()
 
         # Обновляем информацию в статусной строке главного окна
-        main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count) + ' notes (' + hbytes(self.all_found_files_size) + ') at ' + app_settings.path_to_notes +
+        self.rn_app.main_window.statusbar.showMessage('Found ' + str(self.all_found_files_count) + ' notes (' + hbytes(self.all_found_files_size) + ') at ' + self.rn_app.settings.path_to_notes +
                                             ', showed ' + str(self.items_notes_count) + ' notes (' + hbytes(self.items_notes_size) + ') in list.')
 
         if self.items_notes_count and not self.items_cursor_position:
@@ -1272,9 +1276,9 @@ class Notelist():
         # print('=' * 40)
         #root_logger.info('=' * 40)
         #root_logger.warning
-        main_window.notelist_source.setHtml(html_string)
+        self.rn_app.main_window.notelist_source.setHtml(html_string)
         # print('Делаем документ для списка заметок')
-        main_window.textBrowser_Listnotes.setDocument(main_window.notelist_source)
+        self.rn_app.main_window.textBrowser_Listnotes.setDocument(self.rn_app.main_window.notelist_source)
         # print('Закончили со списком заметок')
         self.move_textbrowser_cursor()
         self.search_progress_indicator_hide()
@@ -1301,9 +1305,9 @@ class Notelist():
         if len(link_attributes) > 2:
             founded_i = link_attributes[2]
         if link_type == 'note':
-            main_window.open_file_in_editor(link_filename, founded_i)
+            self.rn_app.main_window.open_file_in_editor(link_filename, founded_i)
         if link_type == 'multiaction':
-            note.show_note_multiaction_win(link_filename)
+            self.rn_app.note.show_note_multiaction_win(link_filename)
 
     #def open_selected_url(self):
     #    print('DEBUG: open_selected_url("self.items_cursor_url=%s")' % self.items_cursor_url)
@@ -1331,25 +1335,26 @@ class Notelist():
     #        #main_window.actionShow_note_contents.setChecked(True)
 
 
-    def __init__(self):
+
+    def initial_setup(self):
         self.note_contents_source = QtGui.QTextDocument()
         self.timer_update = QtCore.QTimer()
         # QtCore.QObject.connect(main_window.textBrowser_Listnotes, QtCore.SIGNAL("anchorClicked (const QUrl&)"),
                                # self.link_action)
-        main_window.textBrowser_Listnotes.anchorClicked.connect(self.link_action)
+        self.rn_app.main_window.textBrowser_Listnotes.anchorClicked.connect(self.link_action)
 
-        main_window.textBrowser_History.anchorClicked.connect(self.link_action)
+        self.rn_app.main_window.textBrowser_History.anchorClicked.connect(self.link_action)
 
         # QtCore.QObject.connect(main_window.lineNotelist_Filter, QtCore.SIGNAL("returnPressed ()"),
                                # self.open_selected_url)
         #main_window.lineNotelist_Filter.returnPressed.connect(self.open_selected_url)
-        main_window.lineNotelist_Filter.returnPressed.connect(self.link_action)
+        self.rn_app.main_window.lineNotelist_Filter.returnPressed.connect(self.link_action)
 
         # QtCore.QObject.connect(main_window.textBrowser_Listnotes, QtCore.SIGNAL("anchorClicked (const QUrl&)"),
         # self.link_action)
         # keyPressed
 
-        main_window.actionFast_jump_to_file_or_section.triggered.connect(self.action_triggered)
+        self.rn_app.main_window.actionFast_jump_to_file_or_section.triggered.connect(self.action_triggered)
 
         # QtCore.QObject.connect(main_window.lineEdit_Filter_Note_Text, QtCore.SIGNAL("textChanged( const QString& )"),
                                # main_window.filter_note_text_changed)
@@ -1369,3 +1374,7 @@ class Notelist():
         # main_window.frameNotelist_Filter.setVisible(False)
 
         # self.db = self.DB()
+
+
+    def __init__(self, rn_app):
+        self.rn_app = rn_app

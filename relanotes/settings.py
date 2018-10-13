@@ -6,7 +6,8 @@ from PyQt5 import QtCore
 
 from relanotes.routines import give_correct_path_under_win_and_other, get_path_to_app
 
-class App_Settings():
+
+class Settings():
     """Основной класс настроек программы"""
 
     NameOrganization = 'DigiTect'
@@ -25,8 +26,8 @@ class App_Settings():
     snippets_filename = ''
     snippet_actions = []
 
-    # was: , **kwargs
-    def __init__(self):
+
+    def initial_setup(self):
         print('Инициализация настроек приложения')
         QtCore.QCoreApplication.setOrganizationName(self.NameOrganization)
         QtCore.QCoreApplication.setApplicationName(self.NameGlobal)
@@ -44,7 +45,7 @@ class App_Settings():
         full_ini_filename = os.path.join(self.config_path, 'settings.ini')
         # print("Полный путь к ini-файлу настроек: %s" % full_ini_filename)
 
-        self.log_level = logging.DEBUG # or whatever
+        self.log_level = logging.DEBUG  # or whatever
         self.logfile = os.path.join(self.config_path, 'working.log')
 
         self.settings = QtCore.QSettings(full_ini_filename, QtCore.QSettings.IniFormat)
@@ -54,7 +55,8 @@ class App_Settings():
         # Проверяем БАГ, когда в переменную библиотека QT занесла неправильные слеши
         self.path_to_notes = give_correct_path_under_win_and_other(self.path_to_notes)
 
-        print('self.path_to_notes: "%s", self.snippets_relative_filename: "%s"' % (self.path_to_notes, self.snippets_relative_filename))
+        print('self.path_to_notes: "%s", self.snippets_relative_filename: "%s"' % (
+        self.path_to_notes, self.snippets_relative_filename))
         if self.path_to_notes:
             self.snippets_filename = os.path.join(self.path_to_notes, self.snippets_relative_filename)
 
@@ -68,9 +70,8 @@ class App_Settings():
         # корректными при запуске из любого каталога.
         os.chdir(self.path_to_app)
 
-        #path_to_home = os.path.expanduser("~")
-        #print("path_to_home:", path_to_home)
-
+        # path_to_home = os.path.expanduser("~")
+        # print("path_to_home:", path_to_home)
 
         # Инициируем доступ к базе данных, в которой хранится состояние программы:
         # история открытия заметок, позиции в них и другая информация
@@ -79,3 +80,7 @@ class App_Settings():
         self.state_db_connection = self.state_db.cursor()
 
         # return super().__init__(**kwargs)
+
+    # was: , **kwargs
+    def __init__(self):
+        pass

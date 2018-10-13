@@ -1,33 +1,39 @@
 from PyQt5 import QtGui
 
-# from relanotes.relanotes import main_window, note, notelist
+# from relanotes.rn_class import main_window, note, notelist
+# from relanotes.main import main_window, note, notelist
 
 
 class Table_of_note_contents():
     # Класс работы с таблицей содержания заметки
 
-    def __init__(self):
-        main_window.actionShow_note_contents.triggered.connect(self.action_triggered)
+    rn_app = None
+
+    def initial_setup(self):
+        self.rn_app.main_window.actionShow_note_contents.triggered.connect(self.action_triggered)
+
+    def __init__(self, rn_app):
+        self.rn_app = rn_app
 
     def setVisible(self, visible=True):
         if visible:
             # print ('Make visible')
             # Отображаем все виджеты, связанные содержанием заметки
-            main_window.stackedWidget.setCurrentIndex(2)
+            self.rn_app.main_window.stackedWidget.setCurrentIndex(2)
             # Скрываем конкурирующие виджеты
-            note.set_visible(False)
+            self.rn_app.note.set_visible(False)
             # table_of_note_contents.setVisible(False)
-            notelist.set_visible(False)
+            self.rn_app.notelist.set_visible(False)
 
         # Переключаем все действия, связанные с содержанием
         # note_actions = [ main_window.actionNote_multiaction, main_window.actionShow_note_contents ]
         # for action in note_actions:
         #    action.setEnabled(visible)
         # Переключаем соотстветствующее отображению действие
-        main_window.actionShow_note_contents.setChecked(visible)
+        self.rn_app.main_window.actionShow_note_contents.setChecked(visible)
 
     def isVisible(self):
-        if main_window.stackedWidget.currentIndex() == 2:
+        if self.rn_app.main_window.stackedWidget.currentIndex() == 2:
             return True
         else:
             return False

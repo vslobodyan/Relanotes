@@ -4,7 +4,11 @@ from relanotes.qtdesign_ui import preferences_window
 
 
 class PreferencesWindow(QtWidgets.QDialog, preferences_window.Ui_DialogPreferences):  # src.ui.
-    def __init__(self, parent=None):
+    rn_app = None
+
+    def __init__(self, rn_app, parent=None):
+        self.rn_app = rn_app
+
         QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
         # self.connect(self.lineEdit, SIGNAL("textEdited ( const QString& )"), self.updateUi)
