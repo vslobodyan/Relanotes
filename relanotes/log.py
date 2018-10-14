@@ -5,7 +5,7 @@ import logging
 class Loggers():
     root = ''
 
-    def create(self, new_logger, level, filename):
+    def create(self, level, filename):
         # Включаем логирование
         new_logger = logging.getLogger()
         new_logger.setLevel(level)
@@ -13,6 +13,7 @@ class Loggers():
         # formatter = logging.Formatter('%(name)s %(message)s') # or whatever
         # handler.setFormatter(formatter) # Pass handler as a parameter, not assign
         new_logger.addHandler(handler)
+        return new_logger
 
     def __init__(self):
         pass

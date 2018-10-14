@@ -38,7 +38,9 @@ def main():
     print('== 12')
 
     # Включаем логирование
-    rn_app.loggers.create(rn_app.loggers.root, rn_app.settings.log_level, rn_app.settings.logfile)
+    rn_app.loggers.root = rn_app.loggers.create(rn_app.settings.log_level, rn_app.settings.logfile)
+
+    print('loggers.root: ', rn_app.loggers.root, type(rn_app.loggers.root))
 
     print('== 6')
 
@@ -115,6 +117,9 @@ def main():
 
     print('== 18')
     rn_app.main_window.notelist_filter_changed('')
+
+    print('loggers.root: ', rn_app.loggers.root, type(rn_app.loggers.root))
+
 
     print('== 19')
 
