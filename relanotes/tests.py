@@ -3,13 +3,11 @@ import os
 
 from PyQt5 import QtWidgets
 
-# from relanotes.rn_class import notelist, main_window, app_settings, note
-# from relanotes.main import notelist, main_window, app_settings, note
 from relanotes.routines import give_correct_path_under_win_and_other, get_diff_text
 
 
 class App_Tests():
-    # Класс для внутренних тестов программы. В том числе вызываемых через меню.
+    """ Класс для внутренних тестов программы. В том числе вызываемых через меню. """
 
     rn_app = None
 

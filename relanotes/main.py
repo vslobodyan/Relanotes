@@ -1,23 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# __author__ = 'vyacheslav'
-# __version__ = '0.06'
+__author__ = 'vslobodyan'
+__version__ = '0.07'
 
 import sys
 from PyQt5 import QtWidgets
-
-# from relanotes.routines import *
-
-
-"""
-Список заметок и статус работы с ними - реализовано в классе Notelist, переменная file_recs
-rec = [ id, filename, cute_name, parent_id, subnotes_count, size, favorite, hidden, 
-        last_change, last_open, count_opens, opened ]
-
-file_recs = [ rec1, rec2, rec3, .. ]
-file_recs = []
-"""
-
 
 
 def main():
@@ -59,17 +46,9 @@ def main():
 
     app.installEventFilter(myFilter)
 
-
     print('== 7')
 
     rn_app.main_window.redefine_textbrowser_class()
-
-    # # Переопределяем класс редактора заметок
-    # new_textBrowser = MyTextBrowser(rn_app.main_window.textBrowser_Note)
-    # rn_app.main_window.textBrowser_Note.setVisible(False)  # Скрываем старый класс редактора заметки
-    # rn_app.main_window.textBrowser_Note = new_textBrowser
-    # rn_app.main_window.horizontalLayout_Note.layout().addWidget(rn_app.main_window.textBrowser_Note)
-    # rn_app.main_window.horizontalLayout_Note.layout().addWidget(rn_app.main_window.frame_NoteMinimap)
 
     print('== 8')
 
@@ -119,7 +98,6 @@ def main():
     rn_app.main_window.notelist_filter_changed('')
 
     print('loggers.root: ', rn_app.loggers.root, type(rn_app.loggers.root))
-
 
     print('== 19')
 

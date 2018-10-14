@@ -5,9 +5,6 @@ from datetime import datetime, date, timedelta
 
 from PyQt5 import QtGui, QtCore
 
-# from relanotes.rn_class import main_window, note, table_of_note_contents, notelist, app_settings
-# from relanotes.main import main_window, note, table_of_note_contents, notelist, app_settings
-
 from relanotes.themes import Themes
 from relanotes.routines import hbytes
 
@@ -22,6 +19,13 @@ class Notelist():
     textBrowser_Listnotes
     sidebar_source    (исходник сайдбара)
     notelist_source    (исходник списка заметок)
+
+    Список заметок и статус работы с ними - реализовано в классе Notelist, переменная file_recs
+    rec = [ id, filename, cute_name, parent_id, subnotes_count, size, favorite, hidden,
+            last_change, last_open, count_opens, opened ]
+
+    file_recs = [ rec1, rec2, rec3, .. ]
+    file_recs = []
     """
 
     rn_app = None

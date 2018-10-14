@@ -1,19 +1,19 @@
-# from relanotes.relanotes import main_window, text_format, notelist
-# from relanotes.main_window import Window
 from PyQt5 import QtCore
 
 from relanotes.note import Note
-# from relanotes.rn_app import main_window, text_format, notelist
-# from relanotes.main import main_window, text_format, notelist
 
+"""Тут реализован импорт, без передачи ссылки на класс rn_app во внутреннее использование.
+Чтобы не связываться с собственной декларацией функции __init__"""
 from relanotes.rn import rn_app
-
 main_window = rn_app.main_window
 text_format = rn_app.text_format
 notelist = rn_app.notelist
 
 
 class MyEventFilter(QtCore.QObject):
+    """Переопределение класса событий для управления блокировкой окна и
+    обработки нажатий клавиатуры при фокусе на любом объекте"""
+
     def eventFilter(self, receiver, event):
 
         # if not main_window: exit()

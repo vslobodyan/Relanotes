@@ -1,11 +1,8 @@
 from PyQt5 import QtGui
 
-# from relanotes.rn_class import main_window, note, notelist
-# from relanotes.main import main_window, note, notelist
-
 
 class Table_of_note_contents():
-    # Класс работы с таблицей содержания заметки
+    """ Класс таблицы содержания заметки. """
 
     rn_app = None
 

@@ -1,8 +1,9 @@
 import logging
 
-# from relanotes.rn_app import rn_app
 
 class Loggers():
+    """Класс логеров программы. С конструктором."""
+
     root = ''
 
     def create(self, level, filename):

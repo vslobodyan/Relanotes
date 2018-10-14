@@ -3,7 +3,9 @@ from PyQt5 import QtWidgets
 from relanotes.qtdesign_ui import preferences_window
 
 
-class PreferencesWindow(QtWidgets.QDialog, preferences_window.Ui_DialogPreferences):  # src.ui.
+class PreferencesWindow(QtWidgets.QDialog, preferences_window.Ui_DialogPreferences):
+    """ Окно общих настроек программы. """
+
     rn_app = None
 
     def __init__(self, rn_app, parent=None):

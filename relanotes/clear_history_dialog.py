@@ -6,6 +6,8 @@ from relanotes.qtdesign_ui import clear_history_dialog
 
 
 class ClearHistoryDialog(QtWidgets.QDialog, clear_history_dialog.Ui_ClearHistoryDialog):
+    """Окно очистки истории"""
+
     rn_app = None
     history_items = []
 

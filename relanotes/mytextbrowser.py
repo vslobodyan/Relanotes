@@ -1,11 +1,9 @@
 from PyQt5 import QtWidgets
 
-# from relanotes.rn_class import note, text_format
-# from relanotes.main import note, text_format
-
 
 class MyTextBrowser(QtWidgets.QTextBrowser):
-    # Класс, переопределяющий работу основного навигатора заметок
+    """ Переопределение класса текстового браузера, который используется как основной навигатор заметок """
+
     rn_app = None
 
     def __init__(self, rn_app, parent=None):

@@ -2,6 +2,8 @@ import time
 
 
 class Profiler():
+    """ Класс профилирования скорости работы частей программы. """
+
     start_time = 0
     start_time_overall = 0
 

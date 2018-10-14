@@ -4,10 +4,10 @@ import os
 from PyQt5 import QtWidgets
 
 from relanotes.qtdesign_ui import note_multiaction
-# from relanotes.relanotes import main_window
 
 
-class NoteMultiactionWindow(QtWidgets.QDialog, note_multiaction.Ui_DialogNoteMultiaction):  # src.ui.
+class NoteMultiactionWindow(QtWidgets.QDialog, note_multiaction.Ui_DialogNoteMultiaction):
+    """ Окно выполнения операций над файлом заметки. """
 
     rn_app = None
 

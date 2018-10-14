@@ -5,35 +5,20 @@ from datetime import datetime
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 from relanotes.qtdesign_ui.main_window import Ui_MainWindow
-
-# from relanotes.rn import rn_app
-#
-# .app_settings = rn_app.settings
-# .notelist = rn_app..notelist
-# .main_window = rn_app..main_window
-# .clear_history_win = rn_app..clear_history_win
-# .calculator_win = rn_app..calculator_win
-# .preferences_win = rn_app..preferences_win
-# note = rn_app.note
-# root_logger = rn_app.loggers.root
-# text_format = rn_app.text_format
-
-# from relanotes.main import .app_settings, .notelist, .main_window, .clear_history_win, .calculator_win, .preferences_win, \
-#      note, root_logger, text_format
-
 from relanotes.routines import give_correct_path_under_win_and_other, get_correct_filename_from_url
 
 
 class Main_Window(QtWidgets.QMainWindow, Ui_MainWindow):
-    # Главное окно приложения.
-    doc_source = '' # QtGui.QTextDocument()
-    sidebar_source = '' # QtGui.QTextDocument()
-    notelist_source = '' # QtGui.QTextDocument()
-    current_open_note_link = ''    # Ссылка на текущую открытую заметку
-    timer_lock_ui = '' # QtCore.QTimer()
+    """Класс главного окна приложения."""
+
+    doc_source = ''  # QtGui.QTextDocument()
+    sidebar_source = ''  # QtGui.QTextDocument()
+    notelist_source = ''  # QtGui.QTextDocument()
+    current_open_note_link = '' # Ссылка на текущую открытую заметку
+    timer_lock_ui = ''  # QtCore.QTimer()
     lock_ui_timeout = 10000
     locked = False
-    timer_window_minimize = '' # QtCore.QTimer()
+    timer_window_minimize = ''  # QtCore.QTimer()
     window_minimize_timeout = 10000
 
     # Действия, относящиеся только к редактору заметки

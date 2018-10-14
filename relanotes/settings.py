@@ -8,7 +8,7 @@ from relanotes.routines import give_correct_path_under_win_and_other, get_path_t
 
 
 class Settings():
-    """Основной класс настроек программы"""
+    """ Класс настроек приложения. И основных переменных, относящихся к концигурации и местоположению. """
 
     NameOrganization = 'DigiTect'
     NameGlobal = 'Relanotes'
