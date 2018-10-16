@@ -15,7 +15,7 @@ from relacalc.qtdesign_ui import calculator_window
 class CalculatorWindow(QtWidgets.QDialog, calculator_window.Ui_Dialog):  # src.ui.
     rn_app = None
 
-    def __init__(self, rn_app, parent=None):
+    def __init__(self, rn_app=None, parent=None):
         self.rn_app = rn_app
 
         QtWidgets.QDialog.__init__(self, parent)
