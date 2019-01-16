@@ -105,7 +105,7 @@ class CalculatorWindow(QtWidgets.QDialog, calculator_window.Ui_Dialog):  # src.u
                     if last_was_plus:
                         continue
                     else:
-                        last_was_plus = False
+                        last_was_plus = True
                         text_new += char
                 else:
                     last_was_plus = False
