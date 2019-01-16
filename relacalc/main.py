@@ -34,6 +34,7 @@ class CalculatorWindow(QtWidgets.QDialog, calculator_window.Ui_Dialog):  # src.u
 
     def clear_result_field(self):
         self.labelResult.setText('0')
+        self.labelFormula.setText('')
 
 
     def purge_eval_text(self, text):
@@ -45,7 +46,40 @@ class CalculatorWindow(QtWidgets.QDialog, calculator_window.Ui_Dialog):  # src.u
             #text = unicode(self.lineEdit.toPlainText())
             # text = self.lineEdit.text()
             # text = self.lineEdit.text()
-            text = self.purge_eval_text(text)
+            print('We have input text: "%s"' % text)
+            tmp_text = ''
+            # Чистим текст от букв
+            for symbol in text:
+                if not symbol.isalpha():
+                    tmp_text += symbol
+            # Табуляции и переносы строк меняем на +
+            tmp_text = tmp_text.replace('\t', '+')
+            tmp_text = tmp_text.replace('\n', '+')
+            # Удаляем пустышки
+            what_delete = []
+            # what_delete = ['+, ', ]
+            for one in what_delete:
+                tmp_text = tmp_text.replace(one, '')
+            print('tmp_text before final cornering cleaning: "%s"' % tmp_text)
+            # Обрезаем с обоих краев лишние символы, которые не цифры. Формула должна начинаться и заканчиваться цифрой.
+            first_digit = -1
+            last_digit = -1
+            pos = -1
+            # Ищем последнюю цифру
+            for symbol in tmp_text:
+                pos += 1
+                if symbol.isdigit():
+                    if first_digit<0:
+                        first_digit = pos
+                    last_digit = pos
+            print('first_digit pos: %s, last_digit pos: %s' % (first_digit, last_digit))
+            # Обрезка по последнюю цифру
+            tmp_text = tmp_text[first_digit:len(tmp_text)-(len(tmp_text)-last_digit-1)]
+            print('tmp_text="%s"' % tmp_text)
+            # Очистка для безопасного расчета
+            text = self.purge_eval_text(tmp_text)
+
+            self.labelFormula.setText(text)
             # text = str(text)
             eval_result = eval(text)
             self.labelResult.setText(str(eval_result))

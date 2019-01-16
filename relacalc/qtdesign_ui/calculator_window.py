@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/vchs/Документы/Sources/Repo/Relanotes/relacalc/qtdesign_ui/calculator_window.ui'
+# Form implementation generated from reading ui file '/home/vchs/Sources/Repos/Relanotes/relacalc/qtdesign_ui/calculator_window.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.2
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(718, 399)
+        Dialog.resize(718, 397)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/newPrefix/icons/window_icons/calculator.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
@@ -50,6 +50,12 @@ class Ui_Dialog(object):
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setContentsMargins(-1, -1, -1, 25)
         self.horizontalLayout.setObjectName("horizontalLayout")
+        self.labelFormula = QtWidgets.QLabel(Dialog)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.labelFormula.setFont(font)
+        self.labelFormula.setObjectName("labelFormula")
+        self.horizontalLayout.addWidget(self.labelFormula)
         self.label_2 = QtWidgets.QLabel(Dialog)
         self.label_2.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.label_2.setObjectName("label_2")
@@ -74,6 +80,7 @@ class Ui_Dialog(object):
         self.verticalLayout.addWidget(self.label_3)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setContentsMargins(-1, 10, 10, 10)
+        self.horizontalLayout_3.setSpacing(6)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setContentsMargins(-1, 0, -1, 0)
@@ -118,6 +125,7 @@ class Ui_Dialog(object):
         self.label_5.setText(_translate("Dialog", "History:"))
         self.labelClearHistory.setText(_translate("Dialog", "<html><head/><body><p><a href=\"clear_history\"><span style=\" text-decoration: underline; color:#004455;\">Clear History</span></a></p></body></html>"))
         self.label.setText(_translate("Dialog", "Type an expression:"))
+        self.labelFormula.setText(_translate("Dialog", "TextLabel"))
         self.label_2.setText(_translate("Dialog", "="))
         self.labelResult.setText(_translate("Dialog", "<html><head/><body><p><span style=\" color:#000000;\">TextLabel</span></p></body></html>"))
         self.label_3.setText(_translate("Dialog", "<html><head/><body><p>Some things about format: <span style=\" font-size:12pt; font-weight:600; color:#008066;\">*</span> multiplication, <span style=\" font-size:12pt; font-weight:600; color:#008066;\">/</span> division. Any other operations avalaible too.</p></body></html>"))
