@@ -35,9 +35,9 @@ class CalculatorWindow(QtWidgets.QDialog, calculator_window.Ui_Dialog):  # src.u
         self.chbSpaceToPlus.stateChanged.connect(self.update_ui)
         self.chbRemoveText.stateChanged.connect(self.update_ui)
 
-        self.rbDontChangeDecimalPoint.stateChanged.connect(self.update_ui)
-        self.rbRemoveDecimalPoint.stateChanged.connect(self.update_ui)
-        self.rbDecimalPointMakeDot.stateChanged.connect(self.update_ui)
+        self.rbDontChangeDecimalPoint.toggled.connect(self.update_ui)
+        self.rbRemoveDecimalPoint.toggled.connect(self.update_ui)
+        self.rbDecimalPointMakeDot.toggled.connect(self.update_ui)
 
 
         self.buttonAdd_to_note.clicked.connect(self.add_result_to_note)
@@ -109,6 +109,7 @@ class CalculatorWindow(QtWidgets.QDialog, calculator_window.Ui_Dialog):  # src.u
                         text_new += char
                 else:
                     last_was_plus = False
+                    text_new += char
             tmp_text = text_new
             print('After remove continuous pluses: %s' % tmp_text)
 

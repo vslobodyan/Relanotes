@@ -178,7 +178,7 @@
        <item>
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Some things about format: &lt;span style=&quot; font-size:12pt; font-weight:600; color:#008066;&quot;&gt;*&lt;/span&gt; multiplication, &lt;span style=&quot; font-size:12pt; font-weight:600; color:#008066;&quot;&gt;/&lt;/span&gt; division. Any other operations avalaible too.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Some things about format: &lt;span style=&quot; font-size:12pt; font-weight:600; color:#008066;&quot;&gt;*&lt;/span&gt; multiplication, &lt;span style=&quot; font-size:12pt; font-weight:600; color:#008066;&quot;&gt;/&lt;/span&gt; division. Any other operations avalaible too. Decimal sign is a dot &lt;span style=&quot; font-size:12pt; font-weight:600; color:#008066;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -343,7 +343,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Operation with &quot;,&quot;</string>
+         <string>Operation with &quot;,&quot;:</string>
         </property>
        </widget>
        <widget class="QCheckBox" name="chbRemoveText">
@@ -375,7 +375,7 @@
          <string>Don`t change</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
        <widget class="QRadioButton" name="rbRemoveDecimalPoint">
@@ -388,7 +388,10 @@
          </rect>
         </property>
         <property name="text">
-         <string>Remove</string>
+         <string>Remove &quot;,&quot;</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="QRadioButton" name="rbDecimalPointMakeDot">
@@ -396,12 +399,12 @@
          <rect>
           <x>0</x>
           <y>180</y>
-          <width>106</width>
+          <width>121</width>
           <height>23</height>
          </rect>
         </property>
         <property name="text">
-         <string>, → .</string>
+         <string>, → . (decimal)</string>
         </property>
        </widget>
       </widget>
