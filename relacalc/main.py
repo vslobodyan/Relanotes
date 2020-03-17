@@ -113,23 +113,23 @@ class CalculatorWindow(QtWidgets.QDialog, calculator_window.Ui_Dialog):  # src.u
             tmp_text = text_new
             print('After remove continuous pluses: %s' % tmp_text)
 
-            if self.chbRemoveText.isChecked():
-                print('tmp_text before final cornering cleaning: "%s"' % tmp_text)
-                # Обрезаем с обоих краев лишние символы, которые не цифры. Формула должна начинаться и заканчиваться цифрой.
-                first_digit = -1
-                last_digit = -1
-                pos = -1
-                # Ищем последнюю цифру
-                for symbol in tmp_text:
-                    pos += 1
-                    if symbol.isdigit():
-                        if first_digit<0:
-                            first_digit = pos
-                        last_digit = pos
-                print('first_digit pos: %s, last_digit pos: %s' % (first_digit, last_digit))
-                # Обрезка по последнюю цифру
-                tmp_text = tmp_text[first_digit:len(tmp_text)-(len(tmp_text)-last_digit-1)]
-                print('tmp_text="%s"' % tmp_text)
+            #if self.chbRemoveText.isChecked():
+                #print('tmp_text before final cornering cleaning: "%s"' % tmp_text)
+                ## Обрезаем с обоих краев лишние символы, которые не цифры. Формула должна начинаться и заканчиваться цифрой.
+                #first_digit = -1
+                #last_digit = -1
+                #pos = -1
+                ## Ищем последнюю цифру
+                #for symbol in tmp_text:
+                    #pos += 1
+                    #if symbol.isdigit():
+                        #if first_digit<0:
+                            #first_digit = pos
+                        #last_digit = pos
+                #print('first_digit pos: %s, last_digit pos: %s' % (first_digit, last_digit))
+                ## Обрезка по последнюю цифру
+                #tmp_text = tmp_text[first_digit:len(tmp_text)-(len(tmp_text)-last_digit-1)]
+                #print('tmp_text="%s"' % tmp_text)
 
 
             # Очистка для безопасного расчета
