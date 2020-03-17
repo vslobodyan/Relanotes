@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/vchs/Sources/Repos/Relanotes/relacalc/qtdesign_ui/calculator_window.ui'
+# Form implementation generated from reading ui file '/home/vchm/Sources/Repos/Relanotes/relacalc/qtdesign_ui/calculator_window.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -129,33 +129,33 @@ class Ui_Dialog(object):
         self.groupBox.setCheckable(False)
         self.groupBox.setObjectName("groupBox")
         self.chbTabToPlus = QtWidgets.QCheckBox(self.groupBox)
-        self.chbTabToPlus.setGeometry(QtCore.QRect(0, 20, 111, 23))
+        self.chbTabToPlus.setGeometry(QtCore.QRect(0, 20, 151, 23))
         self.chbTabToPlus.setChecked(True)
         self.chbTabToPlus.setObjectName("chbTabToPlus")
         self.chbNewlineToPlus = QtWidgets.QCheckBox(self.groupBox)
-        self.chbNewlineToPlus.setGeometry(QtCore.QRect(0, 40, 111, 23))
+        self.chbNewlineToPlus.setGeometry(QtCore.QRect(0, 40, 151, 23))
         self.chbNewlineToPlus.setChecked(True)
         self.chbNewlineToPlus.setObjectName("chbNewlineToPlus")
         self.chbSpaceToPlus = QtWidgets.QCheckBox(self.groupBox)
-        self.chbSpaceToPlus.setGeometry(QtCore.QRect(0, 60, 111, 23))
+        self.chbSpaceToPlus.setGeometry(QtCore.QRect(0, 60, 151, 23))
         self.chbSpaceToPlus.setObjectName("chbSpaceToPlus")
         self.label_4 = QtWidgets.QLabel(self.groupBox)
-        self.label_4.setGeometry(QtCore.QRect(0, 120, 111, 18))
+        self.label_4.setGeometry(QtCore.QRect(0, 120, 151, 18))
         self.label_4.setObjectName("label_4")
         self.chbRemoveText = QtWidgets.QCheckBox(self.groupBox)
-        self.chbRemoveText.setGeometry(QtCore.QRect(0, 80, 111, 23))
+        self.chbRemoveText.setGeometry(QtCore.QRect(0, 80, 151, 23))
         self.chbRemoveText.setChecked(True)
         self.chbRemoveText.setObjectName("chbRemoveText")
         self.rbDontChangeDecimalPoint = QtWidgets.QRadioButton(self.groupBox)
-        self.rbDontChangeDecimalPoint.setGeometry(QtCore.QRect(0, 140, 106, 23))
+        self.rbDontChangeDecimalPoint.setGeometry(QtCore.QRect(0, 140, 151, 23))
         self.rbDontChangeDecimalPoint.setChecked(False)
         self.rbDontChangeDecimalPoint.setObjectName("rbDontChangeDecimalPoint")
         self.rbRemoveDecimalPoint = QtWidgets.QRadioButton(self.groupBox)
-        self.rbRemoveDecimalPoint.setGeometry(QtCore.QRect(0, 160, 106, 23))
+        self.rbRemoveDecimalPoint.setGeometry(QtCore.QRect(0, 160, 151, 23))
         self.rbRemoveDecimalPoint.setChecked(True)
         self.rbRemoveDecimalPoint.setObjectName("rbRemoveDecimalPoint")
         self.rbDecimalPointMakeDot = QtWidgets.QRadioButton(self.groupBox)
-        self.rbDecimalPointMakeDot.setGeometry(QtCore.QRect(0, 180, 121, 23))
+        self.rbDecimalPointMakeDot.setGeometry(QtCore.QRect(0, 180, 151, 23))
         self.rbDecimalPointMakeDot.setObjectName("rbDecimalPointMakeDot")
         self.horizontalLayout_4.addWidget(self.groupBox)
         self.verticalLayout.addLayout(self.horizontalLayout_4)
