@@ -37,7 +37,9 @@ class MyTextBrowser(QtWidgets.QTextBrowser):
         '''
 
         if source_html == '' or self.rn_app.note.paste_as_text_once :
+            print('Insert as text')
             self.rn_app.note.paste_as_text_once = False
             self.insertPlainText(source.text())
         else:
+            print('Insert as html')
             self.insertHtml(self.rn_app.text_format.adaptate_alien_html_styles(source_html))
