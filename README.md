@@ -1,61 +1,40 @@
-﻿# You've added your first Readme file!
-A README.md file is intended to quickly orient readers to what your project can do.  New to Markdown? [Learn more](https://go.microsoft.com/fwlink/p/?LinkId=524306&clcid=0x409)
+﻿# RelaNotes
 
-## Edit this README and commit your change to a topic branch
-In Git, branches are cheap.  You should use them whenever you're making changes to your repository.  Edit this file by clicking on the edit icon.
+Система для ведения объёмных заметок, структурированных разделами и многоуровневым содержанием, а также работы с накопленными знаниями.
+Обладает чистым минималистичным интерфейсом и поиском в реальном времени, пока вы вводите или меняете текст.
 
-Then make some changes to this README file.
+Создана как развитие [Zim](https://www.zim-wiki.org/) на другом стеке (Python 3 / Qt5) и с инновациями в интерфейсе, удобности и лаконичности.
 
-> Make some **edits** to _this_ blockquote
+Кроме прочего в интерфейс внедрена особая функция - защиты от случайного нажатия.
 
-When you are done, click the dropdown arrow next to the save button - that will allow you to commit your changes to a new branch.
+Программа тестировалась на Windows 7-10, MacOS, Linux (Fedora, Ubuntu, Manjaro и другие)
 
-## Create a pull request to contribute your changes back into master
-Pull requests are the way to move changes from a topic branch back into the master branch.
-
-Click on the **Pull Requests** page in the **CODE** hub, then click "New Pull Request" to create a new pull request from your topic branch to the master branch.
-
-When you are done adding details, click "Create Pull request". Once a pull request is sent, reviewers can see your changes, recommend modifications, or even push follow-up commits.
-
-First time creating a pull request?  [Learn more](https://go.microsoft.com/fwlink/?LinkId=533211&clcid=0x409)
-
-### Congratulations! You've completed the grand tour of the CODE hub!
-
-# Next steps
-
-If you haven't already done so, [install Git](https://git-scm.com/downloads) (as well as [Git Credential Manager](https://java.visualstudio.com/Downloads/gitcredentialmanager/Index) for Linux or Mac OS)
-
-Choose and install one of these supported IDEs:
-* [Visual Studio](https://go.microsoft.com/fwlink/?LinkId=309297&clcid=0x409&slcid=0x409)
-* [Android Studio](https://developer.android.com/studio) (with [Team Services Plugin](https://java.visualstudio.com/Downloads/intellijplugin/Index))
-* [Eclipse](https://www.eclipse.org/downloads) (with [Team Explorer Everywhere](https://java.visualstudio.com/Downloads/eclipseplugin/Index))
-* [IntelliJ IDEA](https://www.jetbrains.com/idea/download) (with [Team Services Plugin](https://java.visualstudio.com/Downloads/intellijplugin/Index))
-* [Visual Studio Code](https://code.visualstudio.com/Download) (with [Team Services Extension](https://java.visualstudio.com/Downloads/visualstudiocode/Index))
-
-Then clone this repo to your local machine to get started with your own project.
-
-Happy coding!
+![Скрин окна программы](https://github.com/vslobodyan/Relanotes/screenshots/search_1.png "Скрин окна программы")
 
 
+Отдельной частью содержит специальный калькулятор **RelaCalc** для работы с сырыми данными. Он позволяет вычислять любые выражения, введённые или вставленные простым смешанным текстом, который очищается и интерпретируется программой.
+Например, вы можете вставить скопированную в интернете таблицу или строку с различными текстовыми и числовыми данными. По умолчанию над очищенными числами будет сразу проведена операция сложения. В результате вы получите мгновенный результат без необходимости приведения данных для вычисления к нужному виду вручную.
+Результат будет вычисляться в режиме реального времени, когда вы вводите или меняете текст.
 
-# Info about RelaNotes
+
 
 ## Живой поиск по списку заметок
 
 Мгновенный поиск по имени и содержимому заметки из одного поля.
 Перейти в поиск из заметки: ```Ctrl+J```, и Вы сразу окажетесь в поле поиска.
 Затем наберите слово с пробелом в начале для поиска по содержимому заметок:
- * "&nbsp;ninja" найдет все заметки, в которых есть упоминание ninja.
- * "&nbsp;&nbsp;ninja" если поставить 2 пробела в начале, то произойдет поиск по всем заметкам, в которых указанному слову предшествует пробел.
+ * `␠ninja` найдет все заметки, в которых есть упоминание ninja.
+ * `␠␠ninja` если поставить 2 пробела в начале, то произойдет поиск по всем заметкам, в которых указанному слову предшествует пробел.
  * "projects ninja" найдет все заметки, в пути или названии которых есть projects, и в которых есть упоминание ninja.
 
 Или слово без пробела для поиска по названию (или пути) заметки:
  * "proj" найдет все заметки с именами projects, proj. и т.д.
-
  
+## Заготовки текста (сниппеты) для быстрой вставки
 
+Сниппеты хранятся в отдельном файле, из которого формируется специальное меню в интерфейсе программы с их списком. Досточно щёлкнуть по пункту этого меню, и в вашу заметку будет вставлен заранее сохранённый текст любого объёма. Удобно использовать при подготовке рабочих ответов и в других ситуациях, где требуется быстро вставить свои контакты, готовые скрипты сообщений или ответов, и т.д. 
 
- ## Блокировка интерфейса - защита от детей и питомцев
+## Блокировка интерфейса - защита от детей и питомцев
 
  Часто в семьях присутствует проблема - компьютер нельзя оставить без присмотра ни на минуту!
  На его клавиатуре и мышке тут-же потопает или щенок, или маленький ребенок, и все написанное может быть безнадежно потеряно или испорчено.
@@ -66,49 +45,15 @@ Happy coding!
  И не надо волноваться - сохранила ли программа ваши изменения. Конечно да!
 
 
+## Установка зависимостей в Linux
+
+### Fedora
+`sudo dnf in python3-qt5`
+
+
 ## Notes File Format
 
 Plaint Text.
 UTF-8 coding.
 UNIX style end-of-line.
-
-## Path to config files
-
-### Windows 10
-
-In folder
-C:\Users\USER_NAME\AppData\Roaming\DigiTect\Relanotes
-
-### Linux
-
-??
-~/.local/share/DigiTect/Relanotes
-
-### MacOS X
-
-??
-~/Library/Application Support/DigiTect/Relanotes
-
-## How to install RelaNotes
-
-### Windows
-
-### Mac OS X
-
-### Linux
-
-#### Ubuntu
-
-Install requirements:
-```sudo apt-get install python3-pyqt5```
-
-If you want also to update via git - need install git:
-```sudo apt-get install git```
-
-
-#### OpenSuse
-
-
-
-#### Fedora
 
